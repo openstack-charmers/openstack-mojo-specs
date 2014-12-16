@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+import swiftclient
 import glanceclient
 from keystoneclient.v2_0 import client as keystoneclient
 import mojo_utils
@@ -39,6 +40,18 @@ def get_ks_creds(cloud_creds):
     return auth
 
 
+def get_swift_creds(cloud_creds):
+    auth = {
+        'user': cloud_creds['OS_USERNAME'],
+        'key': cloud_creds['OS_PASSWORD'],
+        'authurl': cloud_creds['OS_AUTH_URL'],
+        'tenant_name': cloud_creds['OS_TENANT_NAME'],
+        'auth_version': '2.0',
+    }
+    return auth
+
+
+
 def get_nova_client(novarc_creds):
     nova_creds = get_nova_creds(novarc_creds)
     return novaclient.Client(**nova_creds)
@@ -52,6 +65,12 @@ def get_neutron_client(novarc_creds):
 def get_keystone_client(novarc_creds):
     keystone_creds = get_ks_creds(novarc_creds)
     return keystoneclient.Client(**keystone_creds)
+
+
+def get_swift_client(novarc_creds, insecure=True):
+    swift_creds = get_swift_creds(novarc_creds)
+    swift_creds['insecure'] = insecure
+    return swiftclient.client.Connection(**swift_creds)
 
 
 def get_glance_client(novarc_creds):
