@@ -12,4 +12,6 @@ Branches:
 
 Running Mojo:
 sudo mojo project-new --series trusty mojo-openstack-specs
+mojo workspace-new --project mojo-openstack --series trusty lp:~gnuoy/+junk/mojo-openstack-specs --stage next-deploy/devel run1
+mojo run --project mojo-openstack --series trusty --stage next-deploy/devel lp:~gnuoy/+junk/mojo-openstack-specs run1
 
