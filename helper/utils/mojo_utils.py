@@ -42,6 +42,11 @@ def remote_run(unit, remote_cmd=None):
     return p.communicate()
 
 
+def add_unit(service):
+    logging.info('Adding unit to %s' % (service))
+    subprocess.check_call(['juju', 'add-unit', service])
+
+
 def juju_set(service, option):
     subprocess.check_call(['juju', 'set', service, option])
 
