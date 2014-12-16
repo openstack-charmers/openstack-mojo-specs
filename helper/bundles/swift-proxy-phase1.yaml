@@ -19,6 +19,7 @@ openstack-services:
     swift-proxy:
       charm: swift-proxy
       constraints: mem=1G
+      num_units: 3
       options:
         zone-assignment: manual
         replicas: 3

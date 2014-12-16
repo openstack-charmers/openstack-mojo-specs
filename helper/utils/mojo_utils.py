@@ -26,10 +26,20 @@ def get_juju_units(juju_status=None):
     return units
 
 
-def remote_run(unit):
+def remote_shell_check(unit):
     cmd = ['juju', 'run', '--unit', unit, 'uname -a']
     FNULL = open(os.devnull, 'w')
     return not subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
+
+
+def remote_run(unit, remote_cmd=None):
+    cmd = ['juju', 'run', '--unit', unit]
+    if remote_cmd:
+        cmd.append(remote_cmd)
+    else:
+        cmd.append('uname -a')
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    return p.communicate()
 
 
 def juju_set(service, option):
