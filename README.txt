@@ -11,7 +11,8 @@ Branches:
 ( bzr branch lp:mojo; cd mojo; sudo python setup.py install )
 
 Running Mojo:
+juju bootstrap
 sudo mojo project-new --series trusty mojo-openstack-specs
-mojo workspace-new --project mojo-openstack --series trusty lp:~gnuoy/+junk/mojo-openstack-specs --stage next-deploy/devel run1
-mojo run --project mojo-openstack --series trusty --stage next-deploy/devel lp:~gnuoy/+junk/mojo-openstack-specs run1
+sudo mojo workspace-new --project mojo-openstack-specs --series trusty --stage next-deploy/devel lp:~ost-maintainers/openstack-mojo-specs/mojo-openstack-specs run1
+mojo run --project mojo-openstack-specs --series trusty --stage next-deploy/devel lp:~ost-maintainers/openstack-mojo-specs/mojo-openstack-specs run1
 
