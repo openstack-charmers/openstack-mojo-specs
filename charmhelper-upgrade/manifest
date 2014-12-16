@@ -1,0 +1,10 @@
+collecthelper
+collect config=collect-next
+repo config=repo-next
+script config=sync_charmhelpers.py
+deploy config=minimal.yaml delay=0 target=trusty-icehouse
+verify config=check_juju.py
+script config=network_setup.py
+script config=image_setup.py
+script config=keystone_setup.py
+verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
