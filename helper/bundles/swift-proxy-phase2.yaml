@@ -1,6 +1,23 @@
 # vim: set ts=2 et:
 # deployer bundle for development ('next') charms
 openstack-services:
+  services:
+    mysql:
+      charm: mysql
+    keystone:
+      charm: keystone
+    glance:
+      charm: glance
+    swift-proxy:
+      charm: swift-proxy
+    swift-storage-z1:
+      charm: swift-storage
+    swift-storage-z2:
+      charm: swift-storage
+    swift-storage-z3:
+      charm: swift-storage
+    swift-hacluster:
+      charm: hacluster
   relations:
     - [ glance, swift-proxy ]
     - [ swift-proxy, keystone ]
