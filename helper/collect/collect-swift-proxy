@@ -1,0 +1,6 @@
+mysql                  lp:charms/mysql
+keystone               lp:~openstack-charmers/charms/trusty/keystone/next
+glance                 lp:~openstack-charmers/charms/trusty/glance/next
+swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
+swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
