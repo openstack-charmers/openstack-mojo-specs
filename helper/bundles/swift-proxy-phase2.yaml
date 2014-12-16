@@ -1,0 +1,34 @@
+# vim: set ts=2 et:
+# deployer bundle for development ('next') charms
+openstack-services:
+  relations:
+    - [ glance, swift-proxy ]
+    - [ swift-proxy, keystone ]
+    - [ swift-proxy, swift-storage-z1 ]
+    - [ swift-proxy, swift-storage-z2 ]
+    - [ swift-proxy, swift-storage-z3 ]
+# icehouse
+precise-icehouse:
+  inherits: openstack-services
+  series: precise
+  overrides:
+    openstack-origin: cloud:precise-icehouse
+    source: cloud:precise-icehouse
+trusty-icehouse:
+  inherits: openstack-services
+  series: trusty
+# juno
+trusty-juno:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-juno
+    source: cloud:trusty-juno
+utopic-juno:
+  inherits: openstack-services
+  series: utopic
+utopic-juno-proposed:
+  inherits: utopic-juno
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed

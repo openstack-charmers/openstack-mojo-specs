@@ -1,0 +1,78 @@
+# vim: set ts=2 et:
+# deployer bundle for development ('next') charms
+openstack-services:
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=1G
+      options:
+        dataset-size: 50%
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    glance:
+      charm: glance
+      constraints: mem=1G
+    swift-proxy:
+      charm: swift-proxy
+      constraints: mem=1G
+      options:
+        zone-assignment: manual
+        replicas: 3
+        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+    swift-storage-z1:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 1
+        block-device: vdb
+        overwrite: "true"
+    swift-storage-z2:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 2
+        block-device: vdb
+        overwrite: "true"
+    swift-storage-z3:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 3
+        block-device: vdb
+        overwrite: "true"
+    swift-hacluster:
+      charm: hacluster
+  relations:
+    - [ keystone, mysql ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ swift-proxy, swift-hacluster ]
+# icehouse
+precise-icehouse:
+  inherits: openstack-services
+  series: precise
+  overrides:
+    openstack-origin: cloud:precise-icehouse
+    source: cloud:precise-icehouse
+trusty-icehouse:
+  inherits: openstack-services
+  series: trusty
+# juno
+trusty-juno:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-juno
+    source: cloud:trusty-juno
+utopic-juno:
+  inherits: openstack-services
+  series: utopic
+utopic-juno-proposed:
+  inherits: utopic-juno
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
