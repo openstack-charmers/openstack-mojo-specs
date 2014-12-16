@@ -22,7 +22,7 @@ openstack-services:
       options:
         zone-assignment: manual
         replicas: 3
-	vip: 10.5.100.1
+        vip: 10.5.100.1
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
         disable-ring-balance: False
     swift-storage-z1:
