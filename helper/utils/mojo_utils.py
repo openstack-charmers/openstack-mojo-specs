@@ -5,6 +5,7 @@ import yaml
 import os
 import mojo
 import logging
+import time
 
 
 def get_juju_status(service=None):
@@ -15,13 +16,17 @@ def get_juju_status(service=None):
     return yaml.load(status_file)
 
 
-def get_juju_units(juju_status=None):
+def get_juju_units(juju_status=None, service=None):
     if not juju_status:
         juju_status = get_juju_status()
     units = []
-    for service in juju_status['services']:
-        if 'units' in juju_status['services'][service]:
-            for unit in juju_status['services'][service]['units']:
+    if service:
+        services = [service]
+    else:
+        services = [service for service in juju_status['services']]
+    for svc in services:
+        if 'units' in juju_status['services'][svc]:
+            for unit in juju_status['services'][svc]['units']:
                 units.append(unit)
     return units
 
@@ -43,8 +48,12 @@ def remote_run(unit, remote_cmd=None):
 
 
 def add_unit(service):
+    unit_count = get_juju_units(service=service)
     logging.info('Adding unit to %s' % (service))
     subprocess.check_call(['juju', 'add-unit', service])
+    # Wait for the new unit to appear in juju status
+    while get_juju_units(service=service) <= unit_count:
+        time.sleep(5)
 
 
 def juju_set(service, option):
