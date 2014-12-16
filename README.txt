@@ -9,3 +9,7 @@ sudo apt-get install bzr juju juju-deployer python-cinderclient python-jinja2\
 Branches:
 ( bzr branch lp:codetree; cd codetree; sudo python setup.py install )
 ( bzr branch lp:mojo; cd mojo; sudo python setup.py install )
+
+Running Mojo:
+sudo mojo project-new --series trusty mojo-openstack-specs
+
