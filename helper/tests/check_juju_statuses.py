@@ -88,11 +88,15 @@ def run_check():
             for check in check_info:
                 check_function = check['check_func']
                 states = check_function(juju_status)
-                status_summary(juju_objtype, check['Heading'], states)
                 if error_check(states):
                     raise Exception("Error in juju status")
                 stable_state.append(all_stable(states))
         time.sleep(5)
+    for juju_objtype, check_info in checks.iteritems():
+        for check in check_info:
+            check_function = check['check_func']
+            states = check_function(juju_status)
+            status_summary(juju_objtype, check['Heading'], states)
 
 def main(argv):
     return run_check()
