@@ -4,7 +4,6 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 
 def main(argv):
-    mojo_utils.add_unit('swift-proxy')
     mojo_utils.add_unit('swift-storage-z1')
     mojo_utils.add_unit('swift-storage-z2')
     mojo_utils.add_unit('swift-storage-z3')
