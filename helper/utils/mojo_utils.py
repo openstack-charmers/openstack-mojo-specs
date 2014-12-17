@@ -59,7 +59,8 @@ def add_unit(service, unit_num=None):
     else:
         additional_units = 1
     logging.info('Adding %i unit(s) to %s' % (additional_units, service))
-    subprocess.check_call(['juju', 'add-unit', service, '-n', additional_units])
+    cmd = ['juju', 'add-unit', service, '-n', str(additional_units)]
+    subprocess.check_call(cmd)
     target_num = unit_count + additional_units
     # Wait for the new unit to appear in juju status
     while len(get_juju_units(service=service)) < target_num:
