@@ -52,12 +52,18 @@ def remote_run(unit, remote_cmd=None):
     return p.communicate()
 
 
-def add_unit(service):
+def add_unit(service, unit_num=None):
     unit_count = get_juju_units(service=service)
-    logging.info('Adding unit to %s' % (service))
-    subprocess.check_call(['juju', 'add-unit', service])
+    if unit_num:
+        logging.info('Adding %i unit(s) to %s' % (unit_num, service))
+        subprocess.check_call(['juju', 'add-unit', service, '-n', unit_num])
+        target_num = unit_count + unit_num
+    else:
+        logging.info('Adding unit to %s' % (service))
+        subprocess.check_call(['juju', 'add-unit', service])
+        target_num = unit_count + 1
     # Wait for the new unit to appear in juju status
-    while get_juju_units(service=service) <= unit_count:
+    while get_juju_units(service=service) < target_num:
         time.sleep(5)
 
 
