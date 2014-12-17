@@ -7,6 +7,11 @@ import mojo
 import logging
 import time
 
+JUJU_STATUSES = {
+    'good': ['ACTIVE', 'started'],
+    'bad': ['error'],
+    'transitional': ['pending', 'pending', 'down', 'installed'],
+}
 
 def get_juju_status(service=None):
     cmd = ['juju', 'status']

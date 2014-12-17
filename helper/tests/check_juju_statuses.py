@@ -3,7 +3,8 @@
 import utils.mojo_utils as mojo_utils
 import sys
 from collections import Counter
-
+import time
+import logging
 
 def get_machine_state(juju_status, state_type):
     states = Counter()
@@ -47,28 +48,51 @@ def status_summary(heading, statetype, states):
 
 
 def error_check(states):
-    error_states = ['error']
     for state in states:
-        if state in error_states:
+        if state in mojo_utils.JUJU_STATUSES['bad']:
+            logging.error('Some statuses are in a bad state')
             return True
+    logging.info('No statuses are in a bad state')
     return False
 
 
+def all_stable(states):
+    for state in states:
+        if state in mojo_utils.JUJU_STATUSES['transitional']:
+            logging.info('Some statuses are in a transitional state')
+            return False
+    logging.info('Statuses are in a stable state')
+    return True
+
+
 def run_check():
-    juju_status = mojo_utils.get_juju_status()
-
-    machine_instance_states = get_machine_instance_states(juju_status)
-    machine_agent_states = get_machine_agent_states(juju_status)
-    service_agent_states = get_service_agent_states(juju_status)
-
-    status_summary('Machines', 'Instance State', machine_instance_states)
-    status_summary('Machines', 'Agent State', machine_agent_states)
-    status_summary('Services', 'Agent State', service_agent_states)
-    if (error_check(machine_instance_states) or
-            error_check(machine_agent_states) or
-            error_check(service_agent_states)):
-        raise Exception("Error in juju status")
-
+    checks = {
+        'Machines': [{ 
+                     'Heading': 'Instance State',
+                     'check_func': get_machine_instance_states,
+                    },
+                    {
+                     'Heading': 'Agent State',
+                     'check_func': get_machine_agent_states,
+                    }],
+        'Services': [{
+                     'Heading': 'Agent State',
+                     'check_func': get_service_agent_states,
+                    }]
+    }
+    stable_state = [False]
+    while False in stable_state:
+        juju_status = mojo_utils.get_juju_status()
+        stable_state = []
+        for juju_objtype, check_info in checks.iteritems():
+            for check in check_info:
+                check_function = check['check_func']
+                states = check_function(juju_status)
+                status_summary(juju_objtype, check['Heading'], states)
+                if error_check(states):
+                    raise Exception("Error in juju status")
+                stable_state.append(all_stable(states))
+        time.sleep(5)
 
 def main(argv):
     return run_check()
