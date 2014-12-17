@@ -1,0 +1,18 @@
+collect config=collect-swift-proxy
+repo config=repo-swift-proxy
+deploy config=swift-proxy-phase1.yaml delay=0 target=trusty-icehouse
+verify config=check_juju.py
+deploy config=swift-proxy-phase2.yaml delay=0 target=trusty-icehouse
+verify config=check_juju.py
+script config=image_setup.py
+script config=keystone_setup.py
+verify config=swift_ring_status.py
+verify config=test_obj_store.py
+script config=scale_out_swift_proxy.py
+verify config=check_juju.py
+verify config=swift_ring_status.py
+verify config=test_obj_store.py
+script config=scale_out_swift_storage.py
+verify config=check_juju.py
+verify config=swift_ring_status.py
+verify config=test_obj_store.py

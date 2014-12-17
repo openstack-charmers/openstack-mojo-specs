@@ -1,1 +1,0 @@
-../../helper/tests/swift_ring_status.py

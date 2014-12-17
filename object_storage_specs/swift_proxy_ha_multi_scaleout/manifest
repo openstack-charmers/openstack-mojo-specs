@@ -8,6 +8,7 @@ script config=image_setup.py
 script config=keystone_setup.py
 verify config=swift_ring_status.py
 verify config=test_obj_store.py
+script config=scale_out_swift_proxy.py
 script config=scale_out_swift.py
 verify config=check_juju.py
 verify config=swift_ring_status.py
