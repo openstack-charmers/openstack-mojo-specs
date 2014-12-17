@@ -1,8 +1,8 @@
 collect config=collect-swift-proxy
 repo config=repo-swift-proxy
-deploy config=swift-proxy-phase1.yaml delay=0 target=trusty-icehouse
+deploy config=swift-ha-proxy-phase1.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
-deploy config=swift-proxy-phase2.yaml delay=0 target=trusty-icehouse
+deploy config=swift-ha-proxy-phase2.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
 script config=image_setup.py
 script config=keystone_setup.py
