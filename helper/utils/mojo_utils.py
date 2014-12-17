@@ -55,7 +55,7 @@ def remote_run(unit, remote_cmd=None):
 def add_unit(service, unit_num=None):
     unit_count = get_juju_units(service=service)
     if unit_num:
-        logging.info('Adding %i unit(s) to %s' % (unit_num, service))
+        logging.info('Adding %s unit(s) to %s' % (unit_num, service))
         subprocess.check_call(['juju', 'add-unit', service, '-n', unit_num])
         target_num = unit_count + unit_num
     else:
