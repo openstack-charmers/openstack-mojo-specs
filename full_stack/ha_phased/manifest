@@ -1,6 +1,8 @@
 collect config=collect-next-ha
 repo config=repo-next-ha
-deploy config=next-ha.yaml delay=0 target=trusty-icehouse
+deploy config=haphase1.yaml delay=0
+verify config=check_juju.py
+deploy config=haphase2.yaml delay=0
 verify config=check_juju.py
 script config=network_setup.py
 script config=image_setup.py
