@@ -1,5 +1,5 @@
-collect config=collect-next
-repo config=repo-next
+collect config=collect-next-ha
+repo config=repo-next-ha
 deploy config=next-ha.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
 script config=network_setup.py
