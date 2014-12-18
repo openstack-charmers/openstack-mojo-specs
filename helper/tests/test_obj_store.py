@@ -38,13 +38,13 @@ class ObjectPushPull(threading.Thread):
         for i in range(0, self.runs):
             test_string = self.get_test_string()
             string_hash = self.get_hash(test_string)
-            test_file = 'testfile.small'
+            test_file = 'testfile.' + self.thread_name
             self.upload_file(test_file, test_string)
             if self.verify_file(test_file, string_hash):
                 self.successes += 1
             else:
                 self.failures += 1
-            
+
     def get_swiftclient(self):
         overcloud_novarc = mojo_utils.get_overcloud_auth()
         swift_client = mojo_os_utils.get_swift_client(overcloud_novarc)
@@ -54,11 +54,13 @@ class ObjectPushPull(threading.Thread):
         return fname.split('-')[1]
 
     def verify_file(self, fname, check_hash):
-        headers, content = self.sc.get_object(self.container, fname)
+        headers, content = self.sc.get_object(self.container, fname, headers = {'If-Match': self.etag})
         return check_hash == self.get_hash(content)
 
     def upload_file(self, fname, contents):
-        self.sc.put_object(self.container, fname, contents)
+        response = {}
+        self.sc.put_object(self.container, fname, contents, response_dict=response)
+        self.etag = response['headers']['etag']
 
 def main(argv):
     thread1 = ObjectPushPull(10, 'thread1', payload_size='l')
@@ -73,8 +75,8 @@ def main(argv):
     print "Thread 2"
     print "    Successes:" + str(thread2.successes)
     print "    Failures:" + str(thread2.failures)
-    if thread1.failures + thread2.failures > 0:
-        sys.ext(1)
+    if thread2.failures > 0:
+        sys.exit(1)
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
