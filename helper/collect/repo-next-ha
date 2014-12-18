@@ -16,3 +16,4 @@ ceilometer-agent
 mongodb
 neutron-api
 neutron-openvswitch
+cinder-ceph
