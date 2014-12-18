@@ -1,6 +1,1 @@
-mysql                  lp:charms/mysql
-keystone               lp:~openstack-charmers/charms/trusty/keystone/next
-glance                 lp:~openstack-charmers/charms/trusty/glance/next
-swift-proxy            lp:~hopem/charms/trusty/swift-proxy/protect-against-leader-change 
-swift-storage          lp:~hopem/charms/trusty/swift-storage/allow-ring-fetch-retry
-hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
+../../../helper/collect/collect-swift-proxy
