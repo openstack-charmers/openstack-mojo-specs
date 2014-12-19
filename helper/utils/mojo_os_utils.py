@@ -391,7 +391,7 @@ def boot_instance(nova_client, image_name, flavor_name, key_name):
 
 
 def wait_for_active(nova_client, vm_name, wait_time):
-    logging.info('Waiting %is for %s to reach ACTIVE'
+    logging.info('Waiting %is for %s to reach ACTIVE '
                  'state' % (wait_time, vm_name))
     for counter in range(wait_time):
         instance = nova_client.servers.find(name=vm_name)
@@ -409,7 +409,7 @@ def wait_for_active(nova_client, vm_name, wait_time):
 
 
 def wait_for_cloudinit(nova_client, vm_name, bootstring, wait_time):
-    logging.info('Waiting %is for cloudinit on %s to'
+    logging.info('Waiting %is for cloudinit on %s to '
                  'complete' % (wait_time, vm_name))
     instance = nova_client.servers.find(name=vm_name)
     for counter in range(wait_time):
