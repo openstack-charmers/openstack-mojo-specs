@@ -1,8 +1,8 @@
-nova-cloud-controller  lp:~gnuoy/charms/trusty/nova-cloud-controller/next-haproxy-always
-neutron-api            lp:~gnuoy/charms/trusty/neutron-api/next-haproxy-always
-keystone               lp:~gnuoy/charms/trusty/keystone/next-haproxy-always
-glance                 lp:~gnuoy/charms/trusty/glance/next-haproxy-always
-swift-proxy            lp:~gnuoy/charms/trusty/swift-proxy/next-haproxy-always
+nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
+neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
+keystone               lp:~openstack-charmers/charms/trusty/keystone/next
+glance                 lp:~openstack-charmers/charms/trusty/glance/next
+swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 mysql                  lp:charms/mysql
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
