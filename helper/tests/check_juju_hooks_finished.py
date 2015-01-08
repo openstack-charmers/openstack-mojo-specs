@@ -7,7 +7,7 @@ import sys
 def remote_runs(units):
     for unit in units:
         if not mojo_utils.remote_shell_check(unit):
-            raise Exception('Juju run failed')
+            raise Exception('Juju run failed on ' + unit)
 
 
 def run_check():
