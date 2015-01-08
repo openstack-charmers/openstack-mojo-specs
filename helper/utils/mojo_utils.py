@@ -71,6 +71,13 @@ def juju_set(service, option):
     subprocess.check_call(['juju', 'set', service, option])
 
 
+def juju_get(service, option):
+    cmd = ['juju', 'get', service]
+    juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
+    service_config = yaml.load(juju_get_output)
+    return service_config['settings'][option]['value']
+
+
 def get_undercload_auth():
     juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
     juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
@@ -90,11 +97,16 @@ def get_overcloud_auth(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
     # xxx Need to account for https
-    transport = 'http'
+    if juju_get('keystone', 'use-https').lower() == 'yes':
+        transport = 'https'
+        port = 35357
+    else:
+        transport = 'http'
+        port = 5000
     unit = juju_status['services']['keystone']['units'].itervalues().next()
     address = unit['public-address']
     auth_settings = {
-        'OS_AUTH_URL': '%s://%s:5000/v2.0' % (transport, address),
+        'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
         'OS_TENANT_NAME': 'admin',
         'OS_USERNAME': 'admin',
         'OS_PASSWORD': 'openstack',
