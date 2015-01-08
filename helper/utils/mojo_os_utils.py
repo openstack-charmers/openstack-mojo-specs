@@ -7,6 +7,7 @@ import mojo_utils
 from novaclient.v1_1 import client as novaclient
 from neutronclient.v2_0 import client as neutronclient
 import logging
+import re
 import sys
 import tempfile
 import urllib
@@ -530,3 +531,25 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
             ssh_test_args['privkey'] = privkey
         if not ssh_test(**ssh_test_args):
             raise Exception('SSH failed' % (ip))
+
+# Hacluster helper
+
+def get_crm_leader(service, resource=None):
+    if not resource:
+        resource = 'res_.*_vip'
+    leader = set()
+    for unit in mojo_utils.get_juju_units(service=service):
+        crm_out = mojo_utils.remote_run(unit, 'sudo crm status')[0]
+        for line in crm_out.splitlines():
+            line = line.lstrip()
+            if re.match(resource, line):
+                  leader.add(line.split()[-1])
+    if len(leader) != 1:
+        raise Exception('Unexpected leader count: ' + str(len(leader)))
+    return leader.pop().split('-')[-1]
+
+
+def delete_crm_leader(service, resource=None):
+    mach_no = get_crm_leader(service, resource)
+    unit = mojo_utils.convert_machineno_to_unit(mach_no)
+    mojo_utils.delete_unit(unit)

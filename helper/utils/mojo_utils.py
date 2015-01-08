@@ -36,6 +36,18 @@ def get_juju_units(juju_status=None, service=None):
     return units
 
 
+def convert_machineno_to_unit(machineno, juju_status=None):
+    if not juju_status:
+        juju_status = get_juju_status()
+    services = [service for service in juju_status['services']]
+    for svc in services:
+        if 'units' in juju_status['services'][svc]:
+            for unit in juju_status['services'][svc]['units']:
+                unit_info = juju_status['services'][svc]['units'][unit]
+                if unit_info['machine'] == machineno:
+                    return unit
+
+
 def remote_shell_check(unit):
     cmd = ['juju', 'run', '--unit', unit, 'uname -a']
     FNULL = open(os.devnull, 'w')
@@ -60,6 +72,18 @@ def remote_upload(unit, script, remote_dir=None):
     cmd = ['juju', 'scp', script, dst]
     return subprocess.check_call(cmd)
     
+
+def delete_unit(unit):
+    service = unit.split('/')[0]
+    unit_count = len(get_juju_units(service=service))
+    logging.info('Removing unit ' + unit)
+    cmd = ['juju', 'destroy-unit', unit]
+    subprocess.check_call(cmd)
+    target_num = unit_count - 1
+    # Wait for the unit to disappear from juju status
+    while len(get_juju_units(service=service)) > target_num:
+        time.sleep(5)
+
 
 def add_unit(service, unit_num=None):
     unit_count = len(get_juju_units(service=service))
