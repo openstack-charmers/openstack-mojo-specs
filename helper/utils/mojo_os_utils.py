@@ -64,6 +64,7 @@ def get_neutron_client(novarc_creds):
 
 def get_keystone_client(novarc_creds):
     keystone_creds = get_ks_creds(novarc_creds)
+    keystone_creds['insecure'] = True
     return keystoneclient.Client(**keystone_creds)
 
 
