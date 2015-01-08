@@ -20,10 +20,16 @@ script config=keystone_setup.py
 script config=delete_crm_leader.py SERVICE='keystone' RESOURCE='res_ks_eth0_vip'
 script config=delete_unit.py UNITS='keystone/0'
 
+# Check certs are consistent accross nodes
+verify config=check_keystone_certs.py
+
 # Retry keystone operations
 script config=keystone_setup.py
 
 script config=add_unit.py UNITS='keystone:2'
+
+# Check certs are consistent accross nodes
+verify config=check_keystone_certs.py
 
 # Retry keystone operations
 script config=keystone_setup.py
