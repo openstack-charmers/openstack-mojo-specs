@@ -52,6 +52,15 @@ def remote_run(unit, remote_cmd=None):
     return p.communicate()
 
 
+def remote_upload(unit, script, remote_dir=None):
+    if remote_dir:
+        dst = unit + ':' + remote_dir
+    else:
+        dst = unit + ':/tmp/'
+    cmd = ['juju', 'scp', script, dst]
+    return subprocess.check_call(cmd)
+    
+
 def add_unit(service, unit_num=None):
     unit_count = len(get_juju_units(service=service))
     if unit_num:
