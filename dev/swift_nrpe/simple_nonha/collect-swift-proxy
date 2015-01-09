@@ -1,0 +1,6 @@
+mysql                  lp:charms/mysql
+keystone               lp:~openstack-charmers/charms/trusty/keystone/next
+glance                 lp:~openstack-charmers/charms/trusty/glance/next
+swift-proxy            lp:~gnuoy/charms/trusty/swift-proxy/add-nrpe-checks
+swift-storage          lp:~gnuoy/charms/trusty/swift-storage/add-nrpe-checks-fix-rsyncd-conf
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
