@@ -11,12 +11,25 @@ paths = [os.path.join(root, 'ubuntu_cloud_root_ca/*'),
          '/usr/local/share/ca-certificates/*',
          '/etc/apache2/ssl/keystone/*']
 
+def update_hash_from_path(hash, path, recurse_depth=10):
+    """Recurse through path and update the provided hash for every file found.
+    """
+    if not recurse_depth:
+        msg = ("Max recursion depth (%s) reached for update_hash_from_path() "
+               "at path='%s' - not going any deeper" % (recurse_depth, path))
+        return sum
+
+    for p in glob.glob("%s/*" % path):
+        if os.path.isdir(p):
+            update_hash_from_path(hash, p, recurse_depth=recurse_depth - 1)
+        else:
+            with open(p, 'r') as fd:
+                data = fd.read()
+                print "%s - %s" % (p, hashlib.sha256(data).hexdigest())
+                hash.update(data)
+
 for path in paths:
-    for p in glob.glob(path):
-        if os.path.isfile(p):
-            with open(p, 'rb') as fd:
-                fd.seek(0)
-                sha.update(fd.read())
+    update_hash_from_path(sha, path)
 
 print sha.hexdigest()
 sys.exit(0)
