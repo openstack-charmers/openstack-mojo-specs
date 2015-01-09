@@ -61,7 +61,10 @@ def remote_run(unit, remote_cmd=None):
     else:
         cmd.append('uname -a')
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
-    return p.communicate()
+    output = p.communicate()
+    if p.returncode != 0:
+        raise Exception('Error running nagios checks')
+    return output
 
 
 def remote_upload(unit, script, remote_dir=None):
