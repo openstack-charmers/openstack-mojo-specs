@@ -126,6 +126,16 @@ def get_undercload_auth():
     return auth_settings
 
 
+# Openstack Client helpers
+def get_auth_url(juju_status=None):
+    if juju_get('keystone', 'vip'):
+        return juju_get('keystone', 'vip')
+    if not juju_status:
+        juju_status = get_juju_status()
+    unit = juju_status['services']['keystone']['units'].itervalues().next()
+    return unit['public-address']
+
+
 def get_overcloud_auth(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
@@ -136,8 +146,7 @@ def get_overcloud_auth(juju_status=None):
     else:
         transport = 'http'
         port = 5000
-    unit = juju_status['services']['keystone']['units'].itervalues().next()
-    address = unit['public-address']
+    address = get_auth_url()
     auth_settings = {
         'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
         'OS_TENANT_NAME': 'admin',
