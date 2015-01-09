@@ -1,0 +1,10 @@
+nova-cloud-controller
+neutron-api
+keystone
+glance
+mysql
+rabbitmq-server
+nova-compute
+quantum-gateway
+cinder
+neutron-openvswitch

@@ -1,0 +1,10 @@
+nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
+neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
+keystone               lp:~openstack-charmers/charms/trusty/keystone/next
+glance                 lp:~openstack-charmers/charms/trusty/glance/next
+mysql                  lp:charms/mysql
+rabbitmq-server        lp:charms/rabbitmq-server
+nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
+quantum-gateway        lp:~openstack-charmers/charms/trusty/quantum-gateway/next
+cinder                 lp:~openstack-charmers/charms/trusty/cinder/next
+neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
