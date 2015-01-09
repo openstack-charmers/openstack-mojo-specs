@@ -108,7 +108,8 @@ def juju_get(service, option):
     cmd = ['juju', 'get', service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
-    return service_config['settings'][option]['value']
+    if 'value' in service_config['settings'][option]:
+        return service_config['settings'][option]['value']
 
 
 def get_undercload_auth():
