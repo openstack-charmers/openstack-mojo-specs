@@ -25,7 +25,6 @@ def update_hash_from_path(hash, path, recurse_depth=10):
         else:
             with open(p, 'r') as fd:
                 data = fd.read()
-                print "%s - %s" % (p, hashlib.sha256(data).hexdigest())
                 hash.update(data)
 
 for path in paths:
