@@ -21,7 +21,10 @@ def main(argv):
         logging.info('Running nagios check(s) on ' + unit)
         check_count = mojo_utils.remote_run(unit, "ls -l /etc/nagios/nrpe.d/* 2>/dev/null | wc -l")[0]
         if int(check_count) > 0:
-            mojo_utils.remote_run(unit, "grep -Eoh '/usr.*' /etc/nagios/nrpe.d/* | bash -e")
+            try:
+                mojo_utils.remote_run(unit, "grep -Eoh '/usr.*' /etc/nagios/nrpe.d/* | bash -e")
+            except:
+                pass
         else:
             logging.warn('No nagios checks found on ' + unit)
 

@@ -112,8 +112,12 @@ openstack-services:
       charm: nrpe-external-master
     nrpe-nova-compute:
       charm: nrpe-external-master
+      options:
+        procs: "-w200 -C300"
     nrpe-quantum-gateway:
       charm: nrpe-external-master
+      options:
+        procs: "-w200 -C300"
     nrpe-cinder:
       charm: nrpe-external-master
     nrpe-swift-storage:
