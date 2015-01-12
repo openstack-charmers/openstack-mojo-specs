@@ -163,7 +163,6 @@ openstack-services:
     - [ nrpe-ceph, ceph ]
     - [ nrpe-openstack-dashboard, openstack-dashboard ]
     - [ nrpe-nova-compute, nova-compute ]
-    - [ nrpe-quantum-gateway, quantum-gateway ]
     - [ nrpe-quantum-gateway, neutron-gateway ]
     - [ nrpe-cinder, cinder ]
     - [ nrpe-swift-storage, swift-storage-z1 ]
