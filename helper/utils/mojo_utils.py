@@ -310,5 +310,9 @@ def juju_check_hooks_complete():
 
 
 def juju_wait_finished():
+    # Wait till all statuses are green
+    juju_status_check_and_wait()
+    # juju status may report all has finished but hooks are still firing. So check..
     juju_check_hooks_complete()
+    # Check nothing has subsequently gone bad
     juju_status_check_and_wait()
