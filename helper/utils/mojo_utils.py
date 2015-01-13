@@ -143,7 +143,6 @@ def get_auth_url(juju_status=None):
 def get_overcloud_auth(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
-    # xxx Need to account for https
     if juju_get('keystone', 'use-https').lower() == 'yes':
         transport = 'https'
         port = 35357
@@ -161,9 +160,13 @@ def get_overcloud_auth(juju_status=None):
     return auth_settings
 
 
-def get_mojo_config(filename):
+def get_mojo_file(filename):
     spec = mojo.Spec(os.environ['MOJO_SPEC_DIR'])
-    config_file = spec.get_config(filename, stage=os.environ['MOJO_STAGE'])
+    return spec.get_config(filename, stage=os.environ['MOJO_STAGE'])
+
+
+def get_mojo_config(filename):
+    config_file = get_mojo_file(filename)
     logging.info('Using config %s' % (config_file))
     return yaml.load(file(config_file, 'r'))
 

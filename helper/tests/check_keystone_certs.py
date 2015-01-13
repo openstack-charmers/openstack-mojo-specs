@@ -7,7 +7,7 @@ import argparse
 
 
 def main(argv):
-    cert_script = mojo_utils.get_mojo_config('checksum_keystone_certs.py')
+    cert_script = mojo_utils.get_mojo_file('checksum_keystone_certs.py')
     remote_script = '/home/ubuntu/checksum_keystone_certs.py'
     hashes = set()
     for unit in mojo_utils.get_juju_units(service='keystone'):
