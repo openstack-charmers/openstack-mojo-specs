@@ -1,0 +1,5 @@
+mysql            lp:charms/mysql
+ceph             lp:~openstack-charmers/charms/trusty/ceph/next
+keystone         lp:~openstack-charmers/charms/trusty/keystone/next
+ceph-radosgw     lp:~gnuoy/charms/trusty/ceph-radosgw/next-support-ha
+hacluster        lp:charms/trusty/hacluster

@@ -1,0 +1,5 @@
+mysql
+ceph
+keystone
+ceph-radosgw
+hacluster
