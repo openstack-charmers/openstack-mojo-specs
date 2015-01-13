@@ -1,0 +1,12 @@
+collect config=collect-cephradosgw
+repo config=repo-cephradosgw
+deploy config=cephradosgw.yaml delay=0 target=trusty-icehouse
+verify config=check_juju.py
+script config=image_setup.py
+script config=keystone_setup.py
+verify config=test_obj_store.py
+script config=delete_crm_leader.py SERVICE='ceph-radosgw' RESOURCE='res_cephrg_haproxy'
+verify config=test_obj_store.py
+script config=add_unit.py UNITS='ceph-radosgw:2'
+verify config=test_obj_store.py
+

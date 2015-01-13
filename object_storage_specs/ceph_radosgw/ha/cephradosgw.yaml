@@ -24,6 +24,7 @@ openstack-services:
         admin-password: openstack
         admin-token: ubuntutesting
     ceph-radosgw:
+      num_units: 3
       charm: ceph-radosgw
   relations:
     - [ keystone, mysql ]

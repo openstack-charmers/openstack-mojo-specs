@@ -25,10 +25,16 @@ openstack-services:
         admin-token: ubuntutesting
     ceph-radosgw:
       charm: ceph-radosgw
+      num_units: 3
+      options:
+        vip: 10.5.100.10
+    cephrgw-hacluster:
+      charm: hacluster
   relations:
     - [ keystone, mysql ]
     - [ ceph-radosgw, keystone ]
     - [ ceph-radosgw, ceph ]
+    - [ ceph-radosgw, cephrgw-hacluster ]
 precise-icehouse:
   inherits: openstack-services
   series: precise
