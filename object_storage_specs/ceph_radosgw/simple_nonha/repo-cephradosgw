@@ -1,5 +1,6 @@
 mysql
 ceph
+glance
 keystone
 ceph-radosgw
 hacluster
