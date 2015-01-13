@@ -1,0 +1,1 @@
+../../helper/tests/checksum_keystone_certs.py
