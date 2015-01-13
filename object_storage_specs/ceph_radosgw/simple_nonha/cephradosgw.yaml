@@ -25,8 +25,14 @@ openstack-services:
         admin-token: ubuntutesting
     ceph-radosgw:
       charm: ceph-radosgw
+    glance:
+      charm: glance
+      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ glance, ceph-radosgw ]
     - [ ceph-radosgw, keystone ]
     - [ ceph-radosgw, ceph ]
 precise-icehouse:
