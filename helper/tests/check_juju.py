@@ -1,6 +1,5 @@
 #!/usr/bin/python
-import check_juju_hooks_finished
-import check_juju_statuses
+import utils.mojo_utils as mojo_utils
 
-check_juju_hooks_finished.run_check()
-check_juju_statuses.run_check()
+mojo_utils.juju_check_hooks_complete()
+mojo_utils.juju_status_check_and_wait()
