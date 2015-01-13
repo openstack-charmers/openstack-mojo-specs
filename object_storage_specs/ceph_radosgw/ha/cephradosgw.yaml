@@ -26,6 +26,8 @@ openstack-services:
     ceph-radosgw:
       num_units: 3
       charm: ceph-radosgw
+      options:
+        vip: 10.5.100.10
   relations:
     - [ keystone, mysql ]
     - [ ceph-radosgw, keystone ]
