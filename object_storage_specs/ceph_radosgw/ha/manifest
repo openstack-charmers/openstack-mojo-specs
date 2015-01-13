@@ -1,6 +1,6 @@
 collect config=collect-cephradosgw
 repo config=repo-cephradosgw
-deploy config=cephradosgw.yaml delay=0 target=trusty-icehouse
+deploy config=cephradosgw-ha.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
 script config=keystone_setup.py
 verify config=test_obj_store.py
