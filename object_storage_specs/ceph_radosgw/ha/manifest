@@ -8,5 +8,5 @@ script config=delete_crm_leader.py SERVICE='ceph-radosgw' RESOURCE='res_cephrg_e
 verify config=test_obj_store.py
 script config=add_unit.py UNITS='ceph-radosgw:2'
 verify config=test_obj_store.py
-script config=juju_set.py SERVICE="ceph-radosgw" KV="embedded-webserver=True"
+script config=juju_set.py SERVICE="ceph-radosgw" KV="use-embedded-webserver=True"
 verify config=test_obj_store.py
