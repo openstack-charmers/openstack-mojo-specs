@@ -28,6 +28,7 @@ openstack-services:
       num_units: 3
       options:
         vip: 10.5.100.10
+        use-embedded-webserver: False
     cephrgw-hacluster:
       charm: hacluster
   relations:
