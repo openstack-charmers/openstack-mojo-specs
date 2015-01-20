@@ -48,6 +48,9 @@ openstack-services:
       constraints: mem=1G
       options:
         instance-mtu: 1300
+        ha-legacy-mode: True
+    neutron-gateway-hacluster:
+      charm: hacluster
     cinder:
       charm: cinder
       options:
@@ -116,6 +119,7 @@ openstack-services:
     - [ cinder, ceph ]
     - [ neutron-gateway, mysql ]
     - [ neutron-gateway, nova-cloud-controller ]
+    - [ neutron-gateway, neutron-gateway ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-storage-z1 ]
