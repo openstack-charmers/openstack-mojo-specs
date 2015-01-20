@@ -17,7 +17,10 @@ verify config=check_keystone_certs.py
 script config=keystone_setup.py
 
 # Delete the unit which crm reports is the leader
-script config=delete_crm_leader.py SERVICE='keystone' RESOURCE='res_ks_eth0_vip'
+# NOTE(hopem): we currently require the leader (specifically the sync-master)
+# to exist in order for sync to occur. Once we have juju leadership election
+# we can enable this test but for the moment it must remain disabled.
+#script config=delete_crm_leader.py SERVICE='keystone' RESOURCE='res_ks_eth0_vip'
 script config=delete_unit.py UNITS='keystone/0'
 
 # Check certs are consistent accross nodes
