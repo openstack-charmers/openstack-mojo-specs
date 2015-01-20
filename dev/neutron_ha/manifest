@@ -2,6 +2,8 @@ collect config=collect-next
 repo config=repo-next
 deploy config=neutronha.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
+# Horrible sleep as Openstack setup seems to continue with Neutron HA after hooks have finished
+sleep config=180
 script config=network_setup.py
 script config=image_setup.py
 script config=keystone_setup.py
