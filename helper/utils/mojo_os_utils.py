@@ -532,6 +532,13 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
         if not ssh_test(**ssh_test_args):
             raise Exception('SSH failed' % (ip))
 
+def check_guest_connectivity(nova_client):
+    for guest in nova_client.servers.list():
+        print guest.id
+        print guest.__dict__
+    for ip in nova_client.floating_ips.list():
+        print ip 
+
 # Hacluster helper
 
 def get_crm_leader(service, resource=None):

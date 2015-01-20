@@ -119,7 +119,7 @@ openstack-services:
     - [ cinder, ceph ]
     - [ neutron-gateway, mysql ]
     - [ neutron-gateway, nova-cloud-controller ]
-    - [ neutron-gateway, neutron-gateway ]
+    - [ neutron-gateway, neutron-gateway-hacluster ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-storage-z1 ]

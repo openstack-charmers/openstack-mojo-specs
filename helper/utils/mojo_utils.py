@@ -91,6 +91,12 @@ def delete_unit(unit):
     juju_wait_finished()
 
 
+def delete_machine(machine):
+    mach_no = machine.split('-')[-1]
+    unit = convert_machineno_to_unit(mach_no)
+    delete_unit(unit)
+
+
 def add_unit(service, unit_num=None):
     unit_count = len(get_juju_units(service=service))
     if unit_num:

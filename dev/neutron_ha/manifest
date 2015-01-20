@@ -5,4 +5,5 @@ verify config=check_juju.py
 script config=network_setup.py
 script config=image_setup.py
 script config=keystone_setup.py
-verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:3' CLOUDINIT_WAIT="300"
+verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1' CLOUDINIT_WAIT="300"
+script config=delete_router_home.py ROUTER="provider-router"
