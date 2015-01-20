@@ -17,3 +17,4 @@ mongodb                lp:charms/mongodb
 cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 neutron-openvswitch    lp:~cts-engineering/charms/trusty/neutron-openvswitch/ha-scale
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
