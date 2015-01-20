@@ -62,11 +62,11 @@ def main(argv):
         net_topology = os.environ['TOPOLOGY']
     else:
         net_topology = options.net_topology
-#    undercloud_novarc = mojo_utils.get_undercload_auth()
-#    novac = mojo_os_utils.get_nova_client(undercloud_novarc)
+    undercloud_novarc = mojo_utils.get_undercload_auth()
+    novac = mojo_os_utils.get_nova_client(undercloud_novarc)
     # Add an interface to the neutron-gateway units and tell juju to us it
     # as the external port
-#    mojo_os_utils.configure_gateway_ext_port(novac)
+    mojo_os_utils.configure_gateway_ext_port(novac)
     setup_sdn(net_topology)
 
 
