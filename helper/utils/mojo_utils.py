@@ -172,8 +172,13 @@ def get_overcloud_auth(juju_status=None):
 
 
 def get_mojo_file(filename):
-    spec = mojo.Spec(os.environ['MOJO_SPEC_DIR'])
-    return spec.get_config(filename, stage=os.environ['MOJO_STAGE'])
+    if 'MOJO_SPEC_DIR' in os.environ:
+        spec = mojo.Spec(os.environ['MOJO_SPEC_DIR'])
+        mfile = spec.get_config(filename, stage=os.environ['MOJO_STAGE'])
+    else:
+        if os.path.isfile(filename):
+            mfile = filename
+    return mfile
 
 
 def get_mojo_config(filename):

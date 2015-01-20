@@ -532,12 +532,13 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
         if not ssh_test(**ssh_test_args):
             raise Exception('SSH failed' % (ip))
 
-def check_guest_connectivity(nova_client):
+
+def check_guest_connectivity(nova_client, ping_wait=180):
     for guest in nova_client.servers.list():
-        print guest.id
-        print guest.__dict__
-    for ip in nova_client.floating_ips.list():
-        print ip 
+        fip = nova_client.floating_ips.find(instance_id=guest.id).ip
+        if not wait_for_ping(fip, ping_wait):
+            raise Exception('Ping of %s failed' % (fip))
+
 
 # Hacluster helper
 
