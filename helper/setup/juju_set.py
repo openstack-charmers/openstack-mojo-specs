@@ -1,8 +1,6 @@
 #!/usr/bin/python
 import sys
 import utils.mojo_utils as mojo_utils
-import utils.mojo_os_utils as mojo_os_utils
-import logging
 import argparse
 
 

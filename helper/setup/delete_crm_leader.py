@@ -7,6 +7,7 @@ import argparse
 
 
 def main(argv):
+    logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
     parser.add_argument("--service")
     parser.add_argument("--resource")

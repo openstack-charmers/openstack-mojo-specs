@@ -1,6 +1,4 @@
 #!/usr/bin/python
-import os
-import swiftclient
 import threading
 import hashlib
 import string
@@ -8,6 +6,7 @@ import random
 import utils.mojo_os_utils as mojo_os_utils
 import utils.mojo_utils as mojo_utils
 import sys
+
 
 class ObjectPushPull(threading.Thread):
     def __init__(self, runs, thread_name, payload_size='s'):
@@ -27,11 +26,13 @@ class ObjectPushPull(threading.Thread):
 
     def get_test_string(self,):
         # Large ~ 100Mb
-        sizes = {'s': 10000,
-                 'm': 100000,
-                 'l': 100000000,
-                }
-        root_str = random.choice(string.letters) + random.choice(string.letters)
+        sizes = {
+            's': 10000,
+            'm': 100000,
+            'l': 100000000,
+        }
+        root_str = random.choice(string.letters)
+        root_str += random.choice(string.letters)
         return root_str*sizes[self.payload_size]
 
     def run(self):
@@ -49,18 +50,21 @@ class ObjectPushPull(threading.Thread):
         overcloud_novarc = mojo_utils.get_overcloud_auth()
         swift_client = mojo_os_utils.get_swift_client(overcloud_novarc)
         return swift_client
-        
+
     def get_checkstring(self, fname):
         return fname.split('-')[1]
 
     def verify_file(self, fname, check_hash):
-        headers, content = self.sc.get_object(self.container, fname, headers = {'If-Match': self.etag})
+        headers, content = self.sc.get_object(self.container, fname,
+                                              headers={'If-Match': self.etag})
         return check_hash == self.get_hash(content)
 
     def upload_file(self, fname, contents):
         response = {}
-        self.sc.put_object(self.container, fname, contents, response_dict=response)
+        self.sc.put_object(self.container, fname, contents,
+                           response_dict=response)
         self.etag = response['headers']['etag']
+
 
 def main(argv):
     thread1 = ObjectPushPull(10, 'thread1', payload_size='l')
@@ -80,4 +84,3 @@ def main(argv):
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
-

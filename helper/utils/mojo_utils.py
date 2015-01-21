@@ -6,7 +6,6 @@ import os
 import mojo
 import logging
 import time
-import sys
 from collections import Counter
 
 JUJU_STATUSES = {
@@ -14,6 +13,7 @@ JUJU_STATUSES = {
     'bad': ['error'],
     'transitional': ['pending', 'pending', 'down', 'installed', 'stopped'],
 }
+
 
 def get_juju_status(service=None):
     cmd = ['juju', 'status']
@@ -30,7 +30,7 @@ def get_juju_units(juju_status=None, service=None):
     if service:
         services = [service]
     else:
-        services = [service for service in juju_status['services']]
+        services = [svc for svc in juju_status['services']]
     for svc in services:
         if 'units' in juju_status['services'][svc]:
             for unit in juju_status['services'][svc]['units']:
@@ -76,7 +76,7 @@ def remote_upload(unit, script, remote_dir=None):
         dst = unit + ':/tmp/'
     cmd = ['juju', 'scp', script, dst]
     return subprocess.check_call(cmd)
-    
+
 
 def delete_unit(unit):
     service = unit.split('/')[0]
@@ -278,18 +278,22 @@ def juju_status_all_stable(states):
 
 def juju_status_check_and_wait():
     checks = {
-        'Machines': [{ 
-                     'Heading': 'Instance State',
-                     'check_func': get_machine_instance_states,
-                    },
-                    {
-                     'Heading': 'Agent State',
-                     'check_func': get_machine_agent_states,
-                    }],
-        'Services': [{
-                     'Heading': 'Agent State',
-                     'check_func': get_service_agent_states,
-                    }]
+        'Machines': [
+            {
+                'Heading': 'Instance State',
+                'check_func': get_machine_instance_states,
+            },
+            {
+                'Heading': 'Agent State',
+                'check_func': get_machine_agent_states,
+            }
+        ],
+        'Services': [
+            {
+                'Heading': 'Agent State',
+                'check_func': get_service_agent_states,
+            }
+        ]
     }
     stable_state = [False]
     while False in stable_state:
@@ -325,7 +329,7 @@ def juju_check_hooks_complete():
 def juju_wait_finished():
     # Wait till all statuses are green
     juju_status_check_and_wait()
-    # juju status may report all has finished but hooks are still firing. So check..
+    # juju status may report all has finished but hooks are still firing.
     juju_check_hooks_complete()
     # Check nothing has subsequently gone bad
     juju_status_check_and_wait()

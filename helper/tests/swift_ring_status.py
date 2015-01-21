@@ -3,6 +3,7 @@ import sys
 import utils.mojo_utils as mojo_utils
 import logging
 
+
 def process_ring_info(ring_info):
     ring_data = {}
     for line in ring_info.split('\n'):
@@ -11,6 +12,7 @@ def process_ring_info(ring_info):
         hashsum, filename = line.split()
         ring_data[filename] = hashsum
     return ring_data
+
 
 def verify_ring_data(ring_data):
     ring_dict = ring_data.itervalues().next()
@@ -24,7 +26,8 @@ sp_units = mojo_utils.get_juju_units(juju_status=juju_status)
 ring_data = {}
 
 for unit in sp_units:
-    cmd = "ls -1 /etc/swift/*{.builder,.ring.gz,arse} 2>/dev/null | xargs -l md5sum"
+    cmd = 'ls -1 /etc/swift/*{.builder,.ring.gz,arse} 2>/dev/null ' \
+          '| xargs -l md5sum'
     out, err = mojo_utils.remote_run(unit, remote_cmd=cmd)
     ring_data[unit] = process_ring_info(out)
 

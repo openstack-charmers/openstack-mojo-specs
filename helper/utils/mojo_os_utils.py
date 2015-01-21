@@ -52,7 +52,6 @@ def get_swift_creds(cloud_creds):
     return auth
 
 
-
 def get_nova_client(novarc_creds):
     nova_creds = get_nova_creds(novarc_creds)
     return novaclient.Client(**nova_creds)
@@ -551,7 +550,7 @@ def get_crm_leader(service, resource=None):
         for line in crm_out.splitlines():
             line = line.lstrip()
             if re.match(resource, line):
-                  leader.add(line.split()[-1])
+                leader.add(line.split()[-1])
     if len(leader) != 1:
         raise Exception('Unexpected leader count: ' + str(len(leader)))
     return leader.pop().split('-')[-1]

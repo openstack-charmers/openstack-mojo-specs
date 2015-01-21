@@ -1,6 +1,7 @@
 #!/usr/bin/python
-
+import sys
 import utils.mojo_utils as mojo_utils
+
 
 def main(argv):
     return mojo_utils.juju_status_check_and_wait()
