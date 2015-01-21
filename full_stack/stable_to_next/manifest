@@ -10,4 +10,5 @@ script config=wipe_charm_dir.py
 collect config=collect-next
 repo config=repo-next
 script config=upgrade_all_services.py
+verify config=check_juju.py
 verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
