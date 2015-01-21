@@ -1,6 +1,6 @@
 nova-cloud-controller  lp:charms/trusty/nova-cloud-controller
 neutron-api            lp:charms/trusty/neutron-api
-keystone               lp:~gnuoy/charms/trusty/keystone/logging-fqpaths
+keystone               lp:charms/trusty/keystone
 glance                 lp:charms/trusty/glance
 swift-proxy            lp:charms/trusty/swift-proxy
 mysql                  lp:charms/mysql

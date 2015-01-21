@@ -1,6 +1,6 @@
 nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
 neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
-keystone               lp:~gnuoy/charms/trusty/keystone/logging-fqpaths
+keystone               lp:~openstack-charmers/charms/trusty/keystone/next
 glance                 lp:~openstack-charmers/charms/trusty/glance/next
 swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 mysql                  lp:charms/mysql
