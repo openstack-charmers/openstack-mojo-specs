@@ -204,6 +204,8 @@ def wipe_charm_dir():
     charm_base_dir = get_charm_dir()
     for charm in os.listdir(charm_base_dir):
         shutil.rmtree(os.path.join(charm_base_dir, charm))
+    for charm in os.listdir(os.environ['MOJO_BUILD_DIR']):
+        shutil.rmtree(os.path.join(charm_base_dir, charm))
 
 
 def sync_all_charmhelpers():
