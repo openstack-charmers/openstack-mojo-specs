@@ -87,6 +87,8 @@ def delete_unit(unit):
     target_num = unit_count - 1
     # Wait for the unit to disappear from juju status
     while len(get_juju_units(service=service)) > target_num:
+        # Check no hooks are in error state
+        juju_status_check_and_wait()
         time.sleep(5)
     juju_wait_finished()
 
