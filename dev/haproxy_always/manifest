@@ -1,6 +1,6 @@
 collect config=collect-next
 repo config=repo-next
-deploy config=next.yaml delay=0 target=${MOJO_SERIES}-icehouse
+deploy config=full.yaml delay=0 target=${MOJO_SERIES}-icehouse
 verify config=check_juju.py
 script config=network_setup.py
 script config=image_setup.py

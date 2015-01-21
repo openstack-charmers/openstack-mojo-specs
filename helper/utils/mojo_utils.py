@@ -7,6 +7,7 @@ import mojo
 import logging
 import time
 from collections import Counter
+import shutil
 
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
@@ -199,12 +200,28 @@ def sync_charmhelpers(charmdir):
     p.communicate()
 
 
+def wipe_charm_dir():
+    charm_base_dir = get_charm_dir()
+    for charm in os.listdir(charm_base_dir):
+        shutil.rmtree(os.path.join(charm_base_dir, charm))
+
+
 def sync_all_charmhelpers():
     charm_base_dir = get_charm_dir()
     for direc in os.listdir(charm_base_dir):
         charm_dir = os.path.join(charm_base_dir, direc)
         if os.path.isdir(charm_dir):
             sync_charmhelpers(charm_dir)
+
+
+def upgrade_all_services(juju_status=None):
+    if not juju_status:
+        juju_status = get_juju_status()
+    repo_dir = os.environ['MOJO_REPO_DIR']
+    for svc in juju_status['services']:
+        logging.info('Upgrading ' + svc)
+        cmd = ['juju', 'upgrade-charm', '--repository', repo_dir, svc]
+        subprocess.check_call(cmd)
 
 
 def parse_mojo_arg(options, mojoarg, multiargs=False):
