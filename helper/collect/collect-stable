@@ -6,14 +6,15 @@ swift-proxy            lp:charms/trusty/swift-proxy
 mysql                  lp:charms/mysql
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:charms/trusty/ceph
-openstack-dashboard    lp:charms/trusty/openstack-dashboard
 nova-compute           lp:charms/trusty/nova-compute
 quantum-gateway        lp:charms/trusty/quantum-gateway
 cinder                 lp:charms/trusty/cinder
 swift-storage          lp:charms/trusty/swift-storage
-ceilometer             lp:charms/trusty/ceilometer
-ceilometer-agent       lp:charms/trusty/ceilometer-agent
 mongodb                lp:charms/mongodb
 cinder-ceph            lp:charms/trusty/cinder-ceph
 heat                   lp:charms/trusty/heat
 neutron-openvswitch    lp:charms/trusty/neutron-openvswitch
+# Bug 1161018 bzr revno fails on ghost ancestry
+openstack-dashboard    nosmart+lp:charms/trusty/openstack-dashboard
+ceilometer             nosmart+lp:charms/trusty/ceilometer
+ceilometer-agent       nosmart+lp:charms/trusty/ceilometer-agent
