@@ -217,14 +217,18 @@ def sync_all_charmhelpers():
             sync_charmhelpers(charm_dir)
 
 
+def upgrade_service(svc):
+    repo_dir = os.environ['MOJO_REPO_DIR']
+    logging.info('Upgrading ' + svc)
+    cmd = ['juju', 'upgrade-charm', '--repository', repo_dir, svc]
+    subprocess.check_call(cmd)
+
+
 def upgrade_all_services(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
-    repo_dir = os.environ['MOJO_REPO_DIR']
     for svc in juju_status['services']:
-        logging.info('Upgrading ' + svc)
-        cmd = ['juju', 'upgrade-charm', '--repository', repo_dir, svc]
-        subprocess.check_call(cmd)
+        upgrade_service(svc)
 
 
 def parse_mojo_arg(options, mojoarg, multiargs=False):
