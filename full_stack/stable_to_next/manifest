@@ -1,4 +1,4 @@
-collect config=collect-stable
+collect config=collect-stable-${MOJO_SERIES}
 repo config=repo-next
 deploy config=full.yaml delay=0 target=${MOJO_SERIES}-icehouse
 verify config=check_juju.py
