@@ -1,3 +1,4 @@
 cinder                 lp:~gnuoy/charms/trusty/cinder/bug1403132
 glance                 lp:~gnuoy/charms/trusty/glance/bug1403132
-keystone               lp:~gnuoy/charms/trusty/keystone/bug1403132
+#keystone               lp:~gnuoy/charms/trusty/keystone/bug1403132
+keystone                lp:~hopem/charms/trusty/keystone/fix-db-access-before-ready
