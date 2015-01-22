@@ -3,5 +3,5 @@ rabbitmq-server       lp:charms/trusty/rabbitmq-server
 keystone              lp:~openstack-charmers/charms/trusty/keystone/next
 neutron-gateway       lp:~openstack-charmers/charms/trusty/quantum-gateway/next
 hacluster             lp:~openstack-charmers/charms/trusty/hacluster/next
-nova-cloud-controller lp:~openstack-charmers/charms/trusty/nova-cloud-controller/fix-multi-vips
+nova-cloud-controller lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
 neutron-openvswitch   lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
