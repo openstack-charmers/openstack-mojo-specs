@@ -1,0 +1,7 @@
+mysql
+rabbitmq-server
+keystone      
+neutron-gateway
+hacluster
+nova-cloud-controller
+neutron-openvswitch

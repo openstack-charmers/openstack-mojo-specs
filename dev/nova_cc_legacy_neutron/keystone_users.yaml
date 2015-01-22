@@ -1,0 +1,10 @@
+- email: demo@dev.null
+  password: pass
+  roles: [_member_]
+  tenant: demo
+  username: demo
+- email: alt_demo@dev.null
+  password: secret
+  roles: [_member_]
+  tenant: alt_demo
+  username: alt_demo
