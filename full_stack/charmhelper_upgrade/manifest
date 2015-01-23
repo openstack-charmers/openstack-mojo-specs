@@ -1,4 +1,3 @@
-collecthelper
 collect config=collect-next
 repo config=repo-next
 script config=sync_charmhelpers.py
