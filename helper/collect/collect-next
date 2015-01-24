@@ -4,7 +4,7 @@ keystone               lp:~openstack-charmers/charms/trusty/keystone/next
 glance                 lp:~openstack-charmers/charms/trusty/glance/next
 swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 mysql                  lp:charms/mysql
-rabbitmq-server        lp:charms/rabbitmq-server
+rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
 ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
