@@ -196,7 +196,8 @@ def configure_gateway_ext_port(novaclient, neutronclient):
         mac_addrs = [a.mac_addr for a in server.interface_list()]
         if len(mac_addrs) < 2:
             logging.info('Adding additional port to Neutron Gateway')
-            server.interface_attach(port_id=None, net_id=admin_net_id, fixed_ip=None)
+            server.interface_attach(port_id=None, net_id=admin_net_id,
+                                    fixed_ip=None)
         else:
             logging.warning('Neutron Gateway already has additional port')
     if uuids:
@@ -507,7 +508,9 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
         logging.info('SSH to %s(%s) succesfull' % (vm_name, ip))
         return True
     else:
-        logging.info('SSH to %s(%s) failed' % (vm_name, ip))
+        logging.info('SSH to %s(%s) failed (%s != %s)' % (vm_name, ip,
+                                                          return_string,
+                                                          vm_name))
         return False
 
 

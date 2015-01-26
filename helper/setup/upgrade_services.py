@@ -4,6 +4,7 @@ import utils.mojo_utils as mojo_utils
 import logging
 import argparse
 
+
 def main(argv):
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
