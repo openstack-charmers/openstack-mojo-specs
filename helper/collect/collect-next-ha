@@ -1,6 +1,6 @@
 percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/trunk
 hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
-rabbitmq-server        lp:charms/rabbitmq-server
+rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
 ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
