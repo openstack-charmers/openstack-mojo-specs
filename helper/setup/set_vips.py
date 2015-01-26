@@ -2,7 +2,7 @@
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import netaddr
-
+import logging
 
 class VipPool():
     def __init__(self):
@@ -36,6 +36,7 @@ class VipPool():
         else:
             raise Exception("vip pool exhausted")
 
+logging.basicConfig(level=logging.INFO)
 vp = VipPool()
 juju_status = mojo_utils.get_juju_status()
 for svc in juju_status['services']:

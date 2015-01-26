@@ -123,6 +123,7 @@ def add_unit(service, unit_num=None):
 
 
 def juju_set(service, option):
+    logging.info('Setting %s to %s' % (service, option))
     subprocess.check_call(['juju', 'set', service, option])
     juju_wait_finished()
 
