@@ -188,9 +188,9 @@ def get_admin_net(neutron_client):
             return net['id']
 
 
-def configure_gateway_ext_port(novaclient):
+def configure_gateway_ext_port(novaclient, neutronclient):
     uuids = get_gateway_uuids()
-    admin_net_id = get_admin_net(novaclient)
+    admin_net_id = get_admin_net(neutronclient)
     for uuid in uuids:
         server = novaclient.servers.get(uuid)
         mac_addrs = [a.mac_addr for a in server.interface_list()]
