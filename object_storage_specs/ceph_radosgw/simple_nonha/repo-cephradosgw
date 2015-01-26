@@ -1,5 +1,6 @@
 mysql
 ceph
+ceph-osd
 keystone
 ceph-radosgw
 hacluster
