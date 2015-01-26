@@ -5,7 +5,7 @@ collect config=collect-next
 repo config=repo-next
 
 # Use juju deployer with full.yaml bundle
-deploy config=full.yaml delay=0 target=trusty-icehouse
+deploy config=next.yaml delay=0 target=trusty-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
