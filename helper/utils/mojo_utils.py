@@ -24,6 +24,12 @@ def get_juju_status(service=None):
     return yaml.load(status_file)
 
 
+def get_juju_env_name(juju_status=None):
+    if not juju_status:
+        juju_status = get_juju_status()
+    return juju_status['environment']
+
+
 def get_juju_units(juju_status=None, service=None):
     if not juju_status:
         juju_status = get_juju_status()
@@ -121,6 +127,13 @@ def juju_set(service, option):
     juju_wait_finished()
 
 
+def juju_get_config_keys(service):
+    cmd = ['juju', 'get', service]
+    juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
+    service_config = yaml.load(juju_get_output)
+    return service_config['settings'].keys()
+
+
 def juju_get(service, option):
     cmd = ['juju', 'get', service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
@@ -129,10 +142,14 @@ def juju_get(service, option):
         return service_config['settings'][option]['value']
 
 
+def get_juju_environments_yaml():
+    juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
+    return yaml.load(juju_env_file)
+
+
 def get_undercload_auth():
     juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
-    juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
-    juju_env_contents = yaml.load(juju_env_file)
+    juju_env_contents = get_juju_environments_yaml()
     novarc_settings = juju_env_contents['environments'][juju_env]
     auth_settings = {
         'OS_AUTH_URL': novarc_settings['auth-url'],
@@ -142,6 +159,13 @@ def get_undercload_auth():
         'OS_REGION_NAME': novarc_settings['region'],
     }
     return auth_settings
+
+
+def get_undercload_netid():
+    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
+    juju_env_contents = get_juju_environments_yaml()
+    if 'network' in juju_env_contents['environments'][juju_env]:
+        return juju_env_contents['environments'][juju_env]['network']
 
 
 # Openstack Client helpers
