@@ -67,7 +67,6 @@ openstack-services:
         zone-assignment: manual
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
-        use-https: 'no'
     swift-storage-z1:
       charm: swift-storage
       constraints: mem=1G
