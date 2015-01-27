@@ -566,7 +566,7 @@ def get_crm_leader(service, resource=None):
     return leader.pop().split('-')[-1]
 
 
-def delete_crm_leader(service, resource=None):
+def delete_crm_leader(service, resource=None, method='juju'):
     mach_no = get_crm_leader(service, resource)
     unit = mojo_utils.convert_machineno_to_unit(mach_no)
-    mojo_utils.delete_unit(unit)
+    mojo_utils.delete_unit(unit, method=method)

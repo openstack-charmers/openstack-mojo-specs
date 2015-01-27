@@ -16,10 +16,12 @@ JUJU_STATUSES = {
 }
 
 
-def get_juju_status(service=None):
+def get_juju_status(service=None, unit=None):
     cmd = ['juju', 'status']
     if service:
         cmd.append(service)
+    if unit:
+        cmd.append(unit)
     status_file = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     return yaml.load(status_file)
 
@@ -45,6 +47,11 @@ def get_juju_units(juju_status=None, service=None):
     return units
 
 
+def convert_unit_to_machineno(unit):
+    juju_status = get_juju_status(unit)
+    return juju_status['machines'].itervalues().next()['instance-id']
+
+
 def convert_machineno_to_unit(machineno, juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
@@ -57,22 +64,30 @@ def convert_machineno_to_unit(machineno, juju_status=None):
                     return unit
 
 
-def remote_shell_check(unit):
-    cmd = ['juju', 'run', '--unit', unit, 'uname -a']
+def remote_shell_check(unit, timeout=None):
+    cmd = ['juju', 'run']
+    if timeout:
+        cmd.extend(['--timeout', str(timeout)])
+    cmd.extend(['--unit', unit, 'uname -a'])
     FNULL = open(os.devnull, 'w')
     return not subprocess.call(cmd, stdout=FNULL, stderr=subprocess.STDOUT)
 
 
-def remote_run(unit, remote_cmd=None):
+def remote_run(unit, remote_cmd=None, timeout=None, fatal=None):
+    if fatal is None:
+        fatal = True
     cmd = ['juju', 'run', '--unit', unit]
+    if timeout:
+        cmd.extend(['--timeout', str(timeout)])
     if remote_cmd:
         cmd.append(remote_cmd)
     else:
         cmd.append('uname -a')
+    print cmd
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     output = p.communicate()
-    if p.returncode != 0:
-        raise Exception('Error running nagios checks')
+    if p.returncode != 0 and fatal:
+        raise Exception('Error running remote command')
     return output
 
 
@@ -85,7 +100,7 @@ def remote_upload(unit, script, remote_dir=None):
     return subprocess.check_call(cmd)
 
 
-def delete_unit(unit):
+def delete_unit_juju(unit):
     service = unit.split('/')[0]
     unit_count = len(get_juju_units(service=service))
     logging.info('Removing unit ' + unit)
@@ -98,6 +113,41 @@ def delete_unit(unit):
         juju_status_check_and_wait()
         time.sleep(5)
     juju_wait_finished()
+
+
+def panic_unit(unit):
+    panic_cmd = 'sudo bash -c "echo c > /proc/sysrq-trigger"'
+    remote_run(unit, timeout='5s', remote_cmd=panic_cmd, fatal=False)
+
+
+def delete_unit_openstack(unit):
+    from novaclient.v1_1 import client as novaclient
+    server_id = convert_unit_to_machineno(unit)
+    cloud_creds = get_undercload_auth()
+    auth = {
+        'username': cloud_creds['OS_USERNAME'],
+        'api_key': cloud_creds['OS_PASSWORD'],
+        'auth_url': cloud_creds['OS_AUTH_URL'],
+        'project_id': cloud_creds['OS_TENANT_NAME'],
+        'region_name': cloud_creds['OS_REGION_NAME'],
+    }
+    nc = novaclient.Client(**auth)
+    server = nc.servers.find(id=server_id)
+    server.delete()
+
+
+def delete_unit_provider(unit):
+    if get_provider_type() == 'openstack':
+        delete_unit_openstack(unit)
+
+
+def delete_unit(unit, method='juju'):
+    if method == 'juju':
+        delete_unit_juju(unit)
+    elif method == 'kernel_panic':
+        panic_unit(unit)
+    elif method == 'provider':
+        delete_unit_provider(unit)
 
 
 def delete_machine(machine):
@@ -146,6 +196,12 @@ def juju_get(service, option):
 def get_juju_environments_yaml():
     juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
     return yaml.load(juju_env_file)
+
+
+def get_provider_type():
+    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
+    juju_env_contents = get_juju_environments_yaml()
+    return juju_env_contents['environments'][juju_env]['type']
 
 
 def get_undercload_auth():

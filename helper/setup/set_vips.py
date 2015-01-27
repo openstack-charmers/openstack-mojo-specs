@@ -4,6 +4,7 @@ import utils.mojo_os_utils as mojo_os_utils
 import netaddr
 import logging
 
+
 class VipPool():
     def __init__(self):
         undercloud_novarc = mojo_utils.get_undercload_auth()
@@ -19,17 +20,18 @@ class VipPool():
         self.cidr = subnet['cidr']
         self.highest_assigned = netaddr.IPAddress(allocation_pools[0]['end'])
         # XXX look away now, nothing to see here, move along.
-        #     If there is less than 20 free ips in the network after the top
+        #     If there is less than 30 free ips in the network after the top
         #     dhcp ip then eat into the top of the dhcp range
         available_ips = []
         for element in list(netaddr.IPNetwork(self.cidr)):
-            if element == netaddr.IPAddress(self.highest_assigned) or available_ips:
+            if element == netaddr.IPAddress(self.highest_assigned) or \
+                    available_ips:
                 available_ips.append(element)
         if len(available_ips) < 30:
-            self.highest_assigned = self.highest_assigned - 50
+            self.highest_assigned = self.highest_assigned - 30
 
     def get_next(self):
-        next_ip = self.highest_assigned + 1        
+        next_ip = self.highest_assigned + 1
         if next_ip in list(netaddr.IPNetwork(self.cidr)):
             self.highest_assigned = self.highest_assigned + 1
             return next_ip
