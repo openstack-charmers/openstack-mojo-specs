@@ -427,7 +427,7 @@ def wait_for_cloudinit(nova_client, vm_name, bootstring, wait_time):
         if bootstring in console_log:
             logging.info('Cloudinit for %s is complete' % (vm_name))
             return True
-        time.sleep(1)
+        time.sleep(10)
     logging.error('cloudinit for instance %s failed '
                   'to complete in %is' % (instance.name, wait_time))
     return False
@@ -448,7 +448,7 @@ def wait_for_ping(ip, wait_time):
         if ping(ip):
             logging.info('Ping %s success' % (ip))
             return True
-        time.sleep(1)
+        time.sleep(10)
     logging.error('Ping failed for %s' % (ip))
     return False
 
