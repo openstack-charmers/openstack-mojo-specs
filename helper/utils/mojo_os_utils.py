@@ -411,7 +411,7 @@ def wait_for_active(nova_client, vm_name, wait_time):
             logging.error('instance %s in unknown '
                           'state %s' % (instance.name, instance.status))
             return False
-        time.sleep(1)
+        time.sleep(10)
     logging.error('instance %s failed to reach '
                   'active state in %is' % (instance.name, wait_time))
     return False

@@ -301,10 +301,10 @@ def get_service_agent_states(juju_status):
 
 
 def juju_status_summary(heading, statetype, states):
-    print heading
-    print "   " + statetype
+    logging.debug(heading)
+    logging.debug("   " + statetype)
     for state in states:
-        print "    %s: %i" % (state, states[state])
+        logging.debug("    %s: %i" % (state, states[state]))
 
 
 def juju_status_error_check(states):
@@ -312,16 +312,16 @@ def juju_status_error_check(states):
         if state in JUJU_STATUSES['bad']:
             logging.error('Some statuses are in a bad state')
             return True
-    logging.info('No statuses are in a bad state')
+    logging.debug('No statuses are in a bad state')
     return False
 
 
 def juju_status_all_stable(states):
     for state in states:
         if state in JUJU_STATUSES['transitional']:
-            logging.info('Some statuses are in a transitional state')
+            logging.debug('Some statuses are in a transitional state')
             return False
-    logging.info('Statuses are in a stable state')
+    logging.debug('Statuses are in a stable state')
     return True
 
 
