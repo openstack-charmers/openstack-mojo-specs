@@ -1,15 +1,40 @@
+# Collect the charm branches from Launchpad 
 collect config=collect-swift-proxy
+
+# Copy the branches to the deployment directory
 repo config=repo-swift-proxy
+
 deploy config=swift-ha-proxy-phase1.yaml delay=0 target=trusty-icehouse
+
+# Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
+
+# Add service relations
 deploy config=swift-ha-proxy-phase1.yaml delay=0 target=trusty-icehouse
+
+# Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
+
+# Setup glance images
 script config=image_setup.py
+
+# Setup keystone users
 script config=keystone_setup.py
+
+# Check ring data is consistent accross proxies
 verify config=swift_ring_status.py
+
+# Test obj store by sending and recieving files
 verify config=test_obj_store.py
-#script config=scale_out_swift_proxy.py
+
+# Add a swift-proxy and swift-storage units
 script config=add_unit.py UNITS='swift-proxy:1 swift-storage-z1:1 swift-storage-z2:1 swift-storage-z3:1'
+
+# Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
+
+# Check ring data is consistent accross proxies
 verify config=swift_ring_status.py
+
+# Test obj store by sending and recieving files
 verify config=test_obj_store.py
