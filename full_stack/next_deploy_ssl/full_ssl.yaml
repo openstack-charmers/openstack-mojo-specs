@@ -29,7 +29,7 @@ openstack-services:
         admin-password: openstack
         admin-token: ubuntutesting
         https-service-endpoints: "True"
-        use-https: True
+        use-https: "yes"
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G
