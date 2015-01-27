@@ -47,6 +47,16 @@ def get_juju_units(juju_status=None, service=None):
     return units
 
 
+def get_principle_services(juju_status=None):
+    if not juju_status:
+        juju_status = get_juju_status()
+    p_services = []
+    for svc in juju_status['services']:
+        if 'subordinate-to' not in juju_status['services'][svc]:
+            p_services.append(svc)
+    return p_services
+
+
 def convert_unit_to_machineno(unit):
     juju_status = get_juju_status(unit)
     return juju_status['machines'].itervalues().next()['instance-id']
@@ -150,10 +160,26 @@ def delete_unit(unit, method='juju'):
         delete_unit_provider(unit)
 
 
+def delete_oldest(service, method='juju'):
+    units = unit_sorted(get_juju_units(service=service))
+    delete_unit(units[0], method='juju')
+
+
 def delete_machine(machine):
     mach_no = machine.split('-')[-1]
     unit = convert_machineno_to_unit(mach_no)
     delete_unit(unit)
+
+
+def is_crm_clustered(service):
+    juju_status = get_juju_status(service)
+    return 'ha' in juju_status['services'][service]['relations']
+
+
+def unit_sorted(units):
+    """Return a sorted list of unit names."""
+    return sorted(
+        units, lambda a, b: cmp(int(a.split('/')[-1]), int(b.split('/')[-1])))
 
 
 def add_unit(service, unit_num=None):
