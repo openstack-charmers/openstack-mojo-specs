@@ -1,1 +1,0 @@
-../../../helper/setup/scale_out_swift_storage.py
