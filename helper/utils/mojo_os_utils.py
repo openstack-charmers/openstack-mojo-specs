@@ -57,8 +57,9 @@ def get_nova_client(novarc_creds):
     return novaclient.Client(**nova_creds)
 
 
-def get_neutron_client(novarc_creds):
+def get_neutron_client(novarc_creds, insecure=True):
     neutron_creds = get_ks_creds(novarc_creds)
+    neutron_creds['insecure'] = insecure
     return neutronclient.Client(**neutron_creds)
 
 

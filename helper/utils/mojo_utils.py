@@ -93,7 +93,6 @@ def remote_run(unit, remote_cmd=None, timeout=None, fatal=None):
         cmd.append(remote_cmd)
     else:
         cmd.append('uname -a')
-    print cmd
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     output = p.communicate()
     if p.returncode != 0 and fatal:
