@@ -52,8 +52,9 @@ def get_swift_creds(cloud_creds):
     return auth
 
 
-def get_nova_client(novarc_creds):
+def get_nova_client(novarc_creds, insecure=True):
     nova_creds = get_nova_creds(novarc_creds)
+    nova_creds['insecure'] = insecure
     return novaclient.Client(**nova_creds)
 
 
@@ -63,9 +64,9 @@ def get_neutron_client(novarc_creds, insecure=True):
     return neutronclient.Client(**neutron_creds)
 
 
-def get_keystone_client(novarc_creds):
+def get_keystone_client(novarc_creds, insecure=True):
     keystone_creds = get_ks_creds(novarc_creds)
-    keystone_creds['insecure'] = True
+    keystone_creds['insecure'] = insecure
     return keystoneclient.Client(**keystone_creds)
 
 
@@ -75,11 +76,12 @@ def get_swift_client(novarc_creds, insecure=True):
     return swiftclient.client.Connection(**swift_creds)
 
 
-def get_glance_client(novarc_creds):
+def get_glance_client(novarc_creds, insecure=True):
     kc = get_keystone_client(novarc_creds)
     glance_endpoint = kc.service_catalog.url_for(service_type='image',
                                                  endpoint_type='publicURL')
-    return glanceclient.Client('1', glance_endpoint, token=kc.auth_token)
+    return glanceclient.Client('1', glance_endpoint, token=kc.auth_token,
+                               insecure=insecure)
 
 
 # Glance Helpers
