@@ -43,4 +43,5 @@ vp = VipPool()
 juju_status = mojo_utils.get_juju_status()
 for svc in juju_status['services']:
     if 'vip' in mojo_utils.juju_get_config_keys(svc):
-        mojo_utils.juju_set(svc, '%s=%s' % ('vip', vp.get_next()))
+        mojo_utils.juju_set(svc, '%s=%s' % ('vip', vp.get_next()), wait=False)
+mojo_utils.juju_wait_finished()

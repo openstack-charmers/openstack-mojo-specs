@@ -197,10 +197,13 @@ def add_unit(service, unit_num=None):
     juju_wait_finished()
 
 
-def juju_set(service, option):
+def juju_set(service, option, wait=None):
+    if wait is None:
+        wait=True
     logging.info('Setting %s to %s' % (service, option))
     subprocess.check_call(['juju', 'set', service, option])
-    juju_wait_finished()
+    if wait:
+        juju_wait_finished()
 
 
 def juju_get_config_keys(service):
