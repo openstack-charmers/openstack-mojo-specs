@@ -16,4 +16,4 @@ ceilometer-agent       lp:~openstack-charmers/charms/trusty/ceilometer-agent/nex
 mongodb                lp:charms/mongodb
 cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
-neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
+neutron-openvswitch    lp:~gnuoy/charms/trusty/neutron-openvswitch/fis-amqp-ssl
