@@ -151,7 +151,6 @@ openstack-services:
     - [ cinder, cinder-ceph ]
     - [ cinder-ceph, ceph ]
     - [ neutron-gateway, mysql ]
-    - [ "neutron-gateway:amqp", "rabbitmq-server:amqp" ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
     - [ openstack-dashboard, dashboard-hacluster ]
