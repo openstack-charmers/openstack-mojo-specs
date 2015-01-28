@@ -32,6 +32,10 @@ to validate the deployment
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
+./full_stack/juno/next_deploy/
+This spec performs a non-ha deploy of juno using the next charms and then
+runs tests to validate the deployment
+
 ./full_stack/ha_phased_chaos_pony/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.

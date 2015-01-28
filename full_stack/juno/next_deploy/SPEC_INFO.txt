@@ -1,0 +1,2 @@
+This spec performs a non-ha deploy of juno using the next charms and then
+runs tests to validate the deployment
