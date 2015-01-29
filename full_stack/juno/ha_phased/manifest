@@ -19,6 +19,9 @@ deploy config=haphase2.yaml delay=0
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
 
+# XXX Horrible sleep to see if it makes osci happier
+sleep config=180
+
 # Create sdn on overcloud
 script config=network_setup.py
 
