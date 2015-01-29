@@ -203,10 +203,15 @@ def configure_gateway_ext_port(novaclient, neutronclient):
                                     fixed_ip=None)
         else:
             logging.warning('Neutron Gateway already has additional port')
+    # XXX Trying to track down a failure with juju run neutron-gateway/0 in
+    #     the post juju_set check. Try a sleep here to see if some network
+    #     reconfigureing on the gateway is still in progress and that's
+    #     causing the issue
     if uuids:
         logging.info('Seting Neutron Gateway external port to eth1')
-        mojo_utils.juju_set('neutron-gateway', 'ext-port=eth1')
-
+        mojo_utils.juju_set('neutron-gateway', 'ext-port=eth1', wait=False)
+        time.sleep(180)
+        mojo_utils.juju_wait_finished()
 
 def create_tenant_network(neutron_client, tenant_id, net_name='private',
                           shared=False, network_type='gre'):
