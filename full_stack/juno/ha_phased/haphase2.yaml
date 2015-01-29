@@ -205,3 +205,6 @@ trusty-juno:
   overrides:
     openstack-origin: cloud:trusty-juno
     source: cloud:trusty-juno
+utopic-juno:
+  inherits: openstack-icehouse
+  series: utopic
