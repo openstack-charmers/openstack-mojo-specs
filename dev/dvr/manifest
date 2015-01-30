@@ -11,7 +11,7 @@ deploy config=full_dvr.yaml delay=0 target=trusty-juno
 verify config=check_juju.py
 
 # Create sdn on overcloud
-script config=network_setup.py NET_TOPOLOGY="vxlan"
+script config=network_setup.py NET_TOPOLOGY="dvr"
 
 # Setup glance images
 script config=image_setup.py
