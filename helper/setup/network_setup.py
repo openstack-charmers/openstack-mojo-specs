@@ -41,7 +41,9 @@ def setup_sdn(net_topology):
         neutronc,
         tenant_id,
         tenant_network,
-        net_info['private_net_cidr'])
+        net_info['private_net_cidr'],
+        shared=False,
+        network_type=net_info['network_type'])
     mojo_os_utils.update_subnet_dns(
         neutronc,
         tenant_subnet,
