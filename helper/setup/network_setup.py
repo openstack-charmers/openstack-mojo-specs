@@ -36,14 +36,16 @@ def setup_sdn(net_topology):
         neutronc,
         provider_router,
         ext_network)
-    tenant_network = mojo_os_utils.create_tenant_network(neutronc, tenant_id)
+    tenant_network = mojo_os_utils.create_tenant_network(
+        neutronc,
+        tenant_id,
+        shared=False,
+        network_type=net_info['network_type'])
     tenant_subnet = mojo_os_utils.create_tenant_subnet(
         neutronc,
         tenant_id,
         tenant_network,
-        net_info['private_net_cidr'],
-        shared=False,
-        network_type=net_info['network_type'])
+        net_info['private_net_cidr'])
     mojo_os_utils.update_subnet_dns(
         neutronc,
         tenant_subnet,
