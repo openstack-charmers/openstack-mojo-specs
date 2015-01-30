@@ -58,10 +58,8 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("net_topology", default='gre', nargs='?')
     options = parser.parse_args()
-    if 'TOPOLOGY' in os.environ:
-        net_topology = os.environ['TOPOLOGY']
-    else:
-        net_topology = options.net_topology
+    net_topology = mojo_utils.parse_mojo_arg(options, 'net_topology')
+    logging.info('Setting up %s network' % (net_topology))
     undercloud_novarc = mojo_utils.get_undercload_auth()
     novac = mojo_os_utils.get_nova_client(undercloud_novarc)
     neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
