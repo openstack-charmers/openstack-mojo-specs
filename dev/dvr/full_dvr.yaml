@@ -136,8 +136,8 @@ openstack-icehouse:
       charm: neutron-api
       constraints: mem=1G
       options:
-	overlay-network-type: 'vxlan'
-	l2-population: True
+        overlay-network-type: 'vxlan'
+        l2-population: True
         neutron-security-groups: True
     neutron-openvswitch:
       charm: neutron-openvswitch

@@ -3,6 +3,7 @@ import string
 import os
 import logging
 import sys
+import yaml
 
 WHITELIST=['manifest', 'helper', 'utils', 'SPEC_INFO.txt']
 YAML_MAP={
@@ -61,3 +62,12 @@ for f in get_manifest_referenced():
 for f in dir_list:
     if not os.path.islink(f) and f not in WHITELIST:
         logging.warn('Spec file %s is a local copy, can this be replaced with a link to a helper copy?' % f)
+
+# Check yamls are valid
+for f in dir_list:
+    if f.endswith('.yaml'):
+        stream = open(f, 'r')
+        try:
+            yaml.load(stream)
+        except yaml.scanner.ScannerError:
+            logging.error('%s contains errors, mojo spec will fail' % f)
