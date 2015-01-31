@@ -31,7 +31,7 @@ def check_manifest_ubuntu_release():
                 else:
                     logging.warn('No target is set for juju deployer, this '
                                  'spec will not support multiple ubuntu '
-                                 'releases')
+                                 'releases, specify a target with ${MOJO_SERIES}')
 
 def get_manifest_referenced():
     config_files=[]
@@ -62,6 +62,9 @@ logging.basicConfig(level=logging.INFO)
 # here?
 os.chdir(sys.argv[1])
 dir_list = os.listdir('.')
+if 'SPEC_INFO.txt' not in dir_list:
+   logging.warn('No spec description file SPEC_INFO.txt')
+
 for f in dir_list:
     if f in WHITELIST:
         continue
@@ -83,6 +86,11 @@ for f in get_manifest_referenced():
 for f in dir_list:
     if not os.path.islink(f) and f not in WHITELIST:
         logging.warn('Spec file %s is a local copy, can this be replaced with a link to a helper copy?' % f)
+
+# look for dead symlink
+for f in dir_list:
+    if os.path.islink(f) and not os.path.exists(os.readlink(f)):
+        logging.error('%s is a dead symlink' % f)
 
 # Check yamls are valid
 for f in dir_list:

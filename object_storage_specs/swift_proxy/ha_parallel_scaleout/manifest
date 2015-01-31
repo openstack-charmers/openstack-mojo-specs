@@ -4,13 +4,13 @@ collect config=collect-swift-proxy
 # Copy the branches to the deployment directory
 repo config=repo-swift-proxy
 
-deploy config=swift-ha-proxy-phase1.yaml delay=0 target=trusty-icehouse
+deploy config=swift-ha-proxy-phase1.yaml delay=0 target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
 
 # Add service relations
-deploy config=swift-ha-proxy-phase1.yaml delay=0 target=trusty-icehouse
+deploy config=swift-ha-proxy-phase1.yaml delay=0 target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

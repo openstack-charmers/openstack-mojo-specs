@@ -1,6 +1,1 @@
-mysql
-ceph
-ceph-osd
-keystone
-ceph-radosgw
-hacluster
+../../../helper/collect/repo-cephradosgw
