@@ -3,6 +3,7 @@ import string
 import os
 import logging
 import sys
+import yaml
 
 WHITELIST=['manifest', 'helper', 'utils', 'SPEC_INFO.txt']
 YAML_MAP={
@@ -10,6 +11,27 @@ YAML_MAP={
     'keystone_users.yaml': 'keystone_setup.py',
     'network.yaml': 'network_setup.py',
 }
+UBUNTU_RELEASES=['precise', 'trusty', 'utopic', 'vivid']
+
+def get_direc_option(line, opt):
+    for word in line:
+        if opt in word:
+            return word.split('=')[1]
+
+def check_manifest_ubuntu_release():
+    with open('manifest', 'r') as f: 
+        for line in f.readlines():
+            words = line.split()
+            if words and words[0] == "deploy":
+                target_arg = get_direc_option(words, 'target')
+                if target_arg:
+                    if len([rel for rel in UBUNTU_RELEASES if rel in target_arg]) > 0:
+                        logging.warn('juju deployer target contains a hardcoded '
+                                     'Ubuntu release. Consider using ${MOJO_SERIES}')
+                else:
+                    logging.warn('No target is set for juju deployer, this '
+                                 'spec will not support multiple ubuntu '
+                                 'releases')
 
 def get_manifest_referenced():
     config_files=[]
@@ -61,3 +83,14 @@ for f in get_manifest_referenced():
 for f in dir_list:
     if not os.path.islink(f) and f not in WHITELIST:
         logging.warn('Spec file %s is a local copy, can this be replaced with a link to a helper copy?' % f)
+
+# Check yamls are valid
+for f in dir_list:
+    if f.endswith('.yaml'):
+        stream = open(f, 'r')
+        try:
+            yaml.load(stream)
+        except yaml.scanner.ScannerError:
+            logging.error('%s contains errors, mojo spec will fail' % f)
+
+check_manifest_ubuntu_release()
