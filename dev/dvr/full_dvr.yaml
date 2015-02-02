@@ -139,6 +139,7 @@ openstack-icehouse:
         overlay-network-type: 'vxlan'
         l2-population: True
         neutron-security-groups: True
+        enable-dvr: True
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
