@@ -9,6 +9,7 @@ gre:
   private_net_cidr: 192.168.21.0/24
   router_name: provider-router
   start_floating_ip: 10.5.150.0
+  dvr_enabled: False
 dvr:
   default_gateway: 10.5.0.1
   end_floating_ip: 10.5.200.254
@@ -20,3 +21,4 @@ dvr:
   private_net_cidr: 192.168.21.0/24
   router_name: provider-router
   start_floating_ip: 10.5.150.0
+  dvr_enabled: True

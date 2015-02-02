@@ -69,7 +69,8 @@ def main(argv):
     neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
     # Add an interface to the neutron-gateway units and tell juju to us it
     # as the external port
-    mojo_os_utils.configure_gateway_ext_port(novac, neutronc)
+    net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
+    mojo_os_utils.configure_gateway_ext_port(novac, neutronc, dvr_mode=net_info['dvr_enabled'])
     setup_sdn(net_topology)
 
 
