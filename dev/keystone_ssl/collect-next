@@ -1,4 +1,4 @@
 mysql     lp:charms/trusty/mysql
 glance    lp:~openstack-charmers/charms/trusty/glance/next
 hacluster lp:~openstack-charmers/charms/trusty/hacluster/next
-keystone  lp:~hopem/charms/trusty/keystone/fix-single-unit-ssl
+keystone  lp:~hopem/charms/trusty/keystone/improve-ssl-master-election
