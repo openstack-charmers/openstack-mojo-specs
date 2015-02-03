@@ -31,7 +31,7 @@ openstack-services:
       constraints: mem=1G
     nova-compute:
       charm: nova-compute
-      num_units: 3
+      num_units: 1
       constraints: mem=4G
       options:
         enable-live-migration: True
