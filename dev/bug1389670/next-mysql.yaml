@@ -7,9 +7,6 @@ openstack-services:
       charm: mysql
       constraints: mem=1G
       options:
-        dataset-size: 50%
-        root-password: ubuntu
-        sst-password: ubuntu
         vip: 10.5.100.1
         vip_cidr: 24
     database-hacluster:
