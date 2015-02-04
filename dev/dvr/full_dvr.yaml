@@ -151,6 +151,7 @@ openstack-icehouse:
   - [ neutron-api, "neutron-gateway:neutron-plugin-api" ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
+  - [ neutron-openvswitch, nova-cloud-controller ]
 openstack-icehouse-msg-split:
   inherits: openstack-services
   services:
