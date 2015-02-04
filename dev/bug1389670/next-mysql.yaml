@@ -1,0 +1,154 @@
+# vim: set ts=2 et:
+# deployer bundle for development ('next') charms with HA
+openstack-services:
+  services:
+    database:
+      num_units: 3
+      charm: mysql
+      constraints: mem=1G
+      options:
+        dataset-size: 50%
+        root-password: ubuntu
+        sst-password: ubuntu
+        vip: 10.5.100.1
+        vip_cidr: 24
+    database-hacluster:
+      charm: hacluster
+    rabbitmq-server:
+      charm: rabbitmq-server
+      constraints: mem=1G
+      options:
+        vip: 10.5.101.1
+        vip_cidr: 24
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+        vip: 10.5.102.1
+    nova-compute:
+      num_units: 2
+      charm: nova-compute
+      constraints: mem=4G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=1G
+      options:
+        network-manager: Quantum
+        quantum-security-groups: "yes"
+        vip: 10.5.104.1
+    neutron-gateway:
+      charm: quantum-gateway
+      constraints: mem=1G
+      options:
+        instance-mtu: 1300
+    cinder:
+      charm: cinder
+      constraints: mem=1G
+      options:
+        block-device: "None"
+        glance-api-version: 2
+        vip: 10.5.105.1
+    glance:
+      charm: glance
+      constraints: mem=1G
+      options:
+        vip: 10.5.106.1
+  relations:
+    - [ keystone, database ]
+    - [ nova-cloud-controller, database ]
+    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ nova-cloud-controller, glance ]
+    - [ nova-cloud-controller, keystone ]
+    - [ nova-compute, nova-cloud-controller ]
+    - [ nova-compute, database ]
+    - - nova-compute
+      - rabbitmq-server:amqp
+    - [ nova-compute, glance ]
+    - [ glance, database ]
+    - [ glance, keystone ]
+    - [ glance, cinder ]
+    - [ cinder, database ]
+    - [ cinder, rabbitmq-server ]
+    - [ cinder, nova-cloud-controller ]
+    - [ cinder, keystone ]
+    - [ neutron-gateway, database ]
+    - [ neutron-gateway, nova-cloud-controller ]
+    - [ database, database-hacluster ]
+openstack-singlerabbit:
+  inherits: openstack-services
+  relations:
+    - [ "neutron-gateway:amqp", rabbitmq-server ]
+openstack-icehouse:
+  inherits: openstack-singlerabbit
+  services:
+    neutron-api:
+      num_units: 2
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        neutron-security-groups: True
+        vip: 10.5.108.1
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+  relations:
+  - [ neutron-api, database ]
+  - [ neutron-api, rabbitmq-server ]
+  - [ neutron-api, nova-cloud-controller ]
+  - [ neutron-api, neutron-openvswitch ]
+  - [ neutron-api, keystone ]
+  - [ neutron-openvswitch, nova-compute ]
+  - [ neutron-openvswitch, rabbitmq-server ]
+openstack-icehouse-msg-split:
+  inherits: openstack-services
+  services:
+    neutron-api:
+      num_units: 2
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        neutron-security-groups: True
+        vip: 10.5.108.1
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+    rabbitmq-server-neutron:
+      num_units: 2
+      charm: rabbitmq-server
+      constraints: mem=1G
+      options:
+        vip: 10.5.109.1
+        vip_cidr: 24
+  relations:
+  - [ neutron-api, database ]
+  - [ neutron-api, rabbitmq-server-neutron ]
+  - [ neutron-api, nova-cloud-controller ]
+  - [ neutron-api, neutron-openvswitch ]
+  - [ neutron-api, keystone ]
+  - [ neutron-api, neutron-gateway ]
+  - [ neutron-openvswitch, nova-compute ]
+  - [ neutron-openvswitch, rabbitmq-server-neutron ]
+  - [ "neutron-gateway:amqp-nova", rabbitmq-server ]
+  - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
+ 
+# icehouse
+trusty-icehouse:
+  inherits: openstack-icehouse
+  series: trusty
+trusty-icehouse-msg-split:
+  inherits: openstack-icehouse-msg-split
+  series: trusty
+trusty-icehouse-proposed:
+  inherits: trusty-icehouse
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+trusty-icehouse-trunk:
+  inherits: trusty-icehouse
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
+    source: ppa:openstack-ubuntu-testing/icehouse
+    offline-compression: "no"
