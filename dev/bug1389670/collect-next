@@ -1,4 +1,5 @@
-percona-cluster        lp:~hopem/charms/trusty/percona-cluster/fix-1389670
+percona-cluster        lp:~hopem/charms/trusty/percona-cluster/contrib-database-mysql
+mysql                  lp:~hopem/charms/trusty/mysql/contrib-database-mysql
 hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 rabbitmq-server        lp:charms/rabbitmq-server
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next

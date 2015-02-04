@@ -1,4 +1,5 @@
 percona-cluster
+mysql
 hacluster
 rabbitmq-server
 keystone
