@@ -17,16 +17,12 @@ openstack-services:
     rabbitmq-server:
       charm: rabbitmq-server
       constraints: mem=1G
-      options:
-        vip: 10.5.101.1
-        vip_cidr: 24
     keystone:
       charm: keystone
       constraints: mem=1G
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-        vip: 10.5.102.1
     nova-compute:
       num_units: 2
       charm: nova-compute
@@ -40,7 +36,6 @@ openstack-services:
       options:
         network-manager: Quantum
         quantum-security-groups: "yes"
-        vip: 10.5.104.1
     neutron-gateway:
       charm: quantum-gateway
       constraints: mem=1G
@@ -52,12 +47,9 @@ openstack-services:
       options:
         block-device: "None"
         glance-api-version: 2
-        vip: 10.5.105.1
     glance:
       charm: glance
       constraints: mem=1G
-      options:
-        vip: 10.5.106.1
   relations:
     - [ keystone, database ]
     - [ nova-cloud-controller, database ]
@@ -92,7 +84,6 @@ openstack-icehouse:
       constraints: mem=1G
       options:
         neutron-security-groups: True
-        vip: 10.5.108.1
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
@@ -112,16 +103,12 @@ openstack-icehouse-msg-split:
       constraints: mem=1G
       options:
         neutron-security-groups: True
-        vip: 10.5.108.1
     neutron-openvswitch:
       charm: neutron-openvswitch
     rabbitmq-server-neutron:
       num_units: 2
       charm: rabbitmq-server
       constraints: mem=1G
-      options:
-        vip: 10.5.109.1
-        vip_cidr: 24
   relations:
   - [ neutron-api, database ]
   - [ neutron-api, rabbitmq-server-neutron ]
