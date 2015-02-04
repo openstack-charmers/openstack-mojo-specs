@@ -1,4 +1,4 @@
-percona-cluster        lp:~gnuoy/charms/trusty/percona-cluster/bug-1389670take2
+percona-cluster        lp:~hopem/charms/trusty/percona-cluster/fix-1389670
 hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
