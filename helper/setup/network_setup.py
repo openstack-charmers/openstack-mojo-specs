@@ -36,7 +36,11 @@ def setup_sdn(net_topology):
         neutronc,
         provider_router,
         ext_network)
-    tenant_network = mojo_os_utils.create_tenant_network(neutronc, tenant_id)
+    tenant_network = mojo_os_utils.create_tenant_network(
+        neutronc,
+        tenant_id,
+        shared=False,
+        network_type=net_info['network_type'])
     tenant_subnet = mojo_os_utils.create_tenant_subnet(
         neutronc,
         tenant_id,
@@ -58,16 +62,15 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("net_topology", default='gre', nargs='?')
     options = parser.parse_args()
-    if 'TOPOLOGY' in os.environ:
-        net_topology = os.environ['TOPOLOGY']
-    else:
-        net_topology = options.net_topology
+    net_topology = mojo_utils.parse_mojo_arg(options, 'net_topology')
+    logging.info('Setting up %s network' % (net_topology))
     undercloud_novarc = mojo_utils.get_undercload_auth()
     novac = mojo_os_utils.get_nova_client(undercloud_novarc)
     neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
     # Add an interface to the neutron-gateway units and tell juju to us it
     # as the external port
-    mojo_os_utils.configure_gateway_ext_port(novac, neutronc)
+    net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
+    mojo_os_utils.configure_gateway_ext_port(novac, neutronc, dvr_mode=net_info['dvr_enabled'])
     setup_sdn(net_topology)
 
 

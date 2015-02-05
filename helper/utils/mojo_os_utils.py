@@ -180,6 +180,14 @@ def get_gateway_uuids():
     return uuids
 
 
+def get_ovs_uuids():
+    gateway_config = mojo_utils.get_juju_status('neutron-openvswitch')
+    uuids = []
+    for machine in gateway_config['machines']:
+        uuids.append(gateway_config['machines'][machine]['instance-id'])
+    return uuids
+
+
 def get_net_uuid(neutron_client, net_name):
     network = neutron_client.list_networks(name=net_name)['networks'][0]
     return network['id']
@@ -191,14 +199,16 @@ def get_admin_net(neutron_client):
             return net
 
 
-def configure_gateway_ext_port(novaclient, neutronclient):
+def configure_gateway_ext_port(novaclient, neutronclient, dvr_mode=None):
     uuids = get_gateway_uuids()
+    if dvr_mode:
+        uuids.extend(get_ovs_uuids())
     admin_net_id = get_admin_net(neutronclient)['id']
     for uuid in uuids:
         server = novaclient.servers.get(uuid)
         mac_addrs = [a.mac_addr for a in server.interface_list()]
         if len(mac_addrs) < 2:
-            logging.info('Adding additional port to Neutron Gateway')
+            logging.info('Adding additional port to server')
             server.interface_attach(port_id=None, net_id=admin_net_id,
                                     fixed_ip=None)
         else:
@@ -210,6 +220,9 @@ def configure_gateway_ext_port(novaclient, neutronclient):
     if uuids:
         logging.info('Seting Neutron Gateway external port to eth1')
         mojo_utils.juju_set('neutron-gateway', 'ext-port=eth1', wait=False)
+        if dvr_mode:
+            logging.info('Seting neutron-openvswitch external port to eth1')
+            mojo_utils.juju_set('neutron-openvswitch', 'ext-port=eth1', wait=False)
         time.sleep(180)
         mojo_utils.juju_wait_finished()
 
