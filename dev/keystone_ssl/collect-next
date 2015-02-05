@@ -1,4 +1,4 @@
 mysql     lp:charms/trusty/mysql
 glance    lp:~openstack-charmers/charms/trusty/glance/next
 hacluster lp:~openstack-charmers/charms/trusty/hacluster/next
-keystone  lp:~hopem/charms/trusty/keystone/improve-ssl-master-election
+keystone  lp:~hopem/charms/trusty/keystone/fix-pki-token-support
