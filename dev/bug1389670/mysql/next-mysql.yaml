@@ -5,6 +5,7 @@ openstack-services:
     mysql:
       charm: mysql
       constraints: mem=1G
+      num_units: 3
       options:
         vip: 10.5.100.1
         vip_cidr: 24
