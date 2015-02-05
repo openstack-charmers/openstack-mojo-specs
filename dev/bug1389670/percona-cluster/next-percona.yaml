@@ -2,14 +2,17 @@
 # deployer bundle for development ('next') charms with HA
 openstack-services:
   services:
-    database:
+    percona-cluster:
       num_units: 3
-      charm: mysql
+      charm: percona-cluster
       constraints: mem=1G
       options:
+        dataset-size: 50%
+        root-password: ubuntu
+        sst-password: ubuntu
         vip: 10.5.100.1
         vip_cidr: 24
-    database-hacluster:
+    percona-cluster-hacluster:
       charm: hacluster
     rabbitmq-server:
       charm: rabbitmq-server
@@ -48,26 +51,26 @@ openstack-services:
       charm: glance
       constraints: mem=1G
   relations:
-    - [ keystone, database ]
-    - [ nova-cloud-controller, database ]
+    - [ keystone, percona-cluster ]
+    - [ nova-cloud-controller, percona-cluster ]
     - [ nova-cloud-controller, rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, database ]
+    - [ nova-compute, percona-cluster ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
-    - [ glance, database ]
+    - [ glance, percona-cluster ]
     - [ glance, keystone ]
     - [ glance, cinder ]
-    - [ cinder, database ]
+    - [ cinder, percona-cluster ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ neutron-gateway, database ]
+    - [ neutron-gateway, percona-cluster ]
     - [ neutron-gateway, nova-cloud-controller ]
-    - [ database, database-hacluster ]
+    - [ percona-cluster, percona-cluster-hacluster ]
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
@@ -84,7 +87,7 @@ openstack-icehouse:
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
-  - [ neutron-api, database ]
+  - [ neutron-api, percona-cluster ]
   - [ neutron-api, rabbitmq-server ]
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]
@@ -107,7 +110,7 @@ openstack-icehouse-msg-split:
       charm: rabbitmq-server
       constraints: mem=1G
   relations:
-  - [ neutron-api, database ]
+  - [ neutron-api, percona-cluster ]
   - [ neutron-api, rabbitmq-server-neutron ]
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]

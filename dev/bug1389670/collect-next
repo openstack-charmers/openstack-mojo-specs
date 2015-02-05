@@ -8,5 +8,6 @@ nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controlle
 quantum-gateway        lp:~openstack-charmers/charms/trusty/quantum-gateway/next
 cinder                 lp:~openstack-charmers/charms/trusty/cinder/next
 glance                 lp:~openstack-charmers/charms/trusty/glance/next
+ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
 neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
