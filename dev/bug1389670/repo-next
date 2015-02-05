@@ -8,5 +8,6 @@ nova-cloud-controller
 quantum-gateway
 cinder
 glance
+ceph
 neutron-api
 neutron-openvswitch
