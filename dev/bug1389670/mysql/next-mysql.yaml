@@ -5,10 +5,11 @@ openstack-services:
     mysql:
       charm: mysql
       constraints: mem=1G
-      num_units: 3
-      options:
-        vip: 10.5.100.1
-        vip_cidr: 24
+# NOTE [0]: Currently need to phase deploy clustered mysql due to races
+#      num_units: 3
+#      options:
+#        vip: 10.5.100.1
+#        vip_cidr: 24
     mysql-hacluster:
       charm: hacluster
     rabbitmq-server:
@@ -20,17 +21,18 @@ openstack-services:
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-    ceph:
-      charm: ceph
-      num_units: 3
-      constraints: mem=1G
-      options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
-        ephemeral-unmount: /mnt
+# see NOTE [0]
+#    ceph:
+#      charm: ceph
+#      num_units: 3
+#      constraints: mem=1G
+#      options:
+#        monitor-count: 3
+#        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
+#        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
+#        osd-devices: /dev/vdb
+#        osd-reformat: "yes"
+#        ephemeral-unmount: /mnt
     nova-compute:
       num_units: 2
       charm: nova-compute
@@ -59,6 +61,9 @@ openstack-services:
       charm: glance
       constraints: mem=1G
   relations:
+# See NOTE [0]
+#    - [ mysql, ceph ]
+#    - [ mysql, mysql-hacluster ]
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
     - [ nova-cloud-controller, rabbitmq-server ]
@@ -78,8 +83,7 @@ openstack-services:
     - [ cinder, keystone ]
     - [ neutron-gateway, mysql ]
     - [ neutron-gateway, nova-cloud-controller ]
-    - [ mysql, ceph ]
-    - [ mysql, mysql-hacluster ]
+
 openstack-singlerabbit:
   inherits: openstack-services
   relations:

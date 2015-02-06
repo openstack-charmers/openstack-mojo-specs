@@ -2,7 +2,7 @@ percona-cluster        lp:~hopem/charms/trusty/percona-cluster/contrib-database-
 mysql                  lp:~hopem/charms/trusty/mysql/contrib-database-mysql
 hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 rabbitmq-server        lp:charms/rabbitmq-server
-keystone               lp:~openstack-charmers/charms/trusty/keystone/next
+keystone               lp:~hopem/charms/trusty/keystone/add-more-is-db-ready-protection
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
 quantum-gateway        lp:~openstack-charmers/charms/trusty/quantum-gateway/next
