@@ -1,0 +1,20 @@
+# Collect the charm branches from Launchpad
+collect config=collect-cephradosgw
+
+# Copy the branches to the deployment directory
+repo config=repo-cephradosgw
+
+# Use juju deployer with cephradosgw-ha.yaml bundle
+deploy config=cephradosgw.yaml delay=0 target=${MOJO_SERIES}-icehouse
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Setup images
+script config=image_setup.py
+
+# Setup keystone users
+script config=keystone_setup.py
+
+# Test obj store by sending and recieving files
+verify config=test_obj_store.py
