@@ -1,0 +1,1 @@
+../../../../helper/setup/scale_out_swift_proxy.py

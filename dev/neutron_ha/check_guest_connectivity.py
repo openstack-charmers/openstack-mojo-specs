@@ -1,1 +1,0 @@
-../../helper/tests/check_guest_connectivity.py
