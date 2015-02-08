@@ -3,7 +3,10 @@
 find {object_storage_specs,full_stack} -name manifest | \
 while read spec; do
     spec_dir=$(dirname $spec)
-    echo $spec_dir
-    ./scripts/mojo-spec-check.py $spec_dir
-    echo ""
+    MSGS=$(./scripts/mojo-spec-check.py $spec_dir 2>&1)
+    if [[ ! -z $MSGS ]]; then
+        echo $spec_dir
+	echo "$MSGS"
+        echo ""
+    fi
 done
