@@ -5,6 +5,7 @@ import utils.mojo_os_utils as mojo_os_utils
 import logging
 import os
 
+
 def main(argv):
     logging.basicConfig(level=logging.INFO)
     overcloud_novarc = mojo_utils.get_overcloud_auth()
@@ -21,8 +22,8 @@ def main(argv):
         if os.path.exists(cache_dir + '/' + image_name):
             local_file = cache_dir + '/' + image_name
         else:
-            local_file = mojo_os_utils.download_image(image_config[image]['url'])
-        print local_file
+            local_file = mojo_os_utils.download_image(
+                image_config[image]['url'])
         mojo_os_utils.upload_image(
             glance_client,
             local_file,

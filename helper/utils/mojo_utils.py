@@ -199,7 +199,7 @@ def add_unit(service, unit_num=None):
 
 def juju_set(service, option, wait=None):
     if wait is None:
-        wait=True
+        wait = True
     logging.info('Setting %s to %s' % (service, option))
     subprocess.check_call(['juju', 'set', service, option])
     if wait:

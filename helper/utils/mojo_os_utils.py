@@ -222,9 +222,12 @@ def configure_gateway_ext_port(novaclient, neutronclient, dvr_mode=None):
         mojo_utils.juju_set('neutron-gateway', 'ext-port=eth1', wait=False)
         if dvr_mode:
             logging.info('Seting neutron-openvswitch external port to eth1')
-            mojo_utils.juju_set('neutron-openvswitch', 'ext-port=eth1', wait=False)
+            mojo_utils.juju_set('neutron-openvswitch',
+                                'ext-port=eth1',
+                                wait=False)
         time.sleep(180)
         mojo_utils.juju_wait_finished()
+
 
 def create_tenant_network(neutron_client, tenant_id, net_name='private',
                           shared=False, network_type='gre'):
