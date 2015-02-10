@@ -80,7 +80,7 @@ Directives: deploy
 
 Mojo uses juju deployer to do the charm deployment. When specifying the target
 to use in the bundle the ${MOJO\_SERIES} environment variable should be used in
-place of the Ubuntu release version. These allows the same spec to be used for
+place of the Ubuntu release version. This allows the same spec to be used for
 deployments on different Ubuntu release.
 
 deploy config=haphase1.yaml delay=0 target=${MOJO\_SERIES}-juno
@@ -120,7 +120,7 @@ bugs or features. However, the main tests used to verify the cloud are:
 * *tempest.py*: This doesn't actually exist in any real sense but will do rsn!
 
 Phase 5: Manipulate the cloud
--------------
+-----------------------------
 
 Directives: script
 
@@ -136,6 +136,15 @@ include:
 * *juju_set.py*: Juju set a kv pair for a given service
 * *upgrade_all_services.py*: Perform a Juju charm upgrade on all services
 * *upgrade_services.py*: Perform a Juju charm upgrade on a given service
+
+Helper Libraries
+================
+
+There are two helper libraries in *helper/utils/*.
+
+* *mojo_os_utils.py*: Functions for manipulating the deployed Openstack cloud.
+* *mojo_utils.py*: Functions for manipulating the providor environment. Juju
+                   add/remove unit etc
 
 Using mojo
 ==========
