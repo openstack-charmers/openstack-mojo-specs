@@ -13,6 +13,7 @@ paths = [os.path.join(root, 'ubuntu_cloud_root_ca'),
          '/usr/local/share/ca-certificates',
          '/etc/apache2/ssl/keystone']
 
+
 def update_hash_from_path(hash, path, recurse_depth=10):
     """Recurse through path and update the provided hash for every file found.
     """
@@ -39,8 +40,8 @@ for path in paths:
 # Check CA
 with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
     name = tmpfile.name
-    for path in ['/var/lib/keystone/juju_ssl/ubuntu_cloud_intermediate_ca/cacert.pem',
-                 '/var/lib/keystone/juju_ssl/ubuntu_cloud_root_ca/cacert.pem']:
+    for path in [root + '/ubuntu_cloud_intermediate_ca/cacert.pem',
+                 root + '/ubuntu_cloud_root_ca/cacert.pem']:
         if not os.path.exists(path):
             print "WARNING: %s does not exist" % (path)
             continue
@@ -59,4 +60,3 @@ os.unlink(tmpfile.name)
 
 print "TOTAL: %s" % sha.hexdigest()
 sys.exit(0)
-

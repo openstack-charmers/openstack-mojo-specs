@@ -4,7 +4,6 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import logging
 import argparse
-import os
 
 
 def setup_sdn(net_topology):
@@ -70,7 +69,10 @@ def main(argv):
     # Add an interface to the neutron-gateway units and tell juju to us it
     # as the external port
     net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
-    mojo_os_utils.configure_gateway_ext_port(novac, neutronc, dvr_mode=net_info.get('dvr_enabled', False))
+    mojo_os_utils.configure_gateway_ext_port(
+        novac,
+        neutronc,
+        dvr_mode=net_info.get('dvr_enabled', False))
     setup_sdn(net_topology)
 
 
