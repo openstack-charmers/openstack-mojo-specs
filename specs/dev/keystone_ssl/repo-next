@@ -1,4 +1,9 @@
-mysql
 glance
 hacluster
-keystone
+keystone 
+mysql
+neutron-api
+nova-cloud-controller
+swift-proxy
+swift-storage
+rabbitmq-server

@@ -1,4 +1,9 @@
-mysql     lp:charms/trusty/mysql
-glance    lp:~openstack-charmers/charms/trusty/glance/next
-hacluster lp:~openstack-charmers/charms/trusty/hacluster/next
-keystone  lp:~hopem/charms/trusty/keystone/fix-pki-token-support
+glance                 lp:~hopem/charms/trusty/glance/pki-token-support
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
+keystone               lp:~hopem/charms/trusty/keystone/fix-pki-token-support 
+mysql                  lp:charms/trusty/mysql
+neutron-api            lp:~hopem/charms/trusty/neutron-api/pki-token-support
+nova-cloud-controller  lp:~hopem/charms/trusty/nova-cloud-controller/pki-token-support
+swift-proxy            lp:~hopem/charms/trusty/swift-proxy/pki-token-support
+swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
+rabbitmq-server        lp:charms/trusty/rabbitmq-server
