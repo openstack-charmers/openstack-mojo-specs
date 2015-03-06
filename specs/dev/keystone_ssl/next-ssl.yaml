@@ -59,6 +59,7 @@ openstack-services:
         https-service-endpoints: 'True'
         use-https: 'yes'
         vip: '10.5.100.1'
+        cluster_count: 3
   relations:
     - [ keystone, keystone-hacluster ]
     - [ keystone, mysql ]
@@ -71,7 +72,7 @@ openstack-services:
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    
+
 openstack-icehouse:
   services:
     neutron-api:
