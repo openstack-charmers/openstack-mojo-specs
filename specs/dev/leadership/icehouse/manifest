@@ -5,13 +5,13 @@ collect config=collect-next-le
 repo config=repo-next-le
 
 # Use juju deployer to create the units for the deployment
-deploy config=leadership-election.yaml delay=0 target=${MOJO_SERIES}-icehouse
+deploy config=leadership-election.yaml delay=0 target=trusty-juno-ha
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
 
 # Examine the available networks and set vips for services
-script config=set_vips.py
+#script config=set_vips.py
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
