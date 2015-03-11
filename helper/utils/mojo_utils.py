@@ -110,6 +110,7 @@ def remote_upload(unit, script, remote_dir=None):
 
 
 def delete_unit_juju(unit):
+    print unit
     service = unit.split('/')[0]
     unit_count = len(get_juju_units(service=service))
     logging.info('Removing unit ' + unit)
