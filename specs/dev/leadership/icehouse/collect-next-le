@@ -14,7 +14,7 @@ nova-compute lp:~openstack-charmers/charms/trusty/nova-compute/next
 openstack-dashboard lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
 percona-cluster lp:~le-charmers/charms/trusty/percona-cluster/leadership-election
 quantum-gateway lp:~openstack-charmers/charms/trusty/quantum-gateway/next
-rabbitmq-server lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
+rabbitmq-server lp:~le-charmers/charms/trusty/rabbitmq-server/leadership-election
 swift-proxy lp:~le-charmers/charms/trusty/swift-proxy/leadership-election
 swift-storage lp:~openstack-charmers/charms/trusty/swift-storage/next
 mongodb lp:charms/trusty/mongodb
