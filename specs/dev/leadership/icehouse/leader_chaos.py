@@ -43,10 +43,10 @@ def main(argv):
         mojo_os_utils.delete_juju_leader(doomed_service)
         mojo_utils.juju_check_hooks_complete()
         mojo_utils.juju_status_check_and_wait()
-        check_crm_status(svc)
-        mojo_utils.add_unit(svc, unit_num=1)
+        check_crm_status(doomed_service)
+        mojo_utils.add_unit(doomed_service, unit_num=1)
         mojo_utils.juju_status_check_and_wait()
-        check_crm_status(svc)
+        check_crm_status(doomed_service)
         
 
 if __name__ == "__main__":
