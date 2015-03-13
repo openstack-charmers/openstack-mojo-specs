@@ -24,8 +24,9 @@ def rabbit_status():
     for unit in juju_units:
         units = rabbit_unit_status(unit)
         units.sort()
-        if machine_numbers != units:
-            print "%s != %s" % (str(machine_numbers), str(units))
+        if machine_numbers == units:
+            logging.info('Rabbit status on %s look good' % (unit))
+        else:
             raise Exception('Mismatch on rabbit status for on unit %s' % (unit))
 
 def unit_crm_online(unit):
@@ -57,7 +58,9 @@ def check_crm_status(service):
     if output[0].rstrip() == "Not Found":
         return
     for unit in juju_units:
-        if get_machine_numbers(service) != unit_crm_online(unit):
+        if get_machine_numbers(service) == unit_crm_online(unit):
+            logging.info('Service %s status on %s look good' % (service, unit))
+        else:
             raise Exception('Mismatch on crm status for service %s on unit %s' % (service, unit))
 
 def check_cluster_status(service):
