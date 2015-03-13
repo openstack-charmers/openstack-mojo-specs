@@ -58,9 +58,12 @@ def check_crm_status(service):
     if output[0].rstrip() == "Not Found":
         return
     for unit in juju_units:
-        if get_machine_numbers(service) == unit_crm_online(unit):
+        mach_nums = get_machine_numbers(service)
+        crm_online = unit_crm_online(unit)
+        if mach_nums == crm_online:
             logging.info('Service %s status on %s look good' % (service, unit))
         else:
+            logging.info('%s != %s' % (str(mach_nums), str(crm_online)))
             raise Exception('Mismatch on crm status for service %s on unit %s' % (service, unit))
 
 def check_cluster_status(service):
@@ -75,7 +78,7 @@ def main(argv):
     parser.add_argument("term_method", default='juju', nargs='?')
     options = parser.parse_args()
     term_method = mojo_utils.parse_mojo_arg(options, 'term_method')
-    skip_services = ['neutron-gateway', 'mongodb', 'heat']
+    skip_services = ['neutron-gateway', 'mongodb', 'heat', 'rabbitmq-server']
     principle_services = mojo_utils.get_principle_services()
     services = [item for item in principle_services if item not in skip_services]
     for svc in services:
@@ -86,6 +89,7 @@ def main(argv):
         check_cluster_status(doomed_service)
         mojo_utils.add_unit(doomed_service, unit_num=1)
         mojo_utils.juju_status_check_and_wait()
+        mojo_utils.juju_check_hooks_complete()
         check_crm_status(doomed_service)
         
 
