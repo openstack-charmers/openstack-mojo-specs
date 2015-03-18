@@ -17,3 +17,5 @@ heat
 mongodb
 neutron-api
 neutron-openvswitch
+ntp
+juju-gui

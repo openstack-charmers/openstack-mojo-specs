@@ -1,11 +1,11 @@
 # Collect the charm branches from Launchpad
-collect config=collect-next
+collect config=collect-stable-trusty
 
 # Copy the branches to the deployment directory
-repo config=repo-next
+repo config=repo-stable
 
 # Use juju deployer with full.yaml bundle
-deploy config=baremetal7.yaml delay=0 target=${MOJO_SERIES}-kilo
+deploy config=baremetal7.yaml delay=0 target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -20,4 +20,4 @@ script config=image_setup.py
 script config=keystone_setup.py
 
 # Create and check instances on the overcloud
-verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1 trusty:m1.small:1 utopic:m1.small:1 vivid:m1.small:1' CLOUDINIT_WAIT='300'
+verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1 trusty:m1.small:1 utopic:m1.small:1 vivid:m1.small:1' CLOUDINIT_WAIT="300"

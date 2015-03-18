@@ -1,0 +1,11 @@
+gre:
+  default_gateway: 10.245.168.1
+  start_floating_ip: 10.245.168.64
+  end_floating_ip: 10.245.175.200
+  external_dns: 10.245.168.2
+  external_net_cidr: 10.245.168.0/21
+  external_net_name: ext_net
+  external_subnet_name: ext_net_subnet
+  network_type: gre
+  private_net_cidr: 192.168.21.0/22
+  router_name: provider-router

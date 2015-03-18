@@ -14,6 +14,8 @@ mongodb                lp:charms/mongodb
 cinder-ceph            lp:charms/trusty/cinder-ceph
 heat                   lp:charms/trusty/heat
 neutron-openvswitch    lp:charms/trusty/neutron-openvswitch
+ntp                    lp:charms/trusty/ntp
+juju-gui               lp:charms/trusty/juju-gui
 # Bug 1161018 bzr revno fails on ghost ancestry
 openstack-dashboard    nosmart+lp:charms/trusty/openstack-dashboard
 ceilometer             nosmart+lp:charms/trusty/ceilometer

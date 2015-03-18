@@ -5,7 +5,7 @@ collect config=collect-next
 repo config=repo-next
 
 # Use juju deployer with full.yaml bundle
-deploy config=full.yaml delay=0 target=${MOJO_SERIES}-icehouse
+deploy config=baremetal7.yaml delay=0 target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -19,5 +19,5 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
-# Create 1 * tiny cirros and 1 * small precise instances on the overcloud
-verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 trusty:m1.small:1' CLOUDINIT_WAIT="300"
+# Create and check instances on the overcloud
+verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1 trusty:m1.small:1 utopic:m1.small:1 vivid:m1.small:1' CLOUDINIT_WAIT='300'
