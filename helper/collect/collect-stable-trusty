@@ -6,6 +6,7 @@ swift-proxy            lp:charms/trusty/swift-proxy
 mysql                  lp:charms/mysql
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:charms/trusty/ceph
+ceph-osd               lp:charms/trusty/ceph-osd
 nova-compute           lp:charms/trusty/nova-compute
 quantum-gateway        lp:charms/trusty/quantum-gateway
 cinder                 lp:charms/trusty/cinder

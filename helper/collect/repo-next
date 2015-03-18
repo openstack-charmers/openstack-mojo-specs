@@ -1,6 +1,7 @@
 mysql
 rabbitmq-server
 ceph
+ceph-osd
 keystone
 openstack-dashboard
 nova-compute

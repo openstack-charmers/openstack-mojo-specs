@@ -6,6 +6,7 @@ swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 mysql                  lp:charms/mysql
 rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
 ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
+ceph-osd               lp:~openstack-charmers/charms/trusty/ceph-osd/next
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 quantum-gateway        lp:~openstack-charmers/charms/trusty/quantum-gateway/next
