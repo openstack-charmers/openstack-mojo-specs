@@ -132,7 +132,7 @@ def panic_unit(unit):
 def delete_unit_openstack(unit):
     from novaclient.v1_1 import client as novaclient
     server_id = convert_unit_to_machineno(unit)
-    cloud_creds = get_undercload_auth()
+    cloud_creds = get_undercloud_auth()
     auth = {
         'username': cloud_creds['OS_USERNAME'],
         'api_key': cloud_creds['OS_PASSWORD'],
@@ -232,7 +232,7 @@ def get_provider_type():
     return juju_env_contents['environments'][juju_env]['type']
 
 
-def get_undercload_auth():
+def get_undercloud_auth():
     juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
     juju_env_contents = get_juju_environments_yaml()
     novarc_settings = juju_env_contents['environments'][juju_env]
@@ -246,7 +246,7 @@ def get_undercload_auth():
     return auth_settings
 
 
-def get_undercload_netid():
+def get_undercloud_netid():
     juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
     juju_env_contents = get_juju_environments_yaml()
     if 'network' in juju_env_contents['environments'][juju_env]:

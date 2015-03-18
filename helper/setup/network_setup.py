@@ -63,7 +63,8 @@ def main(argv):
     options = parser.parse_args()
     net_topology = mojo_utils.parse_mojo_arg(options, 'net_topology')
     logging.info('Setting up %s network' % (net_topology))
-    undercloud_novarc = mojo_utils.get_undercload_auth()
+    # TODO(beisner): skip undercloud bits when not OS-on-OS (or provider is maas?)
+    undercloud_novarc = mojo_utils.get_undercloud_auth()
     novac = mojo_os_utils.get_nova_client(undercloud_novarc)
     neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
     # Add an interface to the neutron-gateway units and tell juju to us it
