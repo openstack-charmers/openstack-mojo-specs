@@ -218,10 +218,10 @@ def configure_gateway_ext_port(novaclient, neutronclient, dvr_mode=None):
     #     reconfigureing on the gateway is still in progress and that's
     #     causing the issue
     if uuids:
-        logging.info('Seting Neutron Gateway external port to eth1')
+        logging.info('Setting Neutron Gateway external port to eth1')
         mojo_utils.juju_set('neutron-gateway', 'ext-port=eth1', wait=False)
         if dvr_mode:
-            logging.info('Seting neutron-openvswitch external port to eth1')
+            logging.info('Setting neutron-openvswitch external port to eth1')
             mojo_utils.juju_set('neutron-openvswitch',
                                 'ext-port=eth1',
                                 wait=False)
