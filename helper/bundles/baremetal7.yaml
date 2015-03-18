@@ -125,10 +125,10 @@ openstack-services:
     ntp:
       charm: "cs:trusty/ntp-6"
       num_units: 0
-    juju-gui:
-      charm: juju-gui
-      to:
-        - "lxc:swift-storage-z3=0"
+#    juju-gui:
+#      charm: juju-gui
+#      to:
+#        - "lxc:swift-storage-z3=0"
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]

@@ -18,4 +18,3 @@ cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
 ntp                    lp:charms/trusty/ntp
-juju-gui               lp:charms/trusty/juju-gui
