@@ -19,7 +19,7 @@ precise:
   url: http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
 trusty:
   auth_type: privkey
-  bootstring: cloud-init boot finished at
+  bootstring: finished at
   username: ubuntu
   container_format: bare
   disk_format: qcow2
@@ -28,7 +28,7 @@ trusty:
   url: http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
 utopic:
   auth_type: privkey
-  bootstring: cloud-init boot finished at
+  bootstring: finished at
   username: ubuntu
   container_format: bare
   disk_format: qcow2
@@ -37,7 +37,7 @@ utopic:
   url: http://cloud-images.ubuntu.com/utopic/current/utopic-server-cloudimg-amd64-disk1.img
 vivid:
   auth_type: privkey
-  bootstring: cloud-init boot finished at
+  bootstring: finished at
   username: ubuntu
   container_format: bare
   disk_format: qcow2
