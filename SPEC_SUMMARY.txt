@@ -1,154 +1,190 @@
-./object_storage_specs/swift_proxy/ha_parallel_scaleout/icehouse/
+./specs/dev/vxlan/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/dev/dvr/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/icehouse/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy and swift storage are then simultaniously scaled out and the
 resulting object store retested. WARNING: Scaling swift-proxy and
 swift-storage is simultaiously is currently not supported so this spec is
 known to fail
 
-./object_storage_specs/swift_proxy/ha_serial_scaleout/icehouse/
+./specs/object_storage/swift_proxy/ha_serial_scaleout/icehouse/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy is then scaled out and once that has completed swift storage is
 scaled out. The resulting object store is then retested.
 
-./object_storage_specs/swift_proxy/ha_serial_scaleout/juno/
+./specs/object_storage/swift_proxy/ha_serial_scaleout/juno/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy is then scaled out and once that has completed swift storage is
 scaled out. The resulting object store is then retested.
 
-./object_storage_specs/swift_proxy/ha_serial_scaleout/kilo/
+./specs/object_storage/swift_proxy/ha_serial_scaleout/kilo/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy is then scaled out and once that has completed swift storage is
 scaled out. The resulting object store is then retested.
 
-./object_storage_specs/swift_proxy/simple_nonha/icehouse/
+./specs/object_storage/swift_proxy/simple_nonha/icehouse/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
-./object_storage_specs/swift_proxy/simple_nonha/juno/
+./specs/object_storage/swift_proxy/simple_nonha/juno/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
-./object_storage_specs/swift_proxy/simple_nonha/kilo/
+./specs/object_storage/swift_proxy/simple_nonha/kilo/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
-./object_storage_specs/ceph_radosgw/simple_nonha/icehouse/
+./specs/object_storage/ceph_radosgw/simple_nonha/icehouse/
 This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
 Glance integeration is also tested.
 
-./object_storage_specs/ceph_radosgw/simple_nonha/juno/
+./specs/object_storage/ceph_radosgw/simple_nonha/juno/
 This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
 Glance integeration is also tested.
 
-./object_storage_specs/ceph_radosgw/simple_nonha/kilo/
+./specs/object_storage/ceph_radosgw/simple_nonha/kilo/
 This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
 Glance integeration is also tested.
 
-./object_storage_specs/ceph_radosgw/ha/icehouse/
+./specs/object_storage/ceph_radosgw/ha/icehouse/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
 after each change
 
-./object_storage_specs/ceph_radosgw/ha/juno/
+./specs/object_storage/ceph_radosgw/ha/juno/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
 after each change
 
-./object_storage_specs/ceph_radosgw/ha/kilo/
+./specs/object_storage/ceph_radosgw/ha/kilo/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
 after each change
 
-./dev/vxlan/
-This spec deploys and tests a deployment with neutron DVR enabled
+./specs/full_stack/next_deploy_baremetal/icehouse/
+This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./dev/dvr/
-This spec deploys and tests a deployment with neutron DVR enabled
+./specs/full_stack/next_deploy_baremetal/juno/
+This JUNO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./full_stack/next_deploy/icehouse/
+./specs/full_stack/next_deploy_baremetal/kilo/
+This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy/icehouse/
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
-./full_stack/next_deploy/juno/
+./specs/full_stack/next_deploy/juno/
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
-./full_stack/next_deploy/kilo/
+./specs/full_stack/next_deploy/kilo/
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
-./full_stack/ha_phased/icehouse/
+./specs/full_stack/ha_phased/icehouse/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
-./full_stack/ha_phased/juno/
+./specs/full_stack/ha_phased/juno/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
-./full_stack/ha_phased/kilo/
+./specs/full_stack/ha_phased/kilo/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
-./full_stack/ha_phased_chaos_pony/icehouse/
+./specs/full_stack/ha_phased_chaos_pony/icehouse/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
-./full_stack/ha_phased_chaos_pony/juno/
+./specs/full_stack/ha_phased_chaos_pony/juno/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
-./full_stack/ha_phased_chaos_pony/kilo/
+./specs/full_stack/ha_phased_chaos_pony/kilo/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
-./full_stack/next_deploy_ssl/icehouse/
+./specs/full_stack/stable_deploy_baremetal/icehouse/
+This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/stable_deploy_baremetal/juno/
+This JUNO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/stable_deploy_baremetal/kilo/
+This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy_ssl/icehouse/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
-./full_stack/next_deploy_ssl/juno/
+./specs/full_stack/next_deploy_ssl/juno/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
-./full_stack/next_deploy_ssl/kilo/
+./specs/full_stack/next_deploy_ssl/kilo/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
-./full_stack/charmhelper_upgrade/icehouse/
+./specs/full_stack/charmhelper_upgrade/icehouse/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a non-ha deployment and testing the resulting cloud
 
-./full_stack/charmhelper_upgrade/juno/
+./specs/full_stack/charmhelper_upgrade/juno/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a non-ha deployment and testing the resulting cloud
 
-./full_stack/charmhelper_upgrade/kilo/
+./specs/full_stack/charmhelper_upgrade/kilo/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a non-ha deployment and testing the resulting cloud
 
-./full_stack/stable_to_next/icehouse/
+./specs/full_stack/stable_to_next/icehouse/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
-./full_stack/stable_to_next/juno/
+./specs/full_stack/stable_to_next/juno/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
-./full_stack/stable_to_next/kilo/
+./specs/full_stack/stable_to_next/kilo/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
-./full_stack/charmhelper_upgrade_ha/icehouse/
+./specs/full_stack/charmhelper_upgrade_ha/icehouse/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a ha deployment and testing the resulting cloud
 
-./full_stack/charmhelper_upgrade_ha/juno/
+./specs/full_stack/charmhelper_upgrade_ha/juno/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a ha deployment and testing the resulting cloud
 
-./full_stack/charmhelper_upgrade_ha/kilo/
+./specs/full_stack/charmhelper_upgrade_ha/kilo/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a ha deployment and testing the resulting cloud
 
