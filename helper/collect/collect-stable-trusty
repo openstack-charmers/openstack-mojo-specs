@@ -1,19 +1,19 @@
-nova-cloud-controller  lp:charms/trusty/nova-cloud-controller
+nova-cloud-controller  nosmart+lp:charms/trusty/nova-cloud-controller
 neutron-api            lp:charms/trusty/neutron-api
-keystone               lp:charms/trusty/keystone
-glance                 lp:charms/trusty/glance
+keystone               nosmart+lp:charms/trusty/keystone
+glance                 nosmart+lp:charms/trusty/glance
 swift-proxy            lp:charms/trusty/swift-proxy
 mysql                  lp:charms/mysql
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:charms/trusty/ceph
 ceph-osd               lp:charms/trusty/ceph-osd
-nova-compute           lp:charms/trusty/nova-compute
-quantum-gateway        lp:charms/trusty/quantum-gateway
-cinder                 lp:charms/trusty/cinder
+nova-compute           nosmart+lp:charms/trusty/nova-compute
+quantum-gateway        nosmart+lp:charms/trusty/quantum-gateway
+cinder                 nosmart+lp:charms/trusty/cinder
 swift-storage          lp:charms/trusty/swift-storage
 mongodb                lp:charms/mongodb
 cinder-ceph            lp:charms/trusty/cinder-ceph
-heat                   lp:charms/trusty/heat
+heat                   nosmart+lp:charms/trusty/heat
 neutron-openvswitch    lp:charms/trusty/neutron-openvswitch
 ntp                    lp:charms/trusty/ntp
 # Bug 1161018 bzr revno fails on ghost ancestry
