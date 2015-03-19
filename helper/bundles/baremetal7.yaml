@@ -93,6 +93,7 @@ openstack-services:
       charm: quantum-gateway
       options:
         ext-port: eth1
+        instance-mtu: 1300
       to:
         - "0"
     cinder:
