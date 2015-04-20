@@ -1,4 +1,4 @@
-percona-cluster        lp:charms/trusty/percona-cluster/trunk
+percona-cluster        lp:charms/trusty/percona-cluster
 hacluster              lp:charms/trusty/hacluster
 rabbitmq-server        lp:charms/trusty/rabbitmq-server
 ceph                   lp:charms/trusty/ceph
