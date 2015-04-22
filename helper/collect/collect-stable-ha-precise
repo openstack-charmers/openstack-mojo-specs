@@ -17,3 +17,4 @@ mongodb                lp:charms/mongodb
 neutron-api            lp:charms/precise/neutron-api
 neutron-openvswitch    lp:charms/precise/neutron-openvswitch
 cinder-ceph            lp:charms/precise/cinder-ceph
+heat                   lp:charms/precise/heat
