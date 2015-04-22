@@ -1,4 +1,5 @@
-percona-cluster        lp:~openstack-charmers/charms/precise/percona-cluster/trunk
+#percona-cluster        lp:~openstack-charmers/charms/precise/percona-cluster/trunk
+percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/trunk
 hacluster              lp:charms/precise/hacluster
 rabbitmq-server        lp:charms/precise/rabbitmq-server
 ceph                   lp:charms/precise/ceph
