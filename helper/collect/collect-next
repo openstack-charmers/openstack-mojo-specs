@@ -7,8 +7,8 @@ cinder                 lp:~openstack-charmers/charms/trusty/cinder/next
 glance                 lp:~openstack-charmers/charms/trusty/glance/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
-mongodb                lp:charms/mongodb
-mysql                  lp:charms/mysql
+mongodb                lp:charms/trusty/mongodb
+mysql                  lp:charms/trusty/mysql
 neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
 nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
