@@ -12,7 +12,7 @@ neutron-openvswitch lp:~openstack-charmers/charms/trusty/neutron-openvswitch/nex
 nova-cloud-controller lp:~le-charmers/charms/trusty/nova-cloud-controller/leadership-election
 nova-compute lp:~openstack-charmers/charms/trusty/nova-compute/next
 openstack-dashboard lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
-percona-cluster lp:~le-charmers/charms/trusty/percona-cluster/leadership-election
+percona-cluster lp:~gnuoy/charms/trusty/percona-cluster/sstpasswd
 quantum-gateway lp:~openstack-charmers/charms/trusty/quantum-gateway/next
 rabbitmq-server lp:~le-charmers/charms/trusty/rabbitmq-server/leadership-election
 swift-proxy lp:~le-charmers/charms/trusty/swift-proxy/leadership-election
