@@ -7,9 +7,9 @@ import logging
 
 class VipPool():
     def __init__(self):
-        undercloud_novarc = mojo_utils.get_undercload_auth()
+        undercloud_novarc = mojo_utils.get_undercloud_auth()
         neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
-        prov_net_id = mojo_utils.get_undercload_netid()
+        prov_net_id = mojo_utils.get_undercloud_netid()
         if prov_net_id:
             net = neutronc.list_networks(id=prov_net_id)['networks'][0]
         else:

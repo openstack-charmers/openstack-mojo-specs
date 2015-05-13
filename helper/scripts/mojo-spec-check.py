@@ -39,7 +39,7 @@ def get_manifest_ubuntu_release():
 
 
 def get_manifest_referenced():
-    """Return all files refernced in the manifest"""
+    """Return all files referenced in the manifest"""
     config_files=[]
     with open('manifest', 'r') as f: 
         for line in f.readlines():
@@ -128,10 +128,10 @@ def check_yaml_syntax(dir_list):
 
 
 def check_dirname():
-    """Check tip dirname matches Openstack release refernced in manifest"""
+    """Check tip dirname matches Openstack release referenced in manifest"""
     for target in get_manifest_ubuntu_release():
         if target.split('-')[1] != os.getcwd().split('/')[-1]:
-            logging.warn('Openstack series referneced in manifest does not match dir')
+            logging.warn('Openstack series referenced in manifest does not match dir')
 
 
 def main(argv):

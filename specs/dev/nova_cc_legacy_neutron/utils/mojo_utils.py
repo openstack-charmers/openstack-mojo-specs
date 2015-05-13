@@ -126,7 +126,7 @@ def juju_get(service, option):
         return service_config['settings'][option]['value']
 
 
-def get_undercload_auth():
+def get_undercloud_auth():
     juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
     juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
     juju_env_contents = yaml.load(juju_env_file)

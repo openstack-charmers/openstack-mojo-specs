@@ -8,6 +8,7 @@ cinder                 lp:charms/trusty/cinder
 swift-storage          lp:charms/trusty/swift-storage
 mongodb                lp:charms/mongodb
 cinder-ceph            lp:charms/trusty/cinder-ceph
+ntp                    lp:charms/trusty/ntp
 # Bug 1161018 bzr revno fails on ghost ancestry
 openstack-dashboard    nosmart+lp:charms/trusty/openstack-dashboard
 ceilometer             nosmart+lp:charms/trusty/ceilometer

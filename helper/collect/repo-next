@@ -1,6 +1,7 @@
 mysql
 rabbitmq-server
 ceph
+ceph-osd
 keystone
 openstack-dashboard
 nova-compute
@@ -17,3 +18,4 @@ heat
 mongodb
 neutron-api
 neutron-openvswitch
+ntp

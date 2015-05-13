@@ -63,16 +63,21 @@ def main(argv):
     options = parser.parse_args()
     net_topology = mojo_utils.parse_mojo_arg(options, 'net_topology')
     logging.info('Setting up %s network' % (net_topology))
-    undercloud_novarc = mojo_utils.get_undercload_auth()
-    novac = mojo_os_utils.get_nova_client(undercloud_novarc)
-    neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
-    # Add an interface to the neutron-gateway units and tell juju to us it
-    # as the external port
-    net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
-    mojo_os_utils.configure_gateway_ext_port(
-        novac,
-        neutronc,
-        dvr_mode=net_info.get('dvr_enabled', False))
+
+    # Handle network for Openstack-on-Openstack scenarios
+    if mojo_utils.get_provider_type == 'openstack':
+        logging.info('Configuring network for OpenStack undercloud/provider')
+        undercloud_novarc = mojo_utils.get_undercloud_auth()
+        novac = mojo_os_utils.get_nova_client(undercloud_novarc)
+        neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
+        # Add an interface to the neutron-gateway units and tell juju to use it
+        # as the external port.
+        net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
+        mojo_os_utils.configure_gateway_ext_port(
+            novac,
+            neutronc,
+            dvr_mode=net_info.get('dvr_enabled', False))
+
     setup_sdn(net_topology)
 
 
