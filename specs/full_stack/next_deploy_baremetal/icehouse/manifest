@@ -7,7 +7,7 @@ repo config=repo-next
 # Adjust constraints if UOSCI_MAAS_TAGS env var is set
 
 # read in baremetal7.yaml, write to baremetal7-custom.yaml
-script config=scripts/bundle_constrainer.py -yd -i baremetal7.yaml -o baremetal7-custom.yaml --constraints "tags=uosci" -e "ceilometer-agent,cinder-ceph,neutron-openvswitch"
+script config=bundle_constrainer_wrapper.sh
 
 # Use juju deployer with baremetal7.yaml bundle
 deploy config=baremetal7-custom.yaml delay=0 target=${MOJO_SERIES}-icehouse
