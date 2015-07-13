@@ -4,13 +4,11 @@ collect config=collect-next
 # Copy the branches to the deployment directory
 repo config=repo-next
 
-# Adjust constraints if UOSCI_MAAS_TAGS env var is set
-
-# read in baremetal7.yaml, write to baremetal7-custom.yaml
+# Optionally inject juju/maas tags into bundle if env var is set
 script config=bundle_constrainer_wrapper.sh
 
 # Use juju deployer with baremetal7.yaml bundle
-deploy config=baremetal7-custom.yaml delay=0 target=${MOJO_SERIES}-icehouse
+deploy config=baremetal7.yaml delay=0 target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
