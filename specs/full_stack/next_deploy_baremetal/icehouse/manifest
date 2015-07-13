@@ -5,7 +5,8 @@ collect config=collect-next
 repo config=repo-next
 
 # Optionally inject juju/maas tags into bundle if env var is set
-script config=bundle_constrainer_wrapper.sh
+# FYI: Env vars are lost if lxc is not False.
+script lxc=False config=bundle_constrainer_wrapper.sh
 
 # Use juju deployer with baremetal7.yaml bundle
 deploy config=baremetal7.yaml delay=0 target=${MOJO_SERIES}-icehouse
