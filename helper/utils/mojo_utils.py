@@ -17,7 +17,7 @@ JUJU_STATUSES = {
 
 
 def get_juju_status(service=None, unit=None):
-    cmd = ['juju', 'status']
+    cmd = ['juju', 'status', '--format=yaml']
     if service:
         cmd.append(service)
     if unit:
