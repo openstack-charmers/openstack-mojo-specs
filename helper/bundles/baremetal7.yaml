@@ -90,7 +90,7 @@ openstack-services:
       to:
         - "lxc:swift-storage-z3=0"
     neutron-gateway:
-      charm: quantum-gateway
+      charm: neutron-gateway
       options:
         ext-port: eth1
         instance-mtu: 1300

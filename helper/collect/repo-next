@@ -6,7 +6,7 @@ keystone
 openstack-dashboard
 nova-compute
 nova-cloud-controller
-quantum-gateway
+neutron-gateway
 cinder
 cinder-ceph
 glance
