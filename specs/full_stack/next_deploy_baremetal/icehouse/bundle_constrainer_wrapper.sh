@@ -12,7 +12,8 @@ whoami
 
 if [[ -n "$UOSCI_JUJU_TAGS" ]]; then
   echo " + Bundle constrainer triggered on: ${UOSCI_JUJU_TAGS}"
-  scripts/bundle_constrainer.py -yd -i baremetal7.yaml -o baremetal7.yaml --constraints "$UOSCI_JUJU_TAGS" -e "ceilometer-agent,cinder-ceph,neutron-openvswitch"
+
+  $MOJO_SPEC_DIR/$MOJO_STAGE/scripts/bundle_constrainer.py -yd -i $MOJO_SPEC_DIR/$MOJO_STAGE/baremetal7.yaml -o $MOJO_SPEC_DIR/$MOJO_STAGE/baremetal7.yaml --constraints "$UOSCI_JUJU_TAGS" -e "ceilometer-agent,cinder-ceph,neutron-openvswitch"
 else
   echo " - Bundle constrainer not triggered."
 fi
