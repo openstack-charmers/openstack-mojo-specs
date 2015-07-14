@@ -53,6 +53,7 @@ def read_yaml(the_file):
     if not os.path.exists(the_file):
         raise ValueError('File not found: {}'.format(the_file))
     with open(the_file) as yaml_file:
+        logging.debug('Reading file: {}'.format(the_file))
         data = yaml.safe_load(yaml_file.read())
     return data
 
@@ -63,6 +64,7 @@ def write_yaml(data, the_file):
     :param the_file: yaml file name to write
     :returns: dictionary of yaml data to write to file
     '''
+    logging.debug('Writing file: {}'.format(the_file))
     with open(the_file, 'w') as yaml_file:
         yaml_file.write(yaml.dump(data, default_flow_style=False))
 
@@ -211,6 +213,14 @@ def main():
         raise ValueError('No action taken.  Specify new constraints '
                          'and/or existing constraint removal.')
 
+    # Read the infile
+    org_bundle_dict = read_yaml(opts.in_file)
+
+    # Mangle dict data
+    new_bundle_dict = update_constraints(org_bundle_dict, opts)
+
+    # Write the outfile
+    write_yaml(new_bundle_dict, opts.out_file)
 
 if __name__ == '__main__':
     main()
