@@ -1,6 +1,6 @@
-mysql
-keystone
 glance
+hacluster
+keystone
+mysql
 swift-proxy
 swift-storage
-hacluster
