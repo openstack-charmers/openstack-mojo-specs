@@ -95,6 +95,8 @@ def check_files_from_manifest(dir_list):
     """Check that all files referenced in the manifest are present"""
     for f in get_manifest_referenced():
         if f not in dir_list:
+            logging.info('f: {}'.format(f))
+            logging.info('dir_list: {}'.format(dir_list))
             logging.error('%s referenced in manifest but not present, mojo spec will fail' % f)
         for yamlfile in YAML_MAP.keys():
             if f == YAML_MAP[yamlfile]:
