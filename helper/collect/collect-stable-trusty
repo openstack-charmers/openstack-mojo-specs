@@ -1,22 +1,22 @@
+# FYI, nosmart usage is re: bug 1161018 bzr revno fails on ghost ancestry
 ceilometer-agent       nosmart+lp:charms/trusty/ceilometer-agent
 ceilometer             nosmart+lp:charms/trusty/ceilometer
-ceph                   lp:charms/trusty/ceph
-ceph-osd               lp:charms/trusty/ceph-osd
-cinder-ceph            lp:charms/trusty/cinder-ceph
-cinder                 lp:charms/trusty/cinder
-# FYI, nosmart usage is re: bug 1161018 bzr revno fails on ghost ancestry
+ceph                   nosmart+lp:charms/trusty/ceph
+ceph-osd               nosmart+lp:charms/trusty/ceph-osd
+cinder-ceph            nosmart+lp:charms/trusty/cinder-ceph
+cinder                 nosmart+lp:charms/trusty/cinder
 glance                 nosmart+lp:charms/trusty/glance
 heat                   nosmart+lp:charms/trusty/heat
-keystone               lp:charms/trusty/keystone
-mongodb                lp:charms/mongodb
-mysql                  lp:charms/trusty/percona-cluster
-neutron-api            lp:charms/trusty/neutron-api
+keystone               nosmart+lp:charms/trusty/keystone
+mongodb                nosmart+lp:charms/mongodb
+mysql                  nosmart+lp:charms/trusty/percona-cluster
+neutron-api            nosmart+lp:charms/trusty/neutron-api
 neutron-gateway        nosmart+lp:charms/trusty/neutron-gateway
 neutron-openvswitch    nosmart+lp:charms/trusty/neutron-openvswitch
 nova-cloud-controller  nosmart+lp:charms/trusty/nova-cloud-controller
-nova-compute           lp:charms/trusty/nova-compute
-ntp                    lp:charms/trusty/ntp
+nova-compute           nosmart+lp:charms/trusty/nova-compute
+ntp                    nosmart+lp:charms/trusty/ntp
 openstack-dashboard    nosmart+lp:charms/trusty/openstack-dashboard
-rabbitmq-server        lp:charms/rabbitmq-server
+rabbitmq-server        nosmart+lp:charms/rabbitmq-server
 swift-proxy            nosmart+lp:charms/trusty/swift-proxy
-swift-storage          lp:charms/trusty/swift-storage
+swift-storage          nosmart+lp:charms/trusty/swift-storage
