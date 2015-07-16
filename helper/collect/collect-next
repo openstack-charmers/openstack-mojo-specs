@@ -16,6 +16,8 @@ nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controlle
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 ntp                    lp:charms/trusty/ntp
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
-rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
+#rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
+#rabbitmq-server        lp:~james-page/charms/trusty/rabbitmq-server/fixup-configure-nodename
+rabbitmq-server        lp:~1chb1n/charms/trusty/rabbitmq-server/fixup-configure-nodename2
 swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
