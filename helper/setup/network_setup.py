@@ -1,17 +1,26 @@
 #!/usr/bin/python
+import argparse
+import logging
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
-import logging
-import argparse
 
 
-def setup_sdn(net_topology):
+def setup_sdn(net_topology, ignore_env_vars):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     # Get os clients
     keystonec = mojo_os_utils.get_keystone_client(overcloud_novarc)
     neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
     net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
+
+    # Override network.yaml values with env var values if they exist
+    if not ignore_env_vars:
+        logging.info('Consuming network environment variables as overrides.')
+        net_env_vars = mojo_utils.get_network_env_vars()
+        net_info.update(net_env_vars)
+
+    logging.info('Network info: {}'.format(mojo_utils.dict_to_yaml(net_info)))
+
     # Resolve the tenant name from the overcloud novarc into a tenant id
     tenant_id = mojo_os_utils.get_tenant_id(keystonec,
                                             overcloud_novarc['OS_TENANT_NAME'])
@@ -59,9 +68,16 @@ def setup_sdn(net_topology):
 def main(argv):
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
-    parser.add_argument("net_topology", default='gre', nargs='?')
+    parser.add_argument('net_topology',
+                        help='network topology type, default is GRE',
+                        default='gre', nargs='?')
+    parser.add_argument('--ignore_env_vars', '-i',
+                        help='do not override using environment variables',
+                        action='store_true',
+                        default=False)
     options = parser.parse_args()
     net_topology = mojo_utils.parse_mojo_arg(options, 'net_topology')
+    ignore_env_vars = mojo_utils.parse_mojo_arg(options, 'ignore_env_vars')
     logging.info('Setting up %s network' % (net_topology))
 
     # Handle network for Openstack-on-Openstack scenarios
@@ -78,7 +94,7 @@ def main(argv):
             neutronc,
             dvr_mode=net_info.get('dvr_enabled', False))
 
-    setup_sdn(net_topology)
+    setup_sdn(net_topology, ignore_env_vars)
 
 
 if __name__ == "__main__":
