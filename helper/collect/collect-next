@@ -8,7 +8,8 @@ glance                 lp:~openstack-charmers/charms/trusty/glance/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
 mongodb                lp:charms/trusty/mongodb
-mysql                  lp:charms/trusty/percona-cluster
+#mysql                  lp:charms/trusty/percona-cluster
+mysql                  lp:charms/trusty/mysql
 neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
 neutron-gateway        lp:~openstack-charmers/charms/trusty/neutron-gateway/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
