@@ -8,7 +8,7 @@ cinder                 nosmart+lp:charms/trusty/cinder
 glance                 nosmart+lp:charms/trusty/glance
 heat                   nosmart+lp:charms/trusty/heat
 keystone               nosmart+lp:charms/trusty/keystone
-mongodb                nosmart+lp:charms/mongodb
+mongodb                nosmart+lp:charms/trusty/mongodb
 mysql                  nosmart+lp:charms/trusty/percona-cluster
 neutron-api            nosmart+lp:charms/trusty/neutron-api
 neutron-gateway        nosmart+lp:charms/trusty/quantum-gateway
@@ -17,6 +17,6 @@ nova-cloud-controller  nosmart+lp:charms/trusty/nova-cloud-controller
 nova-compute           nosmart+lp:charms/trusty/nova-compute
 ntp                    nosmart+lp:charms/trusty/ntp
 openstack-dashboard    nosmart+lp:charms/trusty/openstack-dashboard
-rabbitmq-server        nosmart+lp:charms/rabbitmq-server
+rabbitmq-server        nosmart+lp:charms/trusty/rabbitmq-server
 swift-proxy            nosmart+lp:charms/trusty/swift-proxy
 swift-storage          nosmart+lp:charms/trusty/swift-storage
