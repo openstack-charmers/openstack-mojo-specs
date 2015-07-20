@@ -124,7 +124,7 @@ openstack-services:
       to:
         - "lxc:swift-storage-z3=0"
     ntp:
-      charm: "cs:trusty/ntp-6"
+      charm: ntp
       num_units: 0
 #    juju-gui:
 #      charm: juju-gui
