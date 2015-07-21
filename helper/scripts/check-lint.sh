@@ -1,12 +1,24 @@
 #!/bin/bash
 
-find specs/{object_storage,full_stack} -name manifest | \
-while read spec; do
+echo "Checking specs..."
+#find specs/{object_storage,full_stack} -name manifest | \
+#for spec in $(find specs/full_stack -name manifest); do
+for spec in $(find specs/{object_storage,full_stack} -name manifest); do
     spec_dir=$(dirname $spec)
     MSGS=$(./helper/scripts/mojo-spec-check.py $spec_dir 2>&1)
-    if [[ ! -z $MSGS ]]; then
-        echo $spec_dir
-	echo "$MSGS"
-        echo ""
+    if [[ "$MSGS" == *WARNING* ]] || [[ "$MSGS" == *ERROR* ]]; then
+        result="(!)"
+        failed=1
+    else
+        result="OK"
     fi
+    echo -e "${result}\t${spec_dir}"
+    [[ -n "$MSGS" ]] && echo -e "$MSGS\n"
 done
+
+if [[ -n "$failed" ]]; then
+    echo "One or more specs failed a sanity check."
+    exit 1
+else
+    echo "All spec sanity checks passed."
+fi

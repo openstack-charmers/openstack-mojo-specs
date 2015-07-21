@@ -86,6 +86,12 @@ with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
+./specs/full_stack/next_deploy_baremetal/liberty/
+This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
 ./specs/full_stack/next_deploy/icehouse/
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
@@ -95,6 +101,10 @@ This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
 ./specs/full_stack/next_deploy/kilo/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_deploy/liberty/
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
@@ -110,6 +120,10 @@ deployment
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
+./specs/full_stack/ha_phased/liberty/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
 ./specs/full_stack/ha_phased_chaos_pony/icehouse/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
@@ -119,6 +133,10 @@ This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
 ./specs/full_stack/ha_phased_chaos_pony/kilo/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment. iThen chaos pony is used to add and remove units.
+
+./specs/full_stack/ha_phased_chaos_pony/liberty/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
@@ -140,6 +158,12 @@ with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
+./specs/full_stack/stable_deploy_baremetal/liberty/
+This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
 ./specs/full_stack/next_deploy_ssl/icehouse/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
@@ -149,6 +173,10 @@ This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
 ./specs/full_stack/next_deploy_ssl/kilo/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/liberty/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
@@ -164,6 +192,10 @@ before running a non-ha deployment and testing the resulting cloud
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a non-ha deployment and testing the resulting cloud
 
+./specs/full_stack/charmhelper_upgrade/liberty/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a non-ha deployment and testing the resulting cloud
+
 ./specs/full_stack/stable_to_next/icehouse/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
@@ -175,6 +207,26 @@ charms to the devel versions and then runs tests to validate the deployment
 ./specs/full_stack/stable_to_next/kilo/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next/liberty/
+This spec performs a non-ha deploy using the stable charms, then upgrades the
+charms to the devel versions and then runs tests to validate the deployment
+
+./specs/full_stack/stable_deploy/icehouse/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/juno/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/kilo/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/liberty/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
 
 ./specs/full_stack/charmhelper_upgrade_ha/icehouse/
 This spec collects the charms and then upgrades charmhelpers in each charm
@@ -188,6 +240,10 @@ before running a ha deployment and testing the resulting cloud
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a ha deployment and testing the resulting cloud
 
+./specs/full_stack/charmhelper_upgrade_ha/liberty/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a ha deployment and testing the resulting cloud
+
 ./specs/full_stack/stable_to_next_ha/icehouse/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
@@ -197,6 +253,10 @@ This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
 ./specs/full_stack/stable_to_next_ha/kilo/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/full_stack/stable_to_next_ha/liberty/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 

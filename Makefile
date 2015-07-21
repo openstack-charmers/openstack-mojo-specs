@@ -3,7 +3,8 @@ PYTHON := /usr/bin/env python
 
 lint:
 	@./helper/scripts/check-lint.sh
-	@flake8 helper/collect  helper/setup  helper/tests  helper/utils
+	@echo Checking lint...
+	@flake8 -v helper/collect  helper/setup  helper/tests  helper/utils
 
 gen_spec_summary:
 	@./helper/scripts/gen-spec-summary.sh > SPEC_SUMMARY.txt

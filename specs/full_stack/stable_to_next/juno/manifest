@@ -26,7 +26,7 @@ verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="3
 script config=wipe_charm_dir.py
 
 # Collect the next (devel) charm branches from Launchpad
-collect config=collect-next
+collect config=collect-next-${MOJO_SERIES}
 
 # Copy the branches to the deployment directory
 repo config=repo-next
