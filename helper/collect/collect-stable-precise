@@ -1,6 +1,8 @@
+#
 ceilometer-agent       lp:charms/precise/ceilometer-agent
 ceilometer             lp:charms/precise/ceilometer
 ceph                   lp:charms/precise/ceph
+ceph-osd               lp:charms/precise/ceph-osd
 cinder-ceph            lp:charms/precise/cinder-ceph
 cinder                 lp:charms/precise/cinder
 glance                 lp:charms/precise/glance
@@ -9,11 +11,12 @@ keystone               lp:charms/precise/keystone
 mongodb                lp:charms/mongodb
 mysql                  lp:charms/mysql
 neutron-api            lp:charms/precise/neutron-api
+neutron-gateway        lp:charms/precise/quantum-gateway
 neutron-openvswitch    lp:charms/precise/neutron-openvswitch
 nova-cloud-controller  lp:charms/precise/nova-cloud-controller
 nova-compute           lp:charms/precise/nova-compute
+ntp                    lp:charms/precise/ntp
 openstack-dashboard    lp:charms/precise/openstack-dashboard
-quantum-gateway        lp:charms/precise/quantum-gateway
 rabbitmq-server        lp:charms/rabbitmq-server
 swift-proxy            lp:charms/precise/swift-proxy
 swift-storage          lp:charms/precise/swift-storage
