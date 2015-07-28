@@ -12,7 +12,7 @@ import shutil
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
     'bad': ['error'],
-    'transitional': ['pending', 'pending', 'down', 'installed', 'stopped'],
+    'transitional': ['pending', 'pending', 'down', 'installed', 'stopped', 'allocating'],
 }
 
 
@@ -60,6 +60,12 @@ def get_principle_services(juju_status=None):
 def convert_unit_to_machineno(unit):
     juju_status = get_juju_status(unit)
     return juju_status['machines'].itervalues().next()['instance-id']
+
+
+def convert_unit_to_machinename(unit):
+    juju_status = get_juju_status(unit)
+    service = unit.split('/')[0]
+    return int(juju_status['services'][service]['units'][unit]['machine'])
 
 
 def convert_machineno_to_unit(machineno, juju_status=None):
