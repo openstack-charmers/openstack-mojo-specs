@@ -65,7 +65,7 @@ openstack-services:
     ncc-hacluster:
       charm: hacluster
     neutron-gateway:
-      charm: quantum-gateway
+      charm: neutron-gateway
       constraints: mem=1G
       num_units: 2
       options:

@@ -15,6 +15,6 @@ ceilometer-agent
 glance
 heat
 swift-proxy
-quantum-gateway
+neutron-gateway
 neutron-openvswitch
 nova-cloud-controller

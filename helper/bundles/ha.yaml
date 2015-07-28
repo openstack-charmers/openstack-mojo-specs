@@ -52,7 +52,7 @@ openstack-services:
         quantum-security-groups: "yes"
         vip: 10.5.100.4
     neutron-gateway:
-      charm: quantum-gateway
+      charm: neutron-gateway
       constraints: mem=1G
       options:
         instance-mtu: 1300
