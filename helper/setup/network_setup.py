@@ -65,7 +65,7 @@ def main(argv):
     logging.info('Setting up %s network' % (net_topology))
 
     # Handle network for Openstack-on-Openstack scenarios
-    if mojo_utils.get_provider_type == 'openstack':
+    if mojo_utils.get_provider_type() == 'openstack':
         logging.info('Configuring network for OpenStack undercloud/provider')
         undercloud_novarc = mojo_utils.get_undercloud_auth()
         novac = mojo_os_utils.get_nova_client(undercloud_novarc)
