@@ -11,7 +11,7 @@ deploy config=ha.yaml delay=0 target=${MOJO_SERIES}-juno-ha
 verify config=check_juju.py
 
 # Examine the available networks and set vips for services
-#script config=set_vips.py
+script config=set_vips.py
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
