@@ -89,8 +89,7 @@ def resolve_file(rfile, openstack_release):
             logging.debug('Expecting {} x {}'.format(
                 rfile, OPENSTACK_RELEASES[openstack_release]))
             for series in OPENSTACK_RELEASES[openstack_release]:
-                template_data = {}
-                template_data['MOJO_SERIES'] = series
+                template_data = {'MOJO_SERIES': series}
                 check_files.append(
                     string.Template(rfile).substitute(template_data))
         else:
