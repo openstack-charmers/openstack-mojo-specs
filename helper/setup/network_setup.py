@@ -112,7 +112,8 @@ def main(argv):
         mojo_os_utils.configure_gateway_ext_port(
             novac,
             neutronc,
-            dvr_mode=net_info.get('dvr_enabled', False, net_id=net_id))
+            dvr_mode=net_info.get('dvr_enabled', False),
+            net_id=net_id)
 
     setup_sdn(net_topology, ignore_env_vars)
 
