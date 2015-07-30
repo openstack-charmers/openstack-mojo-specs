@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-import subprocess
-import yaml
-import os
-import mojo
 import logging
-import time
-from collections import Counter
+import mojo
+import os
 import shutil
+import subprocess
+import time
+import yaml
+from collections import Counter
 
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
@@ -17,7 +17,7 @@ JUJU_STATUSES = {
 
 
 def get_juju_status(service=None, unit=None):
-    cmd = ['juju', 'status']
+    cmd = ['juju', 'status', '--format=yaml']
     if service:
         cmd.append(service)
     if unit:
@@ -466,3 +466,67 @@ def juju_wait_finished():
     juju_check_hooks_complete()
     # Check nothing has subsequently gone bad
     juju_status_check_and_wait()
+
+
+def dict_to_yaml(dict_data):
+    return yaml.dump(dict_data, default_flow_style=False)
+
+
+def get_network_env_vars():
+    """Get environment variables with names which are consistent with
+    network.yaml keys;  Also get network environment variables as commonly
+    used by openstack-charm-testing and ubuntu-openstack-ci automation.
+    Return a dictionary compatible with mojo-openstack-specs network.yaml
+    key structure."""
+
+    # Example o-c-t & uosci environment variables:
+    #   NET_ID="a705dd0f-5571-4818-8c30-4132cc494668"
+    #   GATEWAY="172.17.107.1"
+    #   CIDR_EXT="172.17.107.0/24"
+    #   CIDR_PRIV="192.168.121.0/24"
+    #   NAMESERVER="10.5.0.2"
+    #   FIP_RANGE="172.17.107.200:172.17.107.249"
+    #   AMULET_OS_VIP00="172.17.107.250"
+    #   AMULET_OS_VIP01="172.17.107.251"
+    #   AMULET_OS_VIP02="172.17.107.252"
+    #   AMULET_OS_VIP03="172.17.107.253"
+    _vars = {}
+    _vars['net_id'] = os.environ.get('NET_ID')
+    _vars['external_dns'] = os.environ.get('NAMESERVER')
+    _vars['default_gateway'] = os.environ.get('GATEWAY')
+    _vars['external_net_cidr'] = os.environ.get('CIDR_EXT')
+    _vars['private_net_cidr'] = os.environ.get('CIDR_PRIV')
+
+    _fip_range = os.environ.get('FIP_RANGE')
+    if _fip_range and ':' in _fip_range:
+        _vars['start_floating_ip'] = os.environ.get('FIP_RANGE').split(':')[0]
+        _vars['end_floating_ip'] = os.environ.get('FIP_RANGE').split(':')[1]
+
+    _vips = [os.environ.get('AMULET_OS_VIP00'),
+             os.environ.get('AMULET_OS_VIP01'),
+             os.environ.get('AMULET_OS_VIP02'),
+             os.environ.get('AMULET_OS_VIP03')]
+
+    # Env var naming consistent with network.yaml takes priority
+    _keys = ['default_gateway'
+             'start_floating_ip',
+             'end_floating_ip',
+             'external_dns',
+             'external_net_cidr',
+             'external_net_name',
+             'external_subnet_name',
+             'network_type',
+             'private_net_cidr',
+             'router_name']
+    for _key in _keys:
+        _val = os.environ.get(_key)
+        if _val:
+            _vars[_key] = _val
+
+    # Remove keys and items with a None value
+    _vars['vips'] = filter(None, _vips)
+    for k, v in _vars.items():
+        if not v:
+            del _vars[k]
+
+    return _vars
