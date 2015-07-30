@@ -19,7 +19,8 @@ def setup_sdn(net_topology, ignore_env_vars):
         net_env_vars = mojo_utils.get_network_env_vars()
         net_info.update(net_env_vars)
 
-    logging.info('Network info: {}'.format(mojo_utils.dict_to_yaml(net_info)))
+    logging.info('Network info (in setup_sdn): '
+                 '{}'.format(mojo_utils.dict_to_yaml(net_info)))
 
     # Resolve the tenant name from the overcloud novarc into a tenant id
     tenant_id = mojo_os_utils.get_tenant_id(keystonec,
@@ -88,11 +89,30 @@ def main(argv):
         neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
         # Add an interface to the neutron-gateway units and tell juju to use it
         # as the external port.
+
         net_info = mojo_utils.get_mojo_config('network.yaml')[net_topology]
+
+#/!\ DUP BLOCK!
+# T-shoot then consolidate
+        # Override network.yaml values with env var values if they exist
+        if not ignore_env_vars:
+            logging.info('Consuming network env vars as overrides.')
+            net_env_vars = mojo_utils.get_network_env_vars()
+            net_info.update(net_env_vars)
+
+        logging.info('Network info (for ext_port): '
+                     '{}'.format(mojo_utils.dict_to_yaml(net_info)))
+
+        if 'net_id' in net_info.keys():
+            net_id = net_info['net_id']
+        else:
+            net_id = None
+#/!\
+# This thing needs to know where to wire the port?!:
         mojo_os_utils.configure_gateway_ext_port(
             novac,
             neutronc,
-            dvr_mode=net_info.get('dvr_enabled', False))
+            dvr_mode=net_info.get('dvr_enabled', False, net_id=net_id))
 
     setup_sdn(net_topology, ignore_env_vars)
 

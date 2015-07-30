@@ -199,17 +199,22 @@ def get_admin_net(neutron_client):
             return net
 
 
-def configure_gateway_ext_port(novaclient, neutronclient, dvr_mode=None):
+def configure_gateway_ext_port(novaclient, neutronclient,
+                               dvr_mode=None, net_id=None):
     uuids = get_gateway_uuids()
     if dvr_mode:
         uuids.extend(get_ovs_uuids())
-    admin_net_id = get_admin_net(neutronclient)['id']
+
+    if not net_id:
+        net_id = get_admin_net(neutronclient)['id']
+
     for uuid in uuids:
         server = novaclient.servers.get(uuid)
         mac_addrs = [a.mac_addr for a in server.interface_list()]
         if len(mac_addrs) < 2:
-            logging.info('Adding additional port to server')
-            server.interface_attach(port_id=None, net_id=admin_net_id,
+            logging.info('Attaching additional port to net id: '
+                         '{}'.format(net_id))
+            server.interface_attach(port_id=None, net_id=net_id,
                                     fixed_ip=None)
         else:
             logging.warning('Neutron Gateway already has additional port')
@@ -225,7 +230,7 @@ def configure_gateway_ext_port(novaclient, neutronclient, dvr_mode=None):
             mojo_utils.juju_set('neutron-openvswitch',
                                 'ext-port=eth1',
                                 wait=False)
-        time.sleep(180)
+        time.sleep(240)
         mojo_utils.juju_wait_finished()
 
 
