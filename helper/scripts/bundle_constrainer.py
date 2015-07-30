@@ -139,17 +139,6 @@ def update_constraints(bundle_dict, opts):
 
     return bundle_dict
 
-    # Read the infile
-    logging.info('Reading input file: {}'.format(opts.in_file))
-    org_bundle_dict = read_yaml(opts.in_file)
-
-    # Mangle dict data
-    new_bundle_dict = update_constraints(org_bundle_dict, opts)
-
-    # Write the outfile
-    logging.info('Writing out file: {}'.format(opts.out_file))
-    write_yaml(new_bundle_dict, opts.out_file)
-
 
 def main():
     '''Define and handle command line parameters
