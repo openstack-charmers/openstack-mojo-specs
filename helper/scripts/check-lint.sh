@@ -1,8 +1,6 @@
 #!/bin/bash
 
 echo "Checking specs..."
-#find specs/{object_storage,full_stack} -name manifest | \
-#for spec in $(find specs/full_stack -name manifest); do
 for spec in $(find specs/{object_storage,full_stack} -name manifest); do
     spec_dir=$(dirname $spec)
     MSGS=$(./helper/scripts/mojo-spec-check.py $spec_dir 2>&1)
