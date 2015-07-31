@@ -236,6 +236,84 @@ trusty-icehouse-trunk:
     openstack-origin: ppa:openstack-ubuntu-testing/icehouse
     source: ppa:openstack-ubuntu-testing/icehouse
     offline-compression: "no"
+trusty-icehouse-ha:
+  inherits: trusty-juno
+  services:
+    keystone:
+      num_units: 3
+    keystone-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    cinder:
+      num_units: 3
+    cinder-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    glance:
+      num_units: 3
+    glance-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    rabbitmq-server:
+      num_units: 3
+    mysql:
+      num_units: 3
+    mysql-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    nova-cloud-controller:
+      num_units: 3
+    nova-cc-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    neutron-api:
+      num_units: 3
+    neutron-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    openstack-dashboard:
+      num_units: 3
+    dashboard-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    swift-proxy:
+      num_units: 3
+    swift-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    ceilometer:
+      num_units: 3
+    ceilometer-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+  relations:
+    - [ mysql, mysql-hacluster ]
+    - [ keystone, keystone-hacluster ]
+    - [ nova-cloud-controller, nova-cc-hacluster ]
+    - [ cinder, cinder-hacluster ]
+    - [ glance, glance-hacluster ]
+    - [ openstack-dashboard, dashboard-hacluster ]
+    - [ ceilometer, ceilometer-hacluster ]
+    - [ neutron-api, neutron-hacluster ]
+    - [ swift-proxy, swift-hacluster ]
 # juno
 trusty-juno:
   inherits: openstack-icehouse
