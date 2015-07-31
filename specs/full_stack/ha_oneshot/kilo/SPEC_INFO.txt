@@ -1,0 +1,2 @@
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
