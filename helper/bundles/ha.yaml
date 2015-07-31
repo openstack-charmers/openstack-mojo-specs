@@ -237,7 +237,7 @@ trusty-icehouse-trunk:
     source: ppa:openstack-ubuntu-testing/icehouse
     offline-compression: "no"
 trusty-icehouse-ha:
-  inherits: trusty-juno
+  inherits: trusty-icehouse
   services:
     keystone:
       num_units: 3
