@@ -13,7 +13,7 @@ swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
 ceilometer             lp:~openstack-charmers/charms/trusty/ceilometer/next
 ceilometer-agent       lp:~openstack-charmers/charms/trusty/ceilometer-agent/next
-mongodb                lp:charms/mongodb
+mongodb                lp:charms/trusty/mongodb
 neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
 cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
