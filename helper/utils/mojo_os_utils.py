@@ -212,8 +212,8 @@ def configure_gateway_ext_port(novaclient, neutronclient,
         server = novaclient.servers.get(uuid)
         mac_addrs = [a.mac_addr for a in server.interface_list()]
         if len(mac_addrs) < 2:
-            logging.info('Attaching additional port to net id: '
-                         '{}'.format(net_id))
+            logging.info('Attaching additional port to instance, '
+                         'connected to net id: {}'.format(net_id))
             server.interface_attach(port_id=None, net_id=net_id,
                                     fixed_ip=None)
         else:

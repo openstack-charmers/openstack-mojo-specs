@@ -530,3 +530,16 @@ def get_network_env_vars():
             del _vars[k]
 
     return _vars
+
+
+def get_net_info(net_topology, ignore_env_vars=False):
+    """Get network info from network.yaml, override the values if specific
+    environment variables are set."""
+    net_info = get_mojo_config('network.yaml')[net_topology]
+
+    if not ignore_env_vars:
+        logging.info('Consuming network environment variables as overrides.')
+        net_info.update(get_network_env_vars())
+
+    logging.info('Network info: {}'.format(dict_to_yaml(net_info)))
+    return net_info
