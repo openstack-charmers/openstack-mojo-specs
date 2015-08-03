@@ -11,7 +11,7 @@ ceilometer-agent       nosmart+lp:charms/trusty/ceilometer-agent
 glance                 nosmart+lp:charms/trusty/glance
 heat                   nosmart+lp:charms/trusty/heat
 swift-proxy            nosmart+lp:charms/trusty/swift-proxy
-quantum-gateway        nosmart+lp:charms/trusty/quantum-gateway
+neutron-gateway        nosmart+lp:charms/trusty/neutron-gateway
 neutron-openvswitch    nosmart+lp:charms/trusty/neutron-openvswitch
 nova-cloud-controller  nosmart+lp:charms/trusty/nova-cloud-controller
 nova-compute           nosmart+lp:charms/trusty/nova-compute
