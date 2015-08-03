@@ -3,7 +3,6 @@ keystone               lp:charms/trusty/keystone
 mysql                  lp:charms/mysql
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:charms/trusty/ceph
-nova-compute           lp:charms/trusty/nova-compute
 cinder                 lp:charms/trusty/cinder
 swift-storage          lp:charms/trusty/swift-storage
 mongodb                lp:charms/mongodb
@@ -19,3 +18,4 @@ swift-proxy            nosmart+lp:charms/trusty/swift-proxy
 quantum-gateway        nosmart+lp:charms/trusty/quantum-gateway
 neutron-openvswitch    nosmart+lp:charms/trusty/neutron-openvswitch
 nova-cloud-controller  nosmart+lp:charms/trusty/nova-cloud-controller
+nova-compute           nosmart+lp:charms/trusty/nova-compute
