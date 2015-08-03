@@ -19,3 +19,4 @@ keystone               nosmart+lp:charms/trusty/keystone
 cinder                 nosmart+lp:charms/trusty/cinder
 ceph                   nosmart+lp:charms/trusty/ceph
 cinder-ceph            nosmart+lp:charms/trusty/cinder-ceph
+ceph-osd               nosmart+lp:charms/trusty/ceph-osd
