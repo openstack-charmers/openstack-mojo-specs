@@ -17,3 +17,4 @@ neutron-openvswitch    lp:charms/precise/neutron-openvswitch
 openstack-dashboard    lp:charms/precise/openstack-dashboard
 ceilometer             lp:charms/precise/ceilometer
 ceilometer-agent       lp:charms/precise/ceilometer-agent
+ceph-osd               lp:charms/precise/ceph-osd
