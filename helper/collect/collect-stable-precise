@@ -7,7 +7,7 @@ mysql                  lp:charms/mysql
 rabbitmq-server        lp:charms/rabbitmq-server
 ceph                   lp:charms/precise/ceph
 nova-compute           lp:charms/precise/nova-compute
-quantum-gateway        lp:charms/precise/quantum-gateway
+neutron-gateway        lp:charms/precise/quantum-gateway
 cinder                 lp:charms/precise/cinder
 swift-storage          lp:charms/precise/swift-storage
 mongodb                lp:charms/mongodb
