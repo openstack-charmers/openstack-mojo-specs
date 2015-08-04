@@ -19,3 +19,4 @@ neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/
 cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 ntp                    lp:charms/trusty/ntp
+ceph-osd               lp:~openstack-charmers/charms/trusty/ceph-osd/next
