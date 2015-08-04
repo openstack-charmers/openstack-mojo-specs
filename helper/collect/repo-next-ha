@@ -18,3 +18,5 @@ swift-proxy
 neutron-gateway
 neutron-openvswitch
 nova-cloud-controller
+ntp
+ceph-osd

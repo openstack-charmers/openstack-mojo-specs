@@ -1,5 +1,5 @@
 percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/next
-hacluster              lp:~gnuoy/charms/trusty/hacluster/1478980
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
 ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
