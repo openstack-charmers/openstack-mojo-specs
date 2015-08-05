@@ -61,6 +61,7 @@ def get_nova_client(novarc_creds, insecure=True):
 def get_neutron_client(novarc_creds, insecure=True):
     neutron_creds = get_ks_creds(novarc_creds)
     neutron_creds['insecure'] = insecure
+    print neutron_creds
     return neutronclient.Client(**neutron_creds)
 
 
@@ -579,6 +580,19 @@ def check_guest_connectivity(nova_client, ping_wait=180):
 
 
 # Hacluster helper
+
+def get_juju_leader(service):
+    # XXX Juju status should report the leader but doesn't at the moment.
+    # So, until it does run leader on the units
+    for unit in mojo_utils.get_juju_units(service=service):
+        leader_out = mojo_utils.remote_run(unit, 'is-leader')[0].strip()
+        if leader_out == 'True':
+            return unit
+
+
+def delete_juju_leader(service, resource=None, method='juju'):
+    mojo_utils.delete_unit(get_juju_leader(service), method=method)
+
 
 def get_crm_leader(service, resource=None):
     if not resource:

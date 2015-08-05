@@ -1,2 +1,2 @@
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
+This spec performs a phased ha deploy using the stable charms then upgrades
+charms to the next branches then runs tests to validate the deployment

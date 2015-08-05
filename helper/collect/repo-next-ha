@@ -1,6 +1,7 @@
 ceilometer
 ceilometer-agent
 ceph
+ceph-osd
 cinder
 cinder-ceph
 glance
@@ -11,6 +12,7 @@ mongodb
 neutron-api
 neutron-gateway
 neutron-openvswitch
+ntp
 nova-cloud-controller
 nova-compute
 openstack-dashboard

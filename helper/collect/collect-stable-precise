@@ -1,4 +1,3 @@
-#
 ceilometer-agent       lp:charms/precise/ceilometer-agent
 ceilometer             lp:charms/precise/ceilometer
 ceph                   lp:charms/precise/ceph

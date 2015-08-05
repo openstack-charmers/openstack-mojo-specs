@@ -12,7 +12,8 @@ from collections import Counter
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
     'bad': ['error'],
-    'transitional': ['pending', 'pending', 'down', 'installed', 'stopped'],
+    'transitional': ['pending', 'pending', 'down', 'installed', 'stopped',
+                     'allocating'],
 }
 
 
@@ -60,6 +61,12 @@ def get_principle_services(juju_status=None):
 def convert_unit_to_machineno(unit):
     juju_status = get_juju_status(unit)
     return juju_status['machines'].itervalues().next()['instance-id']
+
+
+def convert_unit_to_machinename(unit):
+    juju_status = get_juju_status(unit)
+    service = unit.split('/')[0]
+    return int(juju_status['services'][service]['units'][unit]['machine'])
 
 
 def convert_machineno_to_unit(machineno, juju_status=None):
@@ -326,18 +333,21 @@ def sync_all_charmhelpers():
             sync_charmhelpers(charm_dir)
 
 
-def upgrade_service(svc):
+def upgrade_service(svc, switch=None):
     repo_dir = os.environ['MOJO_REPO_DIR']
     logging.info('Upgrading ' + svc)
-    cmd = ['juju', 'upgrade-charm', '--repository', repo_dir, svc]
+    cmd = ['juju', 'upgrade-charm']
+    if switch and switch.get(svc):
+        cmd.extend(['--switch', switch[svc]])
+    cmd.extend(['--repository', repo_dir, svc])
     subprocess.check_call(cmd)
 
 
-def upgrade_all_services(juju_status=None):
+def upgrade_all_services(juju_status=None, switch=None):
     if not juju_status:
         juju_status = get_juju_status()
     for svc in juju_status['services']:
-        upgrade_service(svc)
+        upgrade_service(svc, switch=switch)
 
 
 def parse_mojo_arg(options, mojoarg, multiargs=False):
