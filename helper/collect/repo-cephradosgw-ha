@@ -1,5 +1,5 @@
-mysql
 ceph
-keystone
 ceph-radosgw
 hacluster
+keystone
+mysql

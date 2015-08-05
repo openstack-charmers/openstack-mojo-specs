@@ -16,7 +16,7 @@ JUJU_STATUSES = {
 }
 
 def get_juju_status(service=None):
-    cmd = ['juju', 'status']
+    cmd = ['juju', 'status', '--format=yaml']
     if service:
         cmd.append(service)
     status_file = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout

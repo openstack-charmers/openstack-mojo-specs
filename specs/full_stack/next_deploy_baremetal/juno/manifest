@@ -1,8 +1,11 @@
 # Collect the charm branches from Launchpad
-collect config=collect-next
+collect config=collect-next-${MOJO_SERIES}
 
 # Copy the branches to the deployment directory
 repo config=repo-next
+
+# Optionally inject juju/maas tags into bundle if env var is set
+script config=scripts/bundle_constrainer_inject_tags.sh lxc=False 
 
 # Use juju deployer with baremetal7.yaml bundle
 deploy config=baremetal7.yaml delay=0 target=${MOJO_SERIES}-juno
