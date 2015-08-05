@@ -5,7 +5,7 @@ ceph-osd               lp:~openstack-charmers/charms/trusty/ceph-osd/next
 cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
 cinder                 lp:~openstack-charmers/charms/trusty/cinder/next
 glance                 lp:~openstack-charmers/charms/trusty/glance/next
-hacluster              lp:~gnuoy/charms/trusty/hacluster/charmhelper_sync
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
 mongodb                lp:charms/mongodb
@@ -16,7 +16,7 @@ nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controlle
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 ntp                    lp:charms/trusty/ntp
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
-percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/trunk
+percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/next
 rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
 swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next

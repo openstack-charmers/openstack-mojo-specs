@@ -12,7 +12,8 @@ from collections import Counter
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
     'bad': ['error'],
-    'transitional': ['pending', 'pending', 'down', 'installed', 'stopped', 'allocating'],
+    'transitional': ['pending', 'pending', 'down', 'installed', 'stopped',
+                     'allocating'],
 }
 
 

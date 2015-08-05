@@ -588,9 +588,11 @@ def get_juju_leader(service):
         leader_out = mojo_utils.remote_run(unit, 'is-leader')[0].strip()
         if leader_out == 'True':
             return unit
-        
+
+
 def delete_juju_leader(service, resource=None, method='juju'):
     mojo_utils.delete_unit(get_juju_leader(service), method=method)
+
 
 def get_crm_leader(service, resource=None):
     if not resource:

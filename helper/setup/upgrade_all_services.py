@@ -4,6 +4,7 @@ import utils.mojo_utils as mojo_utils
 import logging
 import os
 
+
 def main(argv):
     logging.basicConfig(level=logging.INFO)
     switch_map = {

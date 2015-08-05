@@ -1,2 +1,3 @@
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
