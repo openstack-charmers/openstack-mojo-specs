@@ -8,7 +8,7 @@ rabbitmq-server
 ceph
 openstack-dashboard
 nova-compute
-quantum-gateway
+neutron-gateway
 cinder
 swift-storage
 ceilometer

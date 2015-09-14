@@ -6,7 +6,7 @@ keystone               lp:~hopem/charms/trusty/keystone/fix-db-access-before-rea
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
-quantum-gateway        lp:~openstack-charmers/charms/trusty/quantum-gateway/next
+neutron-gateway        lp:~openstack-charmers/charms/trusty/neutron-gateway/next
 cinder                 lp:~openstack-charmers/charms/trusty/cinder/next
 glance                 lp:~openstack-charmers/charms/trusty/glance/next
 swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next

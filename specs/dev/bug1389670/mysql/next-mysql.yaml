@@ -47,7 +47,7 @@ openstack-services:
         network-manager: Quantum
         quantum-security-groups: "yes"
     neutron-gateway:
-      charm: quantum-gateway
+      charm: neutron-gateway
       constraints: mem=1G
       options:
         instance-mtu: 1300

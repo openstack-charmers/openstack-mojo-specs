@@ -5,7 +5,7 @@ rabbitmq-server
 keystone
 nova-compute
 nova-cloud-controller
-quantum-gateway
+neutron-gateway
 cinder
 glance
 ceph

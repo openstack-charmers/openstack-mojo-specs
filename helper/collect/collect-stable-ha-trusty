@@ -11,7 +11,7 @@ heat                   nosmart+lp:charms/trusty/heat
 keystone               nosmart+lp:charms/trusty/keystone
 mongodb                lp:charms/mongodb
 neutron-api            lp:charms/trusty/neutron-api
-neutron-gateway        nosmart+lp:charms/trusty/quantum-gateway
+neutron-gateway        nosmart+lp:charms/trusty/neutron-gateway
 neutron-openvswitch    nosmart+lp:charms/trusty/neutron-openvswitch
 nova-cloud-controller  nosmart+lp:charms/trusty/nova-cloud-controller
 nova-compute           nosmart+lp:charms/trusty/nova-compute
