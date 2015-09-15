@@ -10,7 +10,7 @@ keystone               lp:charms/precise/keystone
 mongodb                lp:charms/mongodb
 mysql                  lp:charms/mysql
 neutron-api            lp:charms/precise/neutron-api
-neutron-gateway        lp:charms/precise/quantum-gateway
+neutron-gateway        lp:charms/trusty/neutron-gateway
 neutron-openvswitch    lp:charms/precise/neutron-openvswitch
 nova-cloud-controller  lp:charms/precise/nova-cloud-controller
 nova-compute           lp:charms/precise/nova-compute

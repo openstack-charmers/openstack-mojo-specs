@@ -70,6 +70,7 @@ def main(argv):
     net_topology = mojo_utils.parse_mojo_arg(options, 'net_topology')
     ignore_env_vars = mojo_utils.parse_mojo_arg(options, 'ignore_env_vars')
     logging.info('Setting up %s network' % (net_topology))
+    net_info = mojo_utils.get_net_info(net_topology, ignore_env_vars)
 
     # Handle network for Openstack-on-Openstack scenarios
     if mojo_utils.get_provider_type() == 'openstack':
@@ -80,7 +81,6 @@ def main(argv):
 
         # Add an interface to the neutron-gateway units and tell juju to use it
         # as the external port.
-        net_info = mojo_utils.get_net_info(net_topology, ignore_env_vars)
         if 'net_id' in net_info.keys():
             net_id = net_info['net_id']
         else:
