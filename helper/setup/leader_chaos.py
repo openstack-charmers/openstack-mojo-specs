@@ -87,8 +87,6 @@ def main(argv):
     logging.basicConfig(level=logging.INFO)
     parser = argparse.ArgumentParser()
     parser.add_argument("term_method", default='juju', nargs='?')
-    #options = parser.parse_args()
-    #term_method = mojo_utils.parse_mojo_arg(options, 'term_method')
     skip_services = ['neutron-gateway', 'mongodb', 'heat', 'rabbitmq-server']
     princ_services = mojo_utils.get_principle_services()
     services = [item for item in princ_services if item not in skip_services]

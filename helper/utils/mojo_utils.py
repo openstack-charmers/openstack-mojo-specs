@@ -553,3 +553,25 @@ def get_net_info(net_topology, ignore_env_vars=False):
 
     logging.info('Network info: {}'.format(dict_to_yaml(net_info)))
     return net_info
+
+
+def get_pkg_version(service, pkg):
+    versions = []
+    for unit in get_juju_units(service=service):
+        cmd = 'dpkg -l | grep {}'.format(pkg)
+        out = remote_run(unit, cmd)
+        versions.append(out[0].split()[2])
+    if len(set(versions)) != 1:
+        raise Exception('Unexpected output from pkg version check')
+    return versions[0]
+
+
+def get_ubuntu_version(service):
+    versions = []
+    for unit in get_juju_units(service=service):
+        cmd = 'lsb_release -sc'
+        out = remote_run(unit, cmd)
+        versions.append(out[0].split()[0])
+    if len(set(versions)) != 1:
+        raise Exception('Unexpected output from ubuntu version check')
+    return versions[0]
