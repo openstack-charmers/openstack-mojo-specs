@@ -48,13 +48,13 @@ CHARM_TYPES = {
     },
 }
 UPGRADE_SERVICES = [
+    {'name': 'keystone', 'type': CHARM_TYPES['keystone']},
     {'name': 'nova-cloud-controller', 'type': CHARM_TYPES['nova']},
     {'name': 'nova-compute', 'type': CHARM_TYPES['nova']},
     {'name': 'neutron-api', 'type': CHARM_TYPES['neutron']},
     {'name': 'neutron-gateway', 'type': CHARM_TYPES['neutron']},
     {'name': 'glance', 'type': CHARM_TYPES['glance']},
     {'name': 'cinder', 'type': CHARM_TYPES['cinder']},
-    {'name': 'keystone', 'type': CHARM_TYPES['keystone']},
     {'name': 'openstack-dashboard',
      'type': CHARM_TYPES['openstack-dashboard']},
     {'name': 'ceilometer', 'type': CHARM_TYPES['ceilometer']},
