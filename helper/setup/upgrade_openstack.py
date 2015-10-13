@@ -131,9 +131,9 @@ def main(argv):
             continue
         logging.info('Upgrading {} to {}'.format(service['name'],
                                                  target_release))
-        ubunet_version = mojo_utils.get_ubuntu_version(service['name'])
+        ubuntu_version = mojo_utils.get_ubuntu_version(service['name'])
         option = "{}=cloud:{}-{}".format(service['type']['origin_setting'],
-                                         ubunet_version, target_release)
+                                         ubuntu_version, target_release)
         mojo_utils.juju_set(service['name'], option, wait=True)
 
 if __name__ == "__main__":
