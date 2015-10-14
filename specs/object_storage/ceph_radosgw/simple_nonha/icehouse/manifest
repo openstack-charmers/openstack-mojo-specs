@@ -5,7 +5,7 @@ collect config=collect-cephradosgw
 repo config=repo-cephradosgw
 
 # Use juju deployer with cephradosgw-ha.yaml bundle
-deploy config=cephradosgw.yaml delay=0 target=${MOJO_SERIES}-icehouse
+deploy config=cephradosgw.yaml delay=0 wait=True target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
