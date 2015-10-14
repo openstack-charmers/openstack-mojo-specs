@@ -5,6 +5,7 @@ import utils.mojo_os_utils as mojo_os_utils
 
 
 def main(argv):
+    mojo_utils.setup_logging()
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     keystone_client = mojo_os_utils.get_keystone_client(overcloud_novarc)
     user_config = mojo_utils.get_mojo_config('keystone_users.yaml')

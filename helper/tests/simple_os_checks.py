@@ -2,19 +2,11 @@
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
-import logging
 import argparse
 
 
 def main(argv):
-    logFormatter = logging.Formatter(
-        fmt="%(asctime)s [%(levelname)s] %(message)s",
-        datefmt="%Y-%m-%d %H:%M:%S")
-    rootLogger = logging.getLogger()
-    rootLogger.setLevel('INFO')
-    consoleHandler = logging.StreamHandler()
-    consoleHandler.setFormatter(logFormatter)
-    rootLogger.addHandler(consoleHandler)
+    mojo_utils.setup_logging()
     parser = argparse.ArgumentParser()
     default_machines = ["precise:m1.small:1", "cirros:m1.tiny:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")

@@ -7,7 +7,7 @@ import os
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    mojo_utils.setup_logging()
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     glance_client = mojo_os_utils.get_glance_client(overcloud_novarc)
     current_images = mojo_os_utils.get_images_list(glance_client)
