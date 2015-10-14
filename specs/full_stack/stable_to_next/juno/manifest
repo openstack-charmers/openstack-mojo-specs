@@ -1,9 +1,6 @@
 # Collect the stable charm branches from Launchpad
 collect config=collect-stable-${MOJO_SERIES}
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Use juju deployer with full.yaml bundle
 deploy config=full.yaml delay=0 target=${MOJO_SERIES}-juno
 
@@ -27,9 +24,6 @@ script config=wipe_charm_dir.py
 
 # Collect the next (devel) charm branches from Launchpad
 collect config=collect-next-${MOJO_SERIES}
-
-# Copy the branches to the deployment directory
-repo config=repo-next
 
 # Run upgrade-charm on all services
 script config=upgrade_all_services.py

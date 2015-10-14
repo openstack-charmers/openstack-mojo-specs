@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-ha
 
-# Copy the branches to the deployment directory
-repo config=repo-next-ha
-
 # Sync charmhelpers into each charm
 script config=sync_charmhelpers.py
 

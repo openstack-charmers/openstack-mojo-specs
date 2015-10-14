@@ -1,9 +1,0 @@
-glance
-hacluster
-keystone 
-mysql
-neutron-api
-nova-cloud-controller
-swift-proxy
-swift-storage
-rabbitmq-server

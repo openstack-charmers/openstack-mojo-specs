@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-stable-ha-${MOJO_SERIES}
 
-# Copy the branches to the deployment directory
-repo config=repo-next-ha
-
 # Use juju deployer to create the units for the deployment
 deploy config=haphase1.yaml delay=0 target=${MOJO_SERIES}-liberty
 
@@ -39,9 +36,6 @@ script config=wipe_charm_dir.py
 
 # Collect the next (devel) charm branches from Launchpad
 collect config=collect-next-ha-${MOJO_SERIES}
-
-# Copy the branches to the deployment directory
-repo config=repo-next-ha
 
 # Run upgrade-charm on all services
 script config=upgrade_all_services.py

@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-${MOJO_SERIES}
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Use juju deployer with full.yaml bundle
 deploy config=full_ssl.yaml delay=0 target=${MOJO_SERIES}-juno
 

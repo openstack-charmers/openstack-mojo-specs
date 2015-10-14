@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-ha
 
-# Copy the branches to the deployment directory
-repo config=repo-next-ha
-
 # Use juju deployer to create the units for the deployment
 deploy config=ha.yaml delay=0 target=${MOJO_SERIES}-kilo-ha
 

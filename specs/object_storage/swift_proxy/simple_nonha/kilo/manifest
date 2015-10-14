@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad 
 collect config=collect-swift-proxy
 
-# Copy the branches to the deployment directory
-repo config=repo-swift-proxy
-
 # Use juju deployer with cephradosgw-ha.yaml bundle
 deploy config=swift-proxy.yaml delay=0 target=${MOJO_SERIES}-kilo
 
