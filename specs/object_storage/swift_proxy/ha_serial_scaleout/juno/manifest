@@ -51,3 +51,5 @@ verify config=swift_ring_status.py
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Success

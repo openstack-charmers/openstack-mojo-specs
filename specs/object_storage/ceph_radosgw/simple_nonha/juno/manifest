@@ -18,3 +18,5 @@ script config=keystone_setup.py
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Success

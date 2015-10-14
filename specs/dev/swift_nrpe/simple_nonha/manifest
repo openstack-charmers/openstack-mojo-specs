@@ -7,3 +7,5 @@ script config=keystone_setup.py
 verify config=swift_ring_status.py
 verify config=test_obj_store.py
 verify config=run_nagios_checks.py
+
+# Success

@@ -36,3 +36,5 @@ verify config=test_obj_store.py
 
 # Run chaos pony to destroy and add services
 script config=chaos_pony.py
+
+# Success

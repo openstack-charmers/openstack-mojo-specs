@@ -54,3 +54,5 @@ verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1' CLOUDINIT_WAIT="30
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Success

@@ -33,3 +33,5 @@ script config=juju_set.py SERVICE="ceph-radosgw" KV="use-embedded-webserver=True
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Success

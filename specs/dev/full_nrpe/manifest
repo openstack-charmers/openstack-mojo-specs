@@ -23,3 +23,5 @@ script config=keystone_setup.py
 verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1' CLOUDINIT_WAIT="300"
 
 verify config=run_nagios_checks.py
+
+# Success

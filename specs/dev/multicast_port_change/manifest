@@ -18,3 +18,5 @@ verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="3
 verify config=check_guest_connectivity.py
 script config=image_setup.py
 script config=keystone_setup.py
+
+# Success
