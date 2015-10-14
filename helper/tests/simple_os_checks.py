@@ -7,6 +7,14 @@ import argparse
 
 
 def main(argv):
+    logFormatter = logging.Formatter(
+        fmt="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
+    rootLogger = logging.getLogger()
+    rootLogger.setLevel('INFO')
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    rootLogger.addHandler(consoleHandler)
     parser = argparse.ArgumentParser()
     default_machines = ["precise:m1.small:1", "cirros:m1.tiny:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")
@@ -18,7 +26,6 @@ def main(argv):
     active_wait = int(mojo_utils.parse_mojo_arg(options, 'active_wait'))
     cloudinit_wait = int(mojo_utils.parse_mojo_arg(options, 'cloudinit_wait'))
     ping_wait = int(mojo_utils.parse_mojo_arg(options, 'ping_wait'))
-    logging.basicConfig(level=logging.INFO)
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     novac = mojo_os_utils.get_nova_client(overcloud_novarc)
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')

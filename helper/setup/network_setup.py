@@ -57,7 +57,14 @@ def setup_sdn(net_topology, net_info):
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    logFormatter = logging.Formatter(
+        fmt="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
+    rootLogger = logging.getLogger()
+    rootLogger.setLevel('INFO')
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    rootLogger.addHandler(consoleHandler)
     parser = argparse.ArgumentParser()
     parser.add_argument('net_topology',
                         help='network topology type, default is GRE',
