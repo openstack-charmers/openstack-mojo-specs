@@ -588,7 +588,7 @@ def get_ubuntu_version(service):
     return versions[0]
 
 
-def setup_logging()
+def setup_logging():
     logFormatter = logging.Formatter(
         fmt="%(asctime)s [%(levelname)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S")
