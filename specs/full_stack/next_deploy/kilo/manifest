@@ -5,7 +5,7 @@ collect config=collect-next-${MOJO_SERIES}
 repo config=repo-next
 
 # Use juju deployer with full.yaml bundle
-deploy config=full.yaml delay=0 target=${MOJO_SERIES}-kilo
+deploy config=full.yaml delay=0 wait=True target=${MOJO_SERIES}-kilo
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
