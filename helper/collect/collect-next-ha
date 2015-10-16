@@ -17,6 +17,6 @@ nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 ntp                    lp:charms/trusty/ntp
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
 percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/next
-rabbitmq-server        lp:~thedac/charms/trusty/rabbitmq-server/sleep-on-restart
+rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
 swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
 swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
