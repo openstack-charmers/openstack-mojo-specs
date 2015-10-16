@@ -347,7 +347,7 @@ def upgrade_all_services(juju_status=None, switch=None):
     if not juju_status:
         juju_status = get_juju_status()
     # Upgrade base charms first
-    base_charms = ['mysql', 'percona-cluster', 'rabbitmq-server'
+    base_charms = ['mysql', 'percona-cluster', 'rabbitmq-server',
                    'keystone']
     for svc in base_charms:
         if svc in juju_status['services']:
