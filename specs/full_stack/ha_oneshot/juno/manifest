@@ -2,7 +2,7 @@
 collect config=collect-next-ha
 
 # Use juju deployer to create the units for the deployment
-deploy config=ha.yaml delay=0 target=${MOJO_SERIES}-juno-ha
+deploy config=ha.yaml delay=0 wait=True target=${MOJO_SERIES}-juno-ha
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

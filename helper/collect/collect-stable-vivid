@@ -1,1 +1,21 @@
-collect-stable-precise
+ceilometer-agent       lp:charms/trusty/ceilometer-agent
+ceilometer             lp:charms/trusty/ceilometer
+ceph                   lp:charms/trusty/ceph
+ceph-osd               lp:charms/trusty/ceph-osd
+cinder-ceph            lp:charms/trusty/cinder-ceph
+cinder                 lp:charms/trusty/cinder
+glance                 lp:charms/trusty/glance
+heat                   lp:charms/trusty/heat
+keystone               lp:charms/trusty/keystone
+mongodb                lp:charms/trusty/mongodb
+mysql                  lp:charms/trusty/mysql
+neutron-api            lp:charms/trusty/neutron-api
+neutron-gateway        lp:charms/trusty/neutron-gateway
+neutron-openvswitch    lp:charms/trusty/neutron-openvswitch
+nova-cloud-controller  lp:charms/trusty/nova-cloud-controller
+nova-compute           lp:charms/trusty/nova-compute
+ntp                    lp:charms/trusty/ntp
+openstack-dashboard    lp:charms/trusty/openstack-dashboard
+rabbitmq-server        lp:charms/trusty/rabbitmq-server
+swift-proxy            lp:charms/trusty/swift-proxy
+swift-storage          lp:charms/trusty/swift-storage

@@ -2,7 +2,7 @@
 collect config=collect-stable-${MOJO_SERIES}
 
 # Use juju deployer with full.yaml bundle
-deploy config=full.yaml delay=0 target=${MOJO_SERIES}-liberty
+deploy config=full.yaml delay=0 wait=True target=${MOJO_SERIES}-liberty
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
