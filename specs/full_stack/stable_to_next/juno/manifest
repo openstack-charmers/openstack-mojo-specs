@@ -1,9 +1,6 @@
 # Collect the stable charm branches from Launchpad
 collect config=collect-stable-${MOJO_SERIES}
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Use juju deployer with full.yaml bundle
 deploy config=full.yaml delay=0 wait=True target=${MOJO_SERIES}-juno
 
@@ -28,9 +25,6 @@ script config=wipe_charm_dir.py
 # Collect the next (devel) charm branches from Launchpad
 collect config=collect-next-${MOJO_SERIES}
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Run upgrade-charm on all services
 script config=upgrade_all_services.py
 
@@ -39,3 +33,5 @@ verify config=check_juju.py
 
 # Create 1 * tiny cirros and 1 * small precise instances on the overcloud
 verify config=simple_os_checks.py MACHINES='cirros:m1.small:1 precise:m1.small:1' CLOUDINIT_WAIT="300"
+
+# Success

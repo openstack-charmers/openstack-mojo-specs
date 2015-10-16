@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Deploy legacy mode
 deploy config=next-no-n-api.yaml delay=0 target=trusty-icehouse
 
@@ -15,3 +12,4 @@ script config=keystone_setup.py
 
 # Check that conf files have been setup properly
 script config=check_conf_files.py
+# Success

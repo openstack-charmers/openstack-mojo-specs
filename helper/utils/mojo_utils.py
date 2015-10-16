@@ -346,8 +346,19 @@ def upgrade_service(svc, switch=None):
 def upgrade_all_services(juju_status=None, switch=None):
     if not juju_status:
         juju_status = get_juju_status()
+    # Upgrade base charms first
+    base_charms = ['mysql', 'percona-cluster', 'rabbitmq-server',
+                   'keystone']
+    for svc in base_charms:
+        if svc in juju_status['services']:
+            upgrade_service(svc, switch=switch)
+            time.sleep(30)
+    time.sleep(60)
+    # Upgrade the rest
     for svc in juju_status['services']:
-        upgrade_service(svc, switch=switch)
+        if svc not in base_charms:
+            upgrade_service(svc, switch=switch)
+            time.sleep(30)
 
 
 def parse_mojo_arg(options, mojoarg, multiargs=False):
@@ -575,3 +586,14 @@ def get_ubuntu_version(service):
     if len(set(versions)) != 1:
         raise Exception('Unexpected output from ubuntu version check')
     return versions[0]
+
+
+def setup_logging():
+    logFormatter = logging.Formatter(
+        fmt="%(asctime)s [%(levelname)s] %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S")
+    rootLogger = logging.getLogger()
+    rootLogger.setLevel('INFO')
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    rootLogger.addHandler(consoleHandler)

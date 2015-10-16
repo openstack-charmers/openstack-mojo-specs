@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-ha
 
-# Copy the branches to the deployment directory
-repo config=repo-next-ha
-
 # Use juju deployer to create the units for the deployment
 deploy config=haphase1.yaml delay=0 wait=True --target=${MOJO_SERIES}-icehouse
 
@@ -36,3 +33,5 @@ verify config=test_obj_store.py
 
 # Run chaos pony to destroy and add services
 script config=chaos_pony.py
+
+# Success

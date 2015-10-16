@@ -1,5 +1,4 @@
 collect config=collect-swift-proxy
-repo config=repo-swift-proxy
 deploy config=swift-proxy.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
 script config=image_setup.py
@@ -7,3 +6,5 @@ script config=keystone_setup.py
 verify config=swift_ring_status.py
 verify config=test_obj_store.py
 verify config=run_nagios_checks.py
+
+# Success

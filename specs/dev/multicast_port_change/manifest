@@ -1,5 +1,4 @@
 collect config=collect-next-ha
-repo config=repo-next-ha
 deploy config=haphase1.yaml delay=0
 verify config=check_juju.py
 deploy config=haphase2.yaml delay=0
@@ -10,7 +9,6 @@ script config=keystone_setup.py
 verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
 script config=wipe_charm_dir.py
 collect config=collect-mps
-repo config=repo-mps
 script config=upgrade_services.py SERVICES="glance cinder keystone"
 verify config=check_juju.py
 sleep config=180
@@ -18,3 +16,5 @@ verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="3
 verify config=check_guest_connectivity.py
 script config=image_setup.py
 script config=keystone_setup.py
+
+# Success

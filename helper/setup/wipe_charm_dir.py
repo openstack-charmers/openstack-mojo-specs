@@ -1,11 +1,10 @@
 #!/usr/bin/python
 import sys
-import logging
 import utils.mojo_utils as mojo_utils
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    mojo_utils.setup_logging()
     mojo_utils.wipe_charm_dir()
 
 

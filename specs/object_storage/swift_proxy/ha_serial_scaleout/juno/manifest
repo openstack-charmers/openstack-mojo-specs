@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad 
 collect config=collect-swift-proxy
 
-# Copy the branches to the deployment directory
-repo config=repo-swift-proxy
-
 # Deploy service units
 deploy config=swift-ha-proxy-phase1.yaml delay=0 wait=True target=${MOJO_SERIES}-juno
 
@@ -51,3 +48,5 @@ verify config=swift_ring_status.py
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Success

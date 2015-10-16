@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-${MOJO_SERIES}
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Optionally inject juju/maas tags into bundle if env var is set
 script config=scripts/bundle_constrainer_inject_tags.sh lxc=False 
 
@@ -24,3 +21,5 @@ script config=keystone_setup.py
 
 # Create and check instances on the deployed cloud
 verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1' CLOUDINIT_WAIT="300"
+
+# Success

@@ -57,7 +57,7 @@ def setup_sdn(net_topology, net_info):
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    mojo_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument('net_topology',
                         help='network topology type, default is GRE',

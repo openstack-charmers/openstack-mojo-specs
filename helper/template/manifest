@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next
 
-# Copy the branches to the deployment directory
-repo config=repo-next
-
 # Use juju deployer with full.yaml bundle
 deploy config=full.yaml delay=0 target=trusty-icehouse
 
