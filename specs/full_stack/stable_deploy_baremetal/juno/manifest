@@ -1,6 +1,9 @@
 # Collect the charm branches from Launchpad
 collect config=collect-stable-${MOJO_SERIES}
 
+# Insert new uuid for fsid in bundle
+script config=scripts/fsid_uuid_insert.sh lxc=False
+
 # Optionally inject juju/maas tags into bundle if env var is set
 # FYI: Env vars are lost if lxc is not False.
 script config=scripts/bundle_constrainer_inject_tags.sh lxc=False
