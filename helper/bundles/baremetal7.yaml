@@ -22,7 +22,7 @@ openstack-services:
       charm: ceph
       num_units: 3
       options:
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
+        fsid: 11111111-2222-3333-4444-555555555555
         monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
         osd-devices: /dev/vdb /dev/sdb
         osd-reformat: "yes"
