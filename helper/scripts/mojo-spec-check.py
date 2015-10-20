@@ -22,7 +22,7 @@ YAML_MAP = {
 UBUNTU_RELEASES = {}
 OPENSTACK_RELEASES = {
     'icehouse': ['precise', 'trusty'],
-    'juno': ['trusty', 'utopic'],
+    'juno': ['trusty'],
     'kilo': ['trusty', 'vivid'],
     'liberty': ['trusty', 'wily']
 }
