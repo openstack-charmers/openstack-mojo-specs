@@ -205,13 +205,14 @@ openstack-neutron-api:
   - [ neutron-openvswitch, rabbitmq-server ]
   #hacluster relation
   - [ neutron-api, neutron-api-hacluster ]
-  - [ "neutron-gateway:amqp", rabbitmq-server ]
 precise-icehouse:
   inherits: openstack-mysql-database
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse
     source: cloud:precise-icehouse
+  relations:
+  - [ "neutron-gateway:amqp", rabbitmq-server ]
 trusty-icehouse:
   inherits:
   - openstack-neutron-api
