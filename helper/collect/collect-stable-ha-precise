@@ -13,7 +13,7 @@ neutron-openvswitch    lp:charms/precise/neutron-openvswitch
 nova-cloud-controller  lp:charms/precise/nova-cloud-controller
 nova-compute           lp:charms/precise/nova-compute
 openstack-dashboard    lp:charms/precise/openstack-dashboard
-percona-cluster        lp:~openstack-charmers/charms/trusty/percona-cluster/trunk
+mysql                  lp:charms/precise/mysql
 neutron-gateway        lp:charms/trusty/neutron-gateway
 rabbitmq-server        lp:charms/precise/rabbitmq-server
 swift-proxy            lp:charms/precise/swift-proxy

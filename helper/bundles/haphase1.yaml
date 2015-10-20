@@ -2,15 +2,6 @@
 openstack-services:
   series: trusty
   services:
-    mysql:
-      charm: percona-cluster
-      constraints: mem=1G
-      num_units: 2
-      options:
-        vip: 10.5.100.10
-        vip_cidr: 16
-        root-password: crapper
-        sst-password: crapper
     mysql-hacluster:
       charm: hacluster
     rabbitmq-server:
@@ -122,10 +113,30 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-openstack-singlerabbit:
+openstack-mysql-database:
   inherits: openstack-services
-openstack-icehouse:
-  inherits: openstack-singlerabbit
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=1G
+      num_units: 2
+      options:
+        vip: 10.5.100.10
+        vip_cidr: 16
+openstack-percona-database:
+  inherits: openstack-services
+  services:
+    mysql:
+      charm: percona-cluster
+      constraints: mem=1G
+      num_units: 2
+      options:
+        vip: 10.5.100.10
+        vip_cidr: 16
+        root-password: crapper
+        sst-password: crapper
+openstack-neutron-api:
+  inherits: openstack-services
   services:
     neutron-api:
       num_units: 2
@@ -142,26 +153,34 @@ openstack-icehouse:
     neutron-openvswitch:
       charm: neutron-openvswitch
 precise-icehouse:
-  inherits: openstack-singlerabbit
+  inherits: openstack-mysql-database
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse
     source: cloud:precise-icehouse
 trusty-icehouse:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
 trusty-juno:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-juno
     source: cloud:trusty-juno
 utopic-juno:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: utopic
 # kilo
 trusty-kilo:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
@@ -177,7 +196,9 @@ trusty-kilo-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
     source: ppa:ubuntu-cloud-archive/kilo-staging
 vivid-kilo:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-mysql-database
   series: vivid
 vivid-kilo-proposed:
   inherits: vivid-kilo
@@ -186,7 +207,9 @@ vivid-kilo-proposed:
     openstack-origin: distro-proposed
 # liberty
 trusty-liberty:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-liberty
@@ -202,7 +225,9 @@ trusty-liberty-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
     source: ppa:ubuntu-cloud-archive/liberty-staging
 wily-liberty:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-mysql-database
   series: wily
 wily-liberty-proposed:
   inherits: wily-liberty

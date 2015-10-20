@@ -35,7 +35,7 @@ verify config=test_obj_store.py
 script config=wipe_charm_dir.py
 
 # Collect the next (devel) charm branches from Launchpad
-collect config=collect-next-ha
+collect config=collect-next-ha-${MOJO_SERIES}
 
 # Run upgrade-charm on all services
 script config=upgrade_all_services.py
