@@ -2,15 +2,6 @@
 openstack-services:
   series: trusty
   services:
-    mysql:
-      charm: percona-cluster
-      constraints: mem=1G
-      num_units: 2
-      options:
-        vip: 10.5.100.10
-        vip_cidr: 16
-        root-password: crapper
-        sst-password: crapper
     mysql-hacluster:
       charm: hacluster
     rabbitmq-server:
@@ -123,34 +114,27 @@ openstack-services:
         block-device: vdb
         overwrite: "true"
   relations:
-    - [ mysql, mysql-hacluster ]
-    - [ keystone, mysql ]
     - [ keystone, keystone-hacluster ]
     - [ nova-cloud-controller, ncc-hacluster ]
-    - [ nova-cloud-controller, mysql ]
     - [ nova-cloud-controller, rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
     - [ nova-compute, ceph ]
     - [ glance, glance-hacluster ]
-    - [ glance, mysql ]
     - [ glance, keystone ]
     - [ glance, ceph ]
     - [ glance, cinder ]
     - [ glance, rabbitmq-server ]
     - [ cinder, cinder-hacluster ]
-    - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
     - [ cinder, cinder-ceph ]
     - [ cinder-ceph, ceph ]
-    - [ neutron-gateway, mysql ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
     - [ openstack-dashboard, dashboard-hacluster ]
@@ -159,12 +143,43 @@ openstack-services:
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-openstack-singlerabbit:
-  inherits: openstack-services
+openstack-database-relations:
   relations:
-    - [ "neutron-gateway:amqp", rabbitmq-server ]
-openstack-icehouse:
-  inherits: openstack-singlerabbit
+    - [ mysql, mysql-hacluster ]
+    - [ keystone, mysql ]
+    - [ nova-cloud-controller, mysql ]
+    - [ nova-compute, mysql ]
+    - [ glance, mysql ]
+    - [ cinder, mysql ]
+    - [ neutron-gateway, mysql ]
+openstack-mysql-database:
+  inherits:
+  - openstack-services
+  - openstack-database-relations
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=1G
+      num_units: 2
+      options:
+        vip: 10.5.100.10
+        vip_cidr: 16
+openstack-percona-database:
+  inherits:
+  - openstack-services
+  - openstack-database-relations
+  services:
+    mysql:
+      charm: percona-cluster
+      constraints: mem=1G
+      num_units: 2
+      options:
+        vip: 10.5.100.10
+        vip_cidr: 16
+        root-password: crapper
+        sst-password: crapper
+openstack-neutron-api:
+  inherits: openstack-services
   services:
     neutron-api:
       num_units: 2
@@ -191,26 +206,36 @@ openstack-icehouse:
   #hacluster relation
   - [ neutron-api, neutron-api-hacluster ]
 precise-icehouse:
-  inherits: openstack-singlerabbit
+  inherits: openstack-mysql-database
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse
     source: cloud:precise-icehouse
+  relations:
+  - [ "neutron-gateway:amqp", rabbitmq-server ]
 trusty-icehouse:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
 trusty-juno:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-juno
     source: cloud:trusty-juno
 utopic-juno:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: utopic
 # kilo
 trusty-kilo:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
@@ -226,7 +251,9 @@ trusty-kilo-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
     source: ppa:ubuntu-cloud-archive/kilo-staging
 vivid-kilo:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-mysql-database
   series: vivid
 vivid-kilo-proposed:
   inherits: vivid-kilo
@@ -235,7 +262,9 @@ vivid-kilo-proposed:
     openstack-origin: distro-proposed
 # liberty
 trusty-liberty:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-percona-database
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-liberty
@@ -251,7 +280,9 @@ trusty-liberty-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
     source: ppa:ubuntu-cloud-archive/liberty-staging
 wily-liberty:
-  inherits: openstack-icehouse
+  inherits:
+  - openstack-neutron-api
+  - openstack-mysql-database
   series: wily
 wily-liberty-proposed:
   inherits: wily-liberty
