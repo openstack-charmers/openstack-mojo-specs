@@ -136,6 +136,7 @@ openstack-services:
     - [ cinder, cinder-ceph ]
     - [ cinder-ceph, ceph ]
     - [ neutron-gateway, nova-cloud-controller ]
+    - [ "neutron-gateway:amqp", rabbitmq-server ]
     - [ openstack-dashboard, keystone ]
     - [ openstack-dashboard, dashboard-hacluster ]
     - [ swift-proxy, keystone ]
@@ -211,8 +212,6 @@ precise-icehouse:
   overrides:
     openstack-origin: cloud:precise-icehouse
     source: cloud:precise-icehouse
-  relations:
-  - [ "neutron-gateway:amqp", rabbitmq-server ]
 trusty-icehouse:
   inherits:
   - openstack-neutron-api
