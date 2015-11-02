@@ -232,27 +232,27 @@ openstack-services:
     - [ neutron-api, neutron-hacluster ]
 # icehouse
 trusty-icehouse-ha:
-  inherits: openstack-icehouse
+  inherits: openstack-services
   series: trusty
 # juno
 trusty-juno-ha:
-  inherits: openstack-icehouse
+  inherits: openstack-services
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-juno
     source: cloud:trusty-juno
 trusty-kilo-ha:
-  inherits: openstack-icehouse
+  inherits: openstack-services
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
     source: cloud:trusty-kilo
 trusty-liberty-ha:
-  inherits: openstack-icehouse
+  inherits: openstack-services
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
 vivid-kilo-ha:
-  inherits: openstack-icehouse
+  inherits: openstack-services
   series: vivid
