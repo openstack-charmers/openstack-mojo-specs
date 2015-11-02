@@ -6,14 +6,21 @@ openstack-services:
     mysql:
       charm: percona-cluster
       constraints: mem=1G
+      num_units: 3
       options:
-        dataset-size: 50%
+        innodb-buffer-pool-size: 200M
         sst-password: changeme
         root-password: changeme
         vip: 10.5.100.1
+    mysql-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     rabbitmq-server:
       charm: rabbitmq-server
       constraints: mem=1G
+      num_units: 3
     ceph:
       charm: ceph
       num_units: 3
@@ -28,15 +35,27 @@ openstack-services:
     keystone:
       charm: keystone
       constraints: mem=1G
+      num_units: 3
       options:
         admin-password: openstack
         admin-token: ubuntutesting
         vip: 10.5.100.2
+    keystone-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G
+      num_units: 3
       options:
         vip: 10.5.100.3
+    dashboard-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     nova-compute:
       charm: nova-compute
       num_units: 3
@@ -47,10 +66,16 @@ openstack-services:
     nova-cloud-controller:
       charm: nova-cloud-controller
       constraints: mem=1G
+      num_units: 3
       options:
         network-manager: Neutron
         quantum-security-groups: "yes"
         vip: 10.5.100.4
+    nova-cc-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     neutron-gateway:
       charm: neutron-gateway
       constraints: mem=1G
@@ -59,25 +84,43 @@ openstack-services:
     cinder:
       charm: cinder
       constraints: mem=1G
+      num_units: 3
       options:
         block-device: "None"
         glance-api-version: 2
         vip: 10.5.100.5
+    cinder-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     cinder-ceph:
       charm: cinder-ceph
     glance:
       charm: glance
       constraints: mem=1G
+      num_units: 3
       options:
         vip: 10.5.100.9
+    glance-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     swift-proxy:
       charm: swift-proxy
       constraints: mem=1G
+      num_units: 3
       options:
         zone-assignment: manual
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
         vip: 10.5.100.6
+    swift-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     swift-storage-z1:
       charm: swift-storage
       constraints: mem=1G
@@ -102,8 +145,14 @@ openstack-services:
     ceilometer:
       charm: ceilometer
       constraints: mem=1G
+      num_units: 3
       options:
         vip: 10.5.100.7
+    ceilometer-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     ceilometer-agent:
       charm: ceilometer-agent
     heat:
@@ -149,6 +198,14 @@ openstack-services:
     - [ heat, mysql ]
     - [ heat, keystone ]
     - [ heat, rabbitmq-server ]
+    - [ mysql, mysql-hacluster ]
+    - [ keystone, keystone-hacluster ]
+    - [ nova-cloud-controller, nova-cc-hacluster ]
+    - [ cinder, cinder-hacluster ]
+    - [ glance, glance-hacluster ]
+    - [ openstack-dashboard, dashboard-hacluster ]
+    - [ ceilometer, ceilometer-hacluster ]
+    - [ swift-proxy, swift-hacluster ]
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
@@ -159,9 +216,15 @@ openstack-icehouse:
     neutron-api:
       charm: neutron-api
       constraints: mem=1G
+      num_units: 3
       options:
         neutron-security-groups: True
         vip: 10.5.100.8
+    neutron-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
@@ -173,6 +236,7 @@ openstack-icehouse:
   - [ neutron-api, neutron-gateway ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
+  - [ neutron-api, neutron-hacluster ]
 openstack-icehouse-msg-split:
   inherits: openstack-services
   services:
@@ -198,325 +262,28 @@ openstack-icehouse-msg-split:
   - [ "neutron-gateway:amqp-nova", rabbitmq-server ]
   - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
 # icehouse
-precise-icehouse:
-  inherits: openstack-singlerabbit
-  series: precise
-  overrides:
-    openstack-origin: cloud:precise-icehouse
-    source: cloud:precise-icehouse
-precise-icehouse-proposed:
-  inherits: precise-icehouse
-  overrides:
-    openstack-origin: cloud:precise-icehouse/proposed
-    source: cloud:precise-updates/icehouse
-precise-icehouse-staging:
-  inherits: precise-icehouse
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/icehouse-staging
-    source: ppa:ubuntu-cloud-archive/icehouse-staging
-precise-icehouse-trunk:
-  inherits: precise-icehouse
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
-    source: ppa:openstack-ubuntu-testing/icehouse
-trusty-icehouse:
+trusty-icehouse-ha:
   inherits: openstack-icehouse
   series: trusty
-trusty-icehouse-msg-split:
-  inherits: openstack-icehouse-msg-split
-  series: trusty
-trusty-icehouse-proposed:
-  inherits: trusty-icehouse
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-trusty-icehouse-trunk:
-  inherits: trusty-icehouse
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
-    source: ppa:openstack-ubuntu-testing/icehouse
-    offline-compression: "no"
-trusty-icehouse-ha:
-  inherits: trusty-icehouse
-  services:
-    keystone:
-      num_units: 3
-    keystone-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    cinder:
-      num_units: 3
-    cinder-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    glance:
-      num_units: 3
-    glance-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    rabbitmq-server:
-      num_units: 3
-    mysql:
-      num_units: 3
-    mysql-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    nova-cloud-controller:
-      num_units: 3
-    nova-cc-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    neutron-api:
-      num_units: 3
-    neutron-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    openstack-dashboard:
-      num_units: 3
-    dashboard-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    swift-proxy:
-      num_units: 3
-    swift-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    ceilometer:
-      num_units: 3
-    ceilometer-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-  relations:
-    - [ mysql, mysql-hacluster ]
-    - [ keystone, keystone-hacluster ]
-    - [ nova-cloud-controller, nova-cc-hacluster ]
-    - [ cinder, cinder-hacluster ]
-    - [ glance, glance-hacluster ]
-    - [ openstack-dashboard, dashboard-hacluster ]
-    - [ ceilometer, ceilometer-hacluster ]
-    - [ neutron-api, neutron-hacluster ]
-    - [ swift-proxy, swift-hacluster ]
 # juno
-trusty-juno:
+trusty-juno-ha:
   inherits: openstack-icehouse
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-juno
     source: cloud:trusty-juno
-trusty-juno-proposed:
-  inherits: trusty-juno
-  overrides:
-    openstack-origin: cloud:trusty-juno/proposed
-    source: cloud:trusty-juno/proposed
-trusty-juno-staging:
-  inherits: trusty-juno
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/juno-staging
-    source: ppa:ubuntu-cloud-archive/juno-staging
-utopic-juno:
-  inherits: openstack-icehouse
-  series: utopic
-utopic-juno-proposed:
-  inherits: utopic-juno
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-trusty-juno-ha:
-  inherits: trusty-juno
-  services:
-    keystone:
-      num_units: 3
-    keystone-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    cinder:
-      num_units: 3
-    cinder-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    glance:
-      num_units: 3
-    glance-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    rabbitmq-server:
-      num_units: 3
-    mysql:
-      num_units: 3
-    mysql-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    nova-cloud-controller:
-      num_units: 3
-    nova-cc-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    neutron-api:
-      num_units: 3
-    neutron-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    openstack-dashboard:
-      num_units: 3
-    dashboard-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    swift-proxy:
-      num_units: 3
-    swift-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    ceilometer:
-      num_units: 3
-    ceilometer-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-  relations:
-    - [ mysql, mysql-hacluster ]
-    - [ keystone, keystone-hacluster ]
-    - [ nova-cloud-controller, nova-cc-hacluster ]
-    - [ cinder, cinder-hacluster ]
-    - [ glance, glance-hacluster ]
-    - [ openstack-dashboard, dashboard-hacluster ]
-    - [ ceilometer, ceilometer-hacluster ]
-    - [ neutron-api, neutron-hacluster ]
-    - [ swift-proxy, swift-hacluster ]
-# kilo
-trusty-kilo:
+trusty-kilo-ha:
   inherits: openstack-icehouse
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
     source: cloud:trusty-kilo
-trusty-kilo-proposed:
-  inherits: trusty-kilo
+trusty-liberty-ha:
+  inherits: openstack-icehouse
+  series: trusty
   overrides:
-    openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-kilo/proposed
-trusty-kilo-staging:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
-    source: ppa:ubuntu-cloud-archive/kilo-staging
-vivid-kilo:
+    openstack-origin: cloud:trusty-liberty
+    source: cloud:trusty-liberty
+vivid-kilo-ha:
   inherits: openstack-icehouse
   series: vivid
-vivid-kilo-proposed:
-  inherits: vivid-kilo
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-trusty-kilo-ha:
-  inherits: trusty-kilo
-  services:
-    keystone:
-      num_units: 3
-    keystone-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    cinder:
-      num_units: 3
-    cinder-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    glance:
-      num_units: 3
-    glance-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    rabbitmq-server:
-      num_units: 3
-    mysql:
-      num_units: 3
-    mysql-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    nova-cloud-controller:
-      num_units: 3
-    nova-cc-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    neutron-api:
-      num_units: 3
-    neutron-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    openstack-dashboard:
-      num_units: 3
-    dashboard-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    swift-proxy:
-      num_units: 3
-    swift-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    ceilometer:
-      num_units: 3
-    ceilometer-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-  relations:
-    - [ mysql, mysql-hacluster ]
-    - [ keystone, keystone-hacluster ]
-    - [ nova-cloud-controller, nova-cc-hacluster ]
-    - [ cinder, cinder-hacluster ]
-    - [ glance, glance-hacluster ]
-    - [ openstack-dashboard, dashboard-hacluster ]
-    - [ ceilometer, ceilometer-hacluster ]
-    - [ neutron-api, neutron-hacluster ]
-    - [ swift-proxy, swift-hacluster ]
