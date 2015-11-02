@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import time
 import yaml
+import utils.juju_wait as juju_wait
 from collections import Counter
 
 JUJU_STATUSES = {
