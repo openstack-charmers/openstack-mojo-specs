@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import time
 import yaml
+import utils.juju_wait as juju_wait
 from collections import Counter
 
 JUJU_STATUSES = {
@@ -481,12 +482,7 @@ def juju_check_hooks_complete():
 
 
 def juju_wait_finished():
-    # Wait till all statuses are green
-    juju_status_check_and_wait()
-    # juju status may report all has finished but hooks are still firing.
-    juju_check_hooks_complete()
-    # Check nothing has subsequently gone bad
-    juju_status_check_and_wait()
+    juju_wait.wait()
 
 
 def dict_to_yaml(dict_data):
