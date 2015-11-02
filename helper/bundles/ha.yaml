@@ -160,6 +160,20 @@ openstack-services:
     mongodb:
       charm: mongodb
       constraints: mem=1G
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      num_units: 3
+      options:
+        neutron-security-groups: True
+        vip: 10.5.100.8
+    neutron-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    neutron-openvswitch:
+      charm: neutron-openvswitch
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -206,61 +220,16 @@ openstack-services:
     - [ openstack-dashboard, dashboard-hacluster ]
     - [ ceilometer, ceilometer-hacluster ]
     - [ swift-proxy, swift-hacluster ]
-openstack-singlerabbit:
-  inherits: openstack-services
-  relations:
     - [ "neutron-gateway:amqp", rabbitmq-server ]
-openstack-icehouse:
-  inherits: openstack-singlerabbit
-  services:
-    neutron-api:
-      charm: neutron-api
-      constraints: mem=1G
-      num_units: 3
-      options:
-        neutron-security-groups: True
-        vip: 10.5.100.8
-    neutron-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    neutron-openvswitch:
-      charm: neutron-openvswitch
-  relations:
-  - [ neutron-api, mysql ]
-  - [ neutron-api, rabbitmq-server ]
-  - [ neutron-api, nova-cloud-controller ]
-  - [ neutron-api, neutron-openvswitch ]
-  - [ neutron-api, keystone ]
-  - [ neutron-api, neutron-gateway ]
-  - [ neutron-openvswitch, nova-compute ]
-  - [ neutron-openvswitch, rabbitmq-server ]
-  - [ neutron-api, neutron-hacluster ]
-openstack-icehouse-msg-split:
-  inherits: openstack-services
-  services:
-    neutron-api:
-      branch: lp:~le-charmers/charms/trusty/neutron-api/next
-      constraints: mem=1G
-      options:
-        neutron-security-groups: True
-    neutron-openvswitch:
-      branch: lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
-    rabbitmq-server-neutron:
-      branch: lp:charms/trusty/rabbitmq-server
-      constraints: mem=1G
-  relations:
-  - [ neutron-api, mysql ]
-  - [ neutron-api, rabbitmq-server-neutron ]
-  - [ neutron-api, nova-cloud-controller ]
-  - [ neutron-api, neutron-openvswitch ]
-  - [ neutron-api, keystone ]
-  - [ neutron-api, neutron-gateway ]
-  - [ neutron-openvswitch, nova-compute ]
-  - [ neutron-openvswitch, rabbitmq-server-neutron ]
-  - [ "neutron-gateway:amqp-nova", rabbitmq-server ]
-  - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
+    - [ neutron-api, mysql ]
+    - [ neutron-api, rabbitmq-server ]
+    - [ neutron-api, nova-cloud-controller ]
+    - [ neutron-api, neutron-openvswitch ]
+    - [ neutron-api, keystone ]
+    - [ neutron-api, neutron-gateway ]
+    - [ neutron-openvswitch, nova-compute ]
+    - [ neutron-openvswitch, rabbitmq-server ]
+    - [ neutron-api, neutron-hacluster ]
 # icehouse
 trusty-icehouse-ha:
   inherits: openstack-icehouse
