@@ -8,7 +8,7 @@ glance                 lp:~openstack-charmers/charms/trusty/glance/next
 hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
-mongodb                lp:charms/mongodb
+mongodb                lp:charms/trusty/mongodb
 neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
 neutron-gateway        lp:~openstack-charmers/charms/trusty/neutron-gateway/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
