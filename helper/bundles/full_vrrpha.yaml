@@ -32,7 +32,7 @@ openstack-services:
         network-manager: Quantum
         quantum-security-groups: "yes"
     neutron-gateway:
-      charm: quantum-gateway
+      charm: neutron-gateway
       constraints: mem=1G
       num_units: 2
       options:
