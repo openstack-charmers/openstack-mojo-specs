@@ -57,7 +57,7 @@ def main(argv):
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
     overcloud_novarc = mojo_utils.get_overcloud_auth()
-    undercloud_novarc = mojo_utils.get_undercload_auth()
+    undercloud_novarc = mojo_utils.get_undercloud_auth()
     under_novac = mojo_os_utils.get_nova_client(undercloud_novarc)
     over_neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
     server = get_cirros_server(overcloud_novarc)
