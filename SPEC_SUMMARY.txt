@@ -314,5 +314,5 @@ after each change
 This spec deploys and tests a deployment with neutron DVR enabled
 
 ./specs/dev/vxlan/
-This spec deploys and tests a deployment with neutron DVR enabled
+This spec deploys and tests a deployment with VXLAN enabled
 
