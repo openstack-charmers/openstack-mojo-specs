@@ -1,0 +1,200 @@
+# vim: set ts=2 et:
+openstack-services:
+  services:
+    mysql:
+      charm: percona-cluster
+      constraints: mem=1G
+      options:
+        dataset-size: 50%
+    rabbitmq-server:
+      charm: rabbitmq-server
+      constraints: mem=1G
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    openstack-dashboard:
+      charm: openstack-dashboard
+      constraints: mem=1G
+    nova-compute:
+      charm: nova-compute
+      num_units: 3
+      constraints: mem=4G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=1G
+      options:
+        network-manager: Quantum
+        quantum-security-groups: "yes"
+    neutron-gateway:
+      charm: neutron-gateway
+      constraints: mem=1G
+      num_units: 2
+      options:
+        instance-mtu: 1300
+    cinder:
+      charm: cinder
+      options:
+        block-device: "None"
+        glance-api-version: 2
+      constraints": mem=1G
+    glance:
+      charm: glance
+      constraints: mem=1G
+  relations:
+    - [ keystone, mysql ]
+    - [ nova-cloud-controller, mysql ]
+    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ nova-cloud-controller, glance ]
+    - [ nova-cloud-controller, keystone ]
+    - [ nova-compute, nova-cloud-controller ]
+    - [ nova-compute, mysql ]
+    - - nova-compute
+      - rabbitmq-server:amqp
+    - [ nova-compute, glance ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ glance, cinder ]
+    - [ cinder, mysql ]
+    - [ cinder, rabbitmq-server ]
+    - [ cinder, nova-cloud-controller ]
+    - [ cinder, keystone ]
+    - [ neutron-gateway, mysql ]
+    - [ neutron-gateway, nova-cloud-controller ]
+    - [ openstack-dashboard, keystone ]
+openstack-singlerabbit:
+  inherits: openstack-services
+  relations:
+    - [ "neutron-gateway:amqp", rabbitmq-server ]
+openstack-icehouse:
+  inherits: openstack-singlerabbit
+  services:
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        overlay-network-type: 'vxlan'
+        l2-population: False
+        neutron-security-groups: True
+        enable-dvr: False
+        enable-l3ha: True
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+  relations:
+  - [ neutron-api, mysql ]
+  - [ neutron-api, rabbitmq-server ]
+  - [ neutron-api, nova-cloud-controller ]
+  - [ neutron-api, neutron-openvswitch ]
+  - [ neutron-api, keystone ]
+  - [ neutron-api, "neutron-gateway:neutron-plugin-api" ]
+  - [ neutron-openvswitch, nova-compute ]
+  - [ neutron-openvswitch, rabbitmq-server ]
+  - [ neutron-openvswitch, nova-cloud-controller ]
+openstack-icehouse-msg-split:
+  inherits: openstack-services
+  services:
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        neutron-security-groups: True
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+    rabbitmq-server-neutron:
+      charm: rabbitmq-server
+      constraints: mem=1G
+  relations:
+  - [ neutron-api, mysql ]
+  - [ neutron-api, rabbitmq-server-neutron ]
+  - [ neutron-api, nova-cloud-controller ]
+  - [ neutron-api, neutron-openvswitch ]
+  - [ neutron-api, keystone ]
+  - [ neutron-api, neutron-gateway ]
+  - [ neutron-openvswitch, nova-compute ]
+  - [ neutron-openvswitch, rabbitmq-server-neutron ]
+  - [ "neutron-gateway:amqp-nova", rabbitmq-server ]
+  - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
+# icehouse
+precise-icehouse:
+  inherits: openstack-singlerabbit
+  series: precise
+  overrides:
+    openstack-origin: cloud:precise-icehouse
+    source: cloud:precise-updates/icehouse
+precise-icehouse-proposed:
+  inherits: precise-icehouse
+  overrides:
+    openstack-origin: cloud:precise-icehouse/proposed
+    source: cloud:precise-updates/icehouse
+precise-icehouse-staging:
+  inherits: precise-icehouse
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/icehouse-staging
+    source: ppa:ubuntu-cloud-archive/icehouse-staging
+precise-icehouse-trunk:
+  inherits: precise-icehouse
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
+    source: ppa:openstack-ubuntu-testing/icehouse
+trusty-icehouse:
+  inherits: openstack-icehouse
+  series: trusty
+trusty-icehouse-msg-split:
+  inherits: openstack-icehouse-msg-split
+  series: trusty
+trusty-icehouse-proposed:
+  inherits: trusty-icehouse
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+trusty-icehouse-trunk:
+  inherits: trusty-icehouse
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
+    source: ppa:openstack-ubuntu-testing/icehouse
+    offline-compression: "no"
+# juno
+trusty-juno:
+  inherits: openstack-icehouse
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-juno
+    source: cloud:trusty-updates/juno
+trusty-juno-proposed:
+  inherits: trusty-juno
+  overrides:
+    openstack-origin: cloud:trusty-juno/proposed
+    source: cloud:trusty-proposed/juno
+trusty-juno-staging:
+  inherits: trusty-juno
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/juno-staging
+    source: ppa:ubuntu-cloud-archive/juno-staging
+trusty-kilo:
+  inherits: openstack-icehouse
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-kilo
+    source: cloud:trusty-kilo
+trusty-liberty:
+  inherits: openstack-icehouse
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-kilo
+    source: cloud:trusty-kilo
+utopic-juno:
+  inherits: openstack-icehouse
+  series: utopic
+utopic-juno-proposed:
+  inherits: utopic-juno
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+vivid-kilo:
+  inherits: openstack-icehouse
+  series: vivid
