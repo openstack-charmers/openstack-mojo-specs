@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import logging
-import mojo
 import os
 import shutil
 import subprocess
@@ -292,9 +291,9 @@ def get_overcloud_auth(juju_status=None):
 
 
 def get_mojo_file(filename):
-    if 'MOJO_SPEC_DIR' in os.environ:
-        spec = mojo.Spec(os.environ['MOJO_SPEC_DIR'])
-        mfile = spec.get_config(filename, stage=os.environ['MOJO_STAGE'])
+    if 'MOJO_SPEC_DIR' in os.environ and 'MOJO_STAGE' in os.environ:
+        mfile = '{}/{}/{}'.format(os.environ['MOJO_SPEC_DIR'],
+                                  os.environ['MOJO_STAGE'], filename)
     else:
         if os.path.isfile(filename):
             mfile = filename
