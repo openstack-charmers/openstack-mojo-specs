@@ -253,6 +253,12 @@ trusty-liberty-ha:
   overrides:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
+trusty-mitaka-ha:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-mitaka
+    source: cloud:trusty-mitaka
 vivid-kilo-ha:
   inherits: openstack-services
   series: vivid
