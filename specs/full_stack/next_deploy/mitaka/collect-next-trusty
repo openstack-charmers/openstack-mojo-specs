@@ -1,1 +1,21 @@
-../../../../helper/collect/collect-next
+ceilometer-agent       lp:~openstack-charmers/charms/trusty/ceilometer-agent/next
+ceilometer             lp:~openstack-charmers/charms/trusty/ceilometer/next
+ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
+ceph-osd               lp:~openstack-charmers/charms/trusty/ceph-osd/next
+cinder-ceph            lp:~openstack-charmers/charms/trusty/cinder-ceph/next
+cinder                 lp:~openstack-charmers/charms/trusty/cinder/next
+glance                 lp:~openstack-charmers/charms/trusty/glance/next
+heat                   lp:~openstack-charmers/charms/trusty/heat/next
+keystone               lp:~openstack-charmers/charms/trusty/keystone/next
+mongodb                lp:charms/trusty/mongodb
+mysql                  lp:~openstack-charmers/charms/trusty/percona-cluster/next
+neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
+neutron-gateway        lp:~openstack-charmers/charms/trusty/neutron-gateway/next
+neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
+nova-cloud-controller  lp:~gnuoy/charms/trusty/nova-cloud-controller/mitaka-api-fix
+nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
+ntp                    lp:charms/trusty/ntp
+openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
+rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
+swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
+swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
