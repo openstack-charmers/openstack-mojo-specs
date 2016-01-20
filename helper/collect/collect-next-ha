@@ -9,10 +9,10 @@ hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 heat                   lp:~openstack-charmers/charms/trusty/heat/next
 keystone               lp:~openstack-charmers/charms/trusty/keystone/next
 mongodb                lp:charms/trusty/mongodb
-neutron-api            lp:~openstack-charmers/charms/trusty/neutron-api/next
+neutron-api            lp:~gnuoy/charms/trusty/neutron-api/nova-section
 neutron-gateway        lp:~openstack-charmers/charms/trusty/neutron-gateway/next
 neutron-openvswitch    lp:~openstack-charmers/charms/trusty/neutron-openvswitch/next
-nova-cloud-controller  lp:~openstack-charmers/charms/trusty/nova-cloud-controller/next
+nova-cloud-controller  lp:~gnuoy/charms/trusty/nova-cloud-controller/mitaka-api-fix
 nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/next
 ntp                    lp:charms/trusty/ntp
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
