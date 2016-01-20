@@ -260,7 +260,7 @@ trusty-mitaka-ha:
   inherits: openstack-services
   series: trusty
   overrides:
-    openstack-origin: cloud:trusty-mitaka
+    openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka
 trusty-mitaka-proposed:
   inherits: openstack-services
