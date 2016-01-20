@@ -263,12 +263,12 @@ vivid-kilo-ha:
 #    openstack-origin: cloud:trusty-mitaka
 #    source: cloud:trusty-mitaka
 #trusty-mitaka-proposed:
-trusty-mitaka:
+trusty-mitaka-ha:
   inherits: trusty-mitaka
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
-xenial-mitaka:
+xenial-mitaka-ha:
   inherits: openstack-icehouse
   series: xenial
   services:
