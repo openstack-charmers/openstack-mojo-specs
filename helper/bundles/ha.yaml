@@ -256,14 +256,13 @@ trusty-liberty-ha:
 vivid-kilo-ha:
   inherits: openstack-services
   series: vivid
-#trusty-mitaka:
-#  inherits: openstack-icehouse
-#  series: trusty
-#  overrides:
-#    openstack-origin: cloud:trusty-mitaka
-#    source: cloud:trusty-mitaka
-#trusty-mitaka-proposed:
 trusty-mitaka-ha:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-mitaka
+    source: cloud:trusty-mitaka
+trusty-mitaka-proposed:
   inherits: openstack-services
   series: trusty
   overrides:
