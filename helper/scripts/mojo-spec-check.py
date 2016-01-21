@@ -24,7 +24,8 @@ OPENSTACK_RELEASES = {
     'icehouse': ['precise', 'trusty'],
     'juno': ['trusty'],
     'kilo': ['trusty', 'vivid'],
-    'liberty': ['trusty', 'wily']
+    'liberty': ['trusty', 'wily'],
+    'mitaka': ['trusty', 'xenial'],
 }
 
 

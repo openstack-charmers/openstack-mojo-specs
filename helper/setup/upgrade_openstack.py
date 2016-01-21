@@ -1,21 +1,15 @@
 #!/usr/bin/python
+import six
+import re
 import argparse
 import sys
 import utils.mojo_utils as mojo_utils
 import logging
-from collections import OrderedDict
-
-OPENSTACK_CODENAMES = OrderedDict([
-    ('2011.2', 'diablo'),
-    ('2012.1', 'essex'),
-    ('2012.2', 'folsom'),
-    ('2013.1', 'grizzly'),
-    ('2013.2', 'havana'),
-    ('2014.1', 'icehouse'),
-    ('2014.2', 'juno'),
-    ('2015.1', 'kilo'),
-    ('2015.2', 'liberty'),
-])
+from utils.os_versions import (
+    OPENSTACK_CODENAMES,
+    SWIFT_CODENAMES,
+    PACKAGE_CODENAMES,
+)
 
 CHARM_TYPES = {
     'neutron': {
@@ -60,15 +54,43 @@ UPGRADE_SERVICES = [
     {'name': 'ceilometer', 'type': CHARM_TYPES['ceilometer']},
 ]
 
+# XXX get_swift_codename and get_os_code_info are based on the functions with
+# the same name in ~charm-helpers/charmhelpers/contrib/openstack/utils.py
+# It'd be neat if we actually shared a common library.
 
-def get_os_code_info(pkg_version):
-    for entry in OPENSTACK_CODENAMES:
-        if entry in pkg_version:
-            return {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
+
+def get_swift_codename(version):
+    '''Determine OpenStack codename that corresponds to swift version.'''
+    codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
+    return codenames[0]
+
+
+def get_os_code_info(package, pkg_version):
+    # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
+    pkg_version = pkg_version.split(':')[1:][0]
+    if 'swift' in package:
+        # Fully x.y.z match for swift versions
+        match = re.match('^(\d+)\.(\d+)\.(\d+)', pkg_version)
+    else:
+        # x.y match only for 20XX.X
+        # and ignore patch level for other packages
+        match = re.match('^(\d+)\.(\d+)', pkg_version)
+
+    if match:
+        pkg_version = match.group(0)
+    if (package in PACKAGE_CODENAMES and
+            pkg_version in PACKAGE_CODENAMES[package]):
+        return PACKAGE_CODENAMES[package][pkg_version]
+    else:
+        # < Liberty co-ordinated project versions
+        if 'swift' in package:
+            return get_swift_codename(pkg_version)
+        else:
+            return OPENSTACK_CODENAMES[pkg_version]
 
 
 def next_release(release):
-    old_index = OPENSTACK_CODENAMES.keys().index(release)
+    old_index = OPENSTACK_CODENAMES.values().index(release)
     new_index = old_index + 1
     return OPENSTACK_CODENAMES.items()[new_index]
 
@@ -80,14 +102,15 @@ def get_current_os_versions(deployed_services):
             continue
         version = mojo_utils.get_pkg_version(service['name'],
                                              service['type']['pkg'])
-        versions[service['name']] = get_os_code_info(version)
+        versions[service['name']] = get_os_code_info(service['type']['pkg'],
+                                                     version)
     return versions
 
 
 def get_lowest_os_version(current_versions):
-    lowest_version = {'code_num': '2100', 'code_name': 'zebra'}
+    lowest_version = 'zebra'
     for svc in current_versions.keys():
-        if current_versions[svc]['code_name'] < lowest_version['code_name']:
+        if current_versions[svc] < lowest_version:
             lowest_version = current_versions[svc]
     return lowest_version
 
@@ -95,7 +118,7 @@ def get_lowest_os_version(current_versions):
 def get_upgrade_targets(target_release, current_versions):
     upgrade_list = []
     for svc in current_versions.keys():
-        if current_versions[svc]['code_name'] < target_release:
+        if current_versions[svc] < target_release:
             upgrade_list.append(svc)
     return upgrade_list
 
@@ -116,7 +139,7 @@ def main(argv):
         # If in auto mode find the lowest value openstack release across all
         # services and make sure all servcies are upgraded to one release
         # higher than the lowest
-        lowest_release = get_lowest_os_version(current_versions)['code_num']
+        lowest_release = get_lowest_os_version(current_versions)
         target_release = next_release(lowest_release)[1]
     # Get a list of services that need upgrading
     needs_upgrade = get_upgrade_targets(target_release, current_versions)
@@ -132,8 +155,10 @@ def main(argv):
         logging.info('Upgrading {} to {}'.format(service['name'],
                                                  target_release))
         ubuntu_version = mojo_utils.get_ubuntu_version(service['name'])
-        option = "{}=cloud:{}-{}".format(service['type']['origin_setting'],
-                                         ubuntu_version, target_release)
+        option = "{}=cloud:{}-{}/proposed".format(
+            service['type']['origin_setting'],
+            ubuntu_version, target_release
+        )
         mojo_utils.juju_set(service['name'], option, wait=True)
 
 if __name__ == "__main__":
