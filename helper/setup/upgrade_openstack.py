@@ -64,10 +64,6 @@ def get_swift_codename(version):
     codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
     return codenames[0]
 
-# def get_os_code_info(pkg_version):
-#    for entry in OPENSTACK_CODENAMES:
-#       if entry in pkg_version:
-#             return {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
 
 def get_os_code_info(package, pkg_version):
     # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
@@ -159,8 +155,10 @@ def main(argv):
         logging.info('Upgrading {} to {}'.format(service['name'],
                                                  target_release))
         ubuntu_version = mojo_utils.get_ubuntu_version(service['name'])
-        option = "{}=cloud:{}-{}/proposed".format(service['type']['origin_setting'],
-                                         ubuntu_version, target_release)
+        option = "{}=cloud:{}-{}/proposed".format(
+            service['type']['origin_setting'],
+            ubuntu_version, target_release
+        )
         mojo_utils.juju_set(service['name'], option, wait=True)
 
 if __name__ == "__main__":
