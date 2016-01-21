@@ -1,22 +1,15 @@
 #!/usr/bin/python
+import six
+import re
 import argparse
 import sys
 import utils.mojo_utils as mojo_utils
 import logging
-from collections import OrderedDict
-
-OPENSTACK_CODENAMES = OrderedDict([
-    ('2011.2', 'diablo'),
-    ('2012.1', 'essex'),
-    ('2012.2', 'folsom'),
-    ('2013.1', 'grizzly'),
-    ('2013.2', 'havana'),
-    ('2014.1', 'icehouse'),
-    ('2014.2', 'juno'),
-    ('2015.1', 'kilo'),
-    ('2015.2', 'liberty'),
-    ('2016.1', 'mitaka'),
-])
+from utils.os_versions import (
+    OPENSTACK_CODENAMES,
+    SWIFT_CODENAMES,
+    PACKAGE_CODENAMES,
+)
 
 CHARM_TYPES = {
     'neutron': {
@@ -61,11 +54,38 @@ UPGRADE_SERVICES = [
     {'name': 'ceilometer', 'type': CHARM_TYPES['ceilometer']},
 ]
 
+# XXX get_swift_codename and get_os_code_info are based on the functions with
+# the same name in ~charm-helpers/charmhelpers/contrib/openstack/utils.py
+# It'd be neat if we actually shared a common library.
 
-def get_os_code_info(pkg_version):
-    for entry in OPENSTACK_CODENAMES:
-        if entry in pkg_version:
-            return {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
+
+def get_swift_codename(version):
+    '''Determine OpenStack codename that corresponds to swift version.'''
+    codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
+    return codenames[0]
+
+
+def get_os_code_info(package, pkg_version):
+    pkg_version = pkg_version.split(':')[1:][0]
+    if 'swift' in package:
+        # Fully x.y.z match for swift versions
+        match = re.match('^(\d+)\.(\d+)\.(\d+)', pkg_version)
+    else:
+        # x.y match only for 20XX.X
+        # and ignore patch level for other packages
+        match = re.match('^(\d+)\.(\d+)', pkg_version)
+
+    if match:
+        pkg_version = match.group(0)
+    if (package in PACKAGE_CODENAMES and
+            pkg_version in PACKAGE_CODENAMES[package]):
+        return PACKAGE_CODENAMES[package][pkg_version]
+    else:
+        # < Liberty co-ordinated project versions
+        if 'swift' in package:
+            return get_swift_codename(pkg_version)
+        else:
+            return OPENSTACK_CODENAMES[pkg_version]
 
 
 def next_release(release):
@@ -81,7 +101,8 @@ def get_current_os_versions(deployed_services):
             continue
         version = mojo_utils.get_pkg_version(service['name'],
                                              service['type']['pkg'])
-        versions[service['name']] = get_os_code_info(version)
+        versions[service['name']] = get_os_code_info(service['type']['pkg'],
+                                                     version)
     return versions
 
 
