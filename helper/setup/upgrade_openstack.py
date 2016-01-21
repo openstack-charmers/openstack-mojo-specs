@@ -64,8 +64,13 @@ def get_swift_codename(version):
     codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
     return codenames[0]
 
+# def get_os_code_info(pkg_version):
+#    for entry in OPENSTACK_CODENAMES:
+#       if entry in pkg_version:
+#             return {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
 
 def get_os_code_info(package, pkg_version):
+    # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
     pkg_version = pkg_version.split(':')[1:][0]
     if 'swift' in package:
         # Fully x.y.z match for swift versions
@@ -89,7 +94,7 @@ def get_os_code_info(package, pkg_version):
 
 
 def next_release(release):
-    old_index = OPENSTACK_CODENAMES.keys().index(release)
+    old_index = OPENSTACK_CODENAMES.values().index(release)
     new_index = old_index + 1
     return OPENSTACK_CODENAMES.items()[new_index]
 
@@ -107,9 +112,9 @@ def get_current_os_versions(deployed_services):
 
 
 def get_lowest_os_version(current_versions):
-    lowest_version = {'code_num': '2100', 'code_name': 'zebra'}
+    lowest_version = 'zebra'
     for svc in current_versions.keys():
-        if current_versions[svc]['code_name'] < lowest_version['code_name']:
+        if current_versions[svc] < lowest_version:
             lowest_version = current_versions[svc]
     return lowest_version
 
@@ -117,7 +122,7 @@ def get_lowest_os_version(current_versions):
 def get_upgrade_targets(target_release, current_versions):
     upgrade_list = []
     for svc in current_versions.keys():
-        if current_versions[svc]['code_name'] < target_release:
+        if current_versions[svc] < target_release:
             upgrade_list.append(svc)
     return upgrade_list
 
@@ -138,7 +143,7 @@ def main(argv):
         # If in auto mode find the lowest value openstack release across all
         # services and make sure all servcies are upgraded to one release
         # higher than the lowest
-        lowest_release = get_lowest_os_version(current_versions)['code_num']
+        lowest_release = get_lowest_os_version(current_versions)
         target_release = next_release(lowest_release)[1]
     # Get a list of services that need upgrading
     needs_upgrade = get_upgrade_targets(target_release, current_versions)
