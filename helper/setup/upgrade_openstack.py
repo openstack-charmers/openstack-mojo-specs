@@ -15,6 +15,7 @@ OPENSTACK_CODENAMES = OrderedDict([
     ('2014.2', 'juno'),
     ('2015.1', 'kilo'),
     ('2015.2', 'liberty'),
+    ('2016.1', 'mitaka'),
 ])
 
 CHARM_TYPES = {
@@ -132,7 +133,7 @@ def main(argv):
         logging.info('Upgrading {} to {}'.format(service['name'],
                                                  target_release))
         ubuntu_version = mojo_utils.get_ubuntu_version(service['name'])
-        option = "{}=cloud:{}-{}".format(service['type']['origin_setting'],
+        option = "{}=cloud:{}-{}/proposed".format(service['type']['origin_setting'],
                                          ubuntu_version, target_release)
         mojo_utils.juju_set(service['name'], option, wait=True)
 
