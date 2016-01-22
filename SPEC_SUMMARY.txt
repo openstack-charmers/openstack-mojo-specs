@@ -93,7 +93,7 @@ roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
 ./specs/full_stack/next_deploy_baremetal/mitaka/
-This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
 with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
@@ -220,7 +220,7 @@ roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
 ./specs/full_stack/stable_deploy_baremetal/mitaka/
-This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
 with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
