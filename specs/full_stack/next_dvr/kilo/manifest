@@ -2,7 +2,7 @@
 collect config=collect-next
 
 # Use juju deployer with full.yaml bundle
-deploy config=full_dvr.yaml delay=0 target=trusty-kilo
+deploy config=full_dvr.yaml delay=0 target=${MOJO_SERIES}-kilo
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -16,10 +16,7 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
-# Restarting neutron-plugin-openvswitch-agent to work around Bug #1364215
-script config=bug1364215.py
-
-# Create 1 * tiny cirros and 1 * small precise instances on the overcloud
-verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
+# Create 1 * trusty instance on the overcloud
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:1' CLOUDINIT_WAIT="300"
 
 # Success

@@ -1,0 +1,24 @@
+gre:
+  default_gateway: 10.5.0.1
+  end_floating_ip: 10.5.200.254
+  external_dns: 10.245.160.2
+  external_net_cidr: 10.5.0.0/16
+  external_net_name: ext_net
+  external_subnet_name: ext_net_subnet
+  network_type: gre
+  private_net_cidr: 192.168.21.0/24
+  router_name: provider-router
+  start_floating_ip: 10.5.150.0
+  dvr_enabled: False
+dvr:
+  default_gateway: 10.5.0.1
+  end_floating_ip: 10.5.200.254
+  external_dns: 10.245.160.2
+  external_net_cidr: 10.5.0.0/16
+  external_net_name: ext_net
+  external_subnet_name: ext_net_subnet
+  network_type: vxlan
+  private_net_cidr: 192.168.21.0/24
+  router_name: provider-router
+  start_floating_ip: 10.5.150.0
+  dvr_enabled: True
