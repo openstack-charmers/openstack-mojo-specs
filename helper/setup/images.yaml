@@ -17,3 +17,12 @@ precise:
   glance_name: precise
   is_public: 'true'
   url: http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
+trusty:
+  auth_type: privkey
+  bootstring: Cloud-init v. 0.7.5 finished
+  username: ubuntu
+  container_format: bare
+  disk_format: qcow2
+  glance_name: trusty
+  is_public: 'true'
+  url: http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
