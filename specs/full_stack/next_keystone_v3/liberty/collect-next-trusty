@@ -17,5 +17,5 @@ nova-compute           lp:~openstack-charmers/charms/trusty/nova-compute/keyston
 ntp                    lp:charms/trusty/ntp
 openstack-dashboard    lp:~openstack-charmers/charms/trusty/openstack-dashboard/next
 rabbitmq-server        lp:~openstack-charmers/charms/trusty/rabbitmq-server/next
-swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
+swift-proxy            lp:charms/trusty/swift-proxy
 swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
