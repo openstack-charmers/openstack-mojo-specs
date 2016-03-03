@@ -280,13 +280,27 @@ def get_overcloud_auth(juju_status=None):
         transport = 'http'
         port = 5000
     address = get_auth_url()
-    auth_settings = {
-        'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
-        'OS_TENANT_NAME': 'admin',
-        'OS_USERNAME': 'admin',
-        'OS_PASSWORD': 'openstack',
-        'OS_REGION_NAME': 'RegionOne',
-    }
+    if juju_get('keystone', 'preferred-api-version') == '2':
+        auth_settings = {
+            'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
+            'OS_TENANT_NAME': 'admin',
+            'OS_USERNAME': 'admin',
+            'OS_PASSWORD': 'openstack',
+            'OS_REGION_NAME': 'RegionOne',
+            'API_VERSION': 2,
+        }
+    else:
+        auth_settings = {
+            'OS_AUTH_URL': '%s://%s:%i/v3' % (transport, address, port),
+            'OS_USERNAME': 'cloud_admin',
+            'OS_PASSWORD': 'openstack',
+            'OS_REGION_NAME': 'RegionOne',
+            'OS_DOMAIN_NAME': 'admin_domain',
+            'OS_USER_DOMAIN_NAME': 'admin_domain',
+            'OS_PROJECT_NAME': 'admin',
+            'OS_PROJECT_DOMAIN_NAME': 'Default',
+            'API_VERSION': 3,
+        } 
     return auth_settings
 
 
