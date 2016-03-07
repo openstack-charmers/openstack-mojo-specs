@@ -1,5 +1,10 @@
 #!/usr/bin/python3
 
+# NOTE(beisner):  this is a fork of juju-wait which enables workload
+# status blocking.  ie. If a unit is in a blocked state, keep waiting.
+#   From:  https://code.launchpad.net/~1chb1n/juju-wait/workload-status
+#   Re:    https://bugs.launchpad.net/juju-wait/+bug/1553312
+
 # This file is part of juju-wait, a juju plugin to wait for environment
 # steady state.
 #
@@ -82,7 +87,6 @@ def get_status():
     # using the environment variable.
     env = os.environ.copy()
     env['TZ'] = 'UTC'
-    env['JUJU_CLI_VERSION'] = '1'
     json_status = run_or_die(['juju', 'status', '--format=json'], env=env)
     if json_status is None:
         return None
@@ -107,6 +111,14 @@ def get_is_leader(unit, timeout=None):
 # still due to be run.
 IDLE_CONFIRMATION = timedelta(seconds=15)
 
+# If all units have one of the following workload status values,
+# consider them ready.  Not all charms use workload the status feature.
+# Those that do not will be represented by the 'unknown' value and
+# workload status will be ignored.  For charms that do, wait for an
+# 'active' workload status value.  FYI: blocked, waiting, maintenance
+# values indicate not-ready workload states.
+WORKLOAD_OK_STATES = ['active', 'unknown']
+
 
 def wait_cmd(args=sys.argv[1:]):
     description = dedent("""\
@@ -126,6 +138,9 @@ def wait_cmd(args=sys.argv[1:]):
                         action='store_true', default=False)
     parser.add_argument('-v', '--verbose', dest='verbose',
                         action='store_true', default=False)
+    parser.add_argument('-w', '--workload', dest='wait_for_workload',
+                        help='Wait for unit workload status active state',
+                        action='store_true', default=False)
     args = parser.parse_args(args)
 
     # Parser did not exit, so continue.
@@ -138,7 +153,7 @@ def wait_cmd(args=sys.argv[1:]):
     else:
         log.setLevel(logging.INFO)
     try:
-        wait(log)
+        wait(log, args.wait_for_workload)
         return 0
     except JujuWaitException as x:
         return x.args[0]
@@ -153,7 +168,7 @@ def reset_logging():
                 'logging-config=juju=WARNING;unit=INFO'])
 
 
-def wait(log=None):
+def wait(log=None, wait_for_workload=False):
     if log is None:
         log = logging.getLogger()
 
@@ -181,32 +196,50 @@ def wait(log=None):
         # logs sniffed because they are running Juju 1.23 or earlier.
         ready_units = {}
 
-        # Flattened agent status for all units and subordinates that
-        # provide it. Note that 'agent status' is only available in
+        # Flattened agent and workload status for all units and subordinates
+        # that provide it. Note that 'agent status' is only available in
         # Juju 1.24 and later. This is easily confused with 'agent state'
         # which is available in earlier versions of Juju.
+        workload_status = {}
         agent_status = {}
         agent_version = {}
         for sname, service in status.get('services', {}).items():
             for uname, unit in service.get('units', {}).items():
                 all_units.add(uname)
                 agent_version[uname] = unit.get('agent-version')
-                if 'agent-status' in unit:
+                if ('workload-status' in unit and
+                        'current' in unit['workload-status']):
+                    workload_status[uname] = unit['workload-status']
+
+                if 'agent-status' in unit and unit['agent-status'] != {}:
                     agent_status[uname] = unit['agent-status']
                 else:
                     ready_units[uname] = unit  # Schedule for sniffing.
                 for subname, sub in unit.get('subordinates', {}).items():
+                    if ('workload-status' in sub and
+                            'current' in sub['workload-status']):
+                        workload_status[subname] = sub['workload-status']
+
                     agent_version[subname] = sub.get('agent-version')
-                    if 'agent-status' in sub:
+                    if 'agent-status' in sub and unit['agent-status'] != {}:
                         agent_status[subname] = sub['agent-status']
                     else:
                         ready_units[subname] = sub  # Schedule for sniffing.
 
+        for uname, wstatus in sorted(workload_status.items()):
+            current = wstatus['current']
+            since = parse_ts(wstatus['since'])
+            if current not in WORKLOAD_OK_STATES and wait_for_workload:
+                logging.debug('{} workload status is {} since '
+                              '{}Z'.format(uname, current, since))
+                ready = False
+
         for uname, astatus in sorted(agent_status.items()):
             current = astatus['current']
             since = parse_ts(astatus['since'])
-            logging.debug('{} is {} since {}Z'.format(uname, current, since))
             if current != 'idle':
+                logging.debug('{} agent status is {} since '
+                              '{}Z'.format(uname, current, since))
                 ready = False
 
         # Log storage to compare with prev_logs.
@@ -228,6 +261,11 @@ def wait(log=None):
                 logging.debug('{} is {}'.format(uname, agent_state))
                 ready = False
             elif ready:
+                # We only start grabbing the logs once all the units
+                # are in a suitable lifecycle state. If we don't do this,
+                # we risk attempting to grab logs from units or subordinates
+                # that are not yet ready to respond, or have disappeared
+                # since we last checked the environment status.
                 if not logging_reset:
                     reset_logging()
                     logging_reset = True
@@ -248,9 +286,9 @@ def wait(log=None):
             for uname, version in agent_version.items():
                 sname = uname.split('/', 1)[0]
                 services.add(sname)
-                if (sname not in services_with_leader and version
-                    and (LooseVersion(version) >= LooseVersion('1.23')
-                         or get_is_leader(uname) is True)):
+                if (sname not in services_with_leader and version and
+                    (LooseVersion(version) <= LooseVersion('1.23') or
+                        get_is_leader(uname) is True)):
                     services_with_leader.add(sname)
                     logging.debug('{} is lead by {}'.format(sname, uname))
             for sname in services:
@@ -283,4 +321,7 @@ if __name__ == '__main__':
     # Most installations will be using the setuptools generated
     # launchers.
     script = os.path.basename(sys.argv[0])
-    sys.exit(wait_cmd())
+    if script == 'juju-wait':
+        sys.exit(wait_cmd())
+    else:
+        raise RuntimeError('Unknown script {}'.format(script))
