@@ -485,7 +485,9 @@ def juju_wait_finished():
     units quiesce and satisfy workload status ready state."""
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
+    logging.info('Calling juju-wait')
     juju_wait.wait(log, wait_for_workload=True)
+    logging.debug('End of juju-wait')
 
 
 def dict_to_yaml(dict_data):
