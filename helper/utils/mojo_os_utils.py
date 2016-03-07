@@ -2,10 +2,7 @@
 
 import swiftclient
 import glanceclient
-from keystoneclient.v2_0 import client as keystoneclient_v2
-from keystoneclient.auth.identity import v3
-from keystoneclient.v3 import client as keystoneclient_v3
-from keystoneclient import session
+from keystoneclient.v2_0 import client as keystoneclient
 import mojo_utils
 from novaclient.v1_1 import client as novaclient
 from neutronclient.v2_0 import client as neutronclient
@@ -33,33 +30,14 @@ def get_nova_creds(cloud_creds):
     return auth
 
 
-def get_ks_creds(cloud_creds, scope='DOMAIN'):
-    if cloud_creds.get('API_VERSION', 2) == 2:
-        auth = {
-            'username': cloud_creds['OS_USERNAME'],
-            'password': cloud_creds['OS_PASSWORD'],
-            'auth_url': cloud_creds['OS_AUTH_URL'],
-            'tenant_name': cloud_creds['OS_TENANT_NAME'],
-            'region_name': cloud_creds['OS_REGION_NAME'],
-        }
-    else:
-        if scope == 'DOMAIN':
-            auth = {
-                'username': cloud_creds['OS_USERNAME'],
-                'password': cloud_creds['OS_PASSWORD'],
-                'auth_url': cloud_creds['OS_AUTH_URL'],
-                'user_domain_name': cloud_creds['OS_USER_DOMAIN_NAME'],
-                'domain_name': cloud_creds['OS_DOMAIN_NAME'],
-            }
-        else:
-            auth = {
-                'username': cloud_creds['OS_USERNAME'],
-                'password': cloud_creds['OS_PASSWORD'],
-                'auth_url': cloud_creds['OS_AUTH_URL'],
-                'user_domain_name': cloud_creds['OS_USER_DOMAIN_NAME'],
-                'project_domain_name': cloud_creds['OS_PROJECT_DOMAIN_NAME'],
-                'project_name': cloud_creds['OS_PROJECT_NAME'],
-            }
+def get_ks_creds(cloud_creds):
+    auth = {
+        'username': cloud_creds['OS_USERNAME'],
+        'password': cloud_creds['OS_PASSWORD'],
+        'auth_url': cloud_creds['OS_AUTH_URL'],
+        'tenant_name': cloud_creds['OS_TENANT_NAME'],
+        'region_name': cloud_creds['OS_REGION_NAME'],
+    }
     return auth
 
 
@@ -83,31 +61,14 @@ def get_nova_client(novarc_creds, insecure=True):
 def get_neutron_client(novarc_creds, insecure=True):
     neutron_creds = get_ks_creds(novarc_creds)
     neutron_creds['insecure'] = insecure
+    print neutron_creds
     return neutronclient.Client(**neutron_creds)
-
-
-def get_neutron_session_client(session):
-    return neutronclient.Client(session=session)
-
-
-def get_keystone_session(novarc_creds):
-    keystone_creds = get_ks_creds(novarc_creds)
-    auth = v3.Password(**keystone_creds)
-    return session.Session(auth=auth)
-
-
-def get_keystone_session_client(session):
-    return keystoneclient_v3.Client(session=session)
 
 
 def get_keystone_client(novarc_creds, insecure=True):
     keystone_creds = get_ks_creds(novarc_creds)
-    if novarc_creds.get('API_VERSION', 2) == 2:
-        keystone_creds['insecure'] = insecure
-        return keystoneclient_v2.Client(**keystone_creds)
-    else:
-        sess = v3.Password(**keystone_creds)
-        return keystoneclient_v3.Client(session=sess)
+    keystone_creds['insecure'] = insecure
+    return keystoneclient.Client(**keystone_creds)
 
 
 def get_swift_client(novarc_creds, insecure=True):
@@ -117,21 +78,10 @@ def get_swift_client(novarc_creds, insecure=True):
 
 
 def get_glance_client(novarc_creds, insecure=True):
-    if novarc_creds.get('API_VERSION', 2) == 2:
-        kc = get_keystone_client(novarc_creds)
-        glance_ep_url = kc.service_catalog.url_for(service_type='image',
-                                                   endpoint_type='publicURL')
-    else:
-        print novarc_creds
-        keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
-        kc = keystoneclient_v3.Client(**keystone_creds)
-        print keystone_creds
-#        sess = get_keystone_session(novarc_creds)
-#        kc = get_keystone_session_client(sess)
-        glance_svc_id =  kc.services.find(name='glance').id
-        ep = kc.endpoints.find(service_id=glance_svc_id, interface='public')
-        glance_ep_url = ep.url
-    return glanceclient.Client('1', glance_ep_url, token=kc.auth_token,
+    kc = get_keystone_client(novarc_creds)
+    glance_endpoint = kc.service_catalog.url_for(service_type='image',
+                                                 endpoint_type='publicURL')
+    return glanceclient.Client('1', glance_endpoint, token=kc.auth_token,
                                insecure=insecure)
 
 
@@ -215,12 +165,8 @@ def add_users_to_roles(kclient, users):
                                             tenant_id)
 
 
-def get_tenant_id(ks_client, tenant_name, api_version=2):
-    if api_version == 2:
-        all_tenants =  ks_client.tenants.list()
-    else:
-        all_tenants =  ks_client.projects.list()
-    for t in all_tenants:
+def get_tenant_id(ks_client, tenant_name):
+    for t in ks_client.tenants.list():
         if t._info['name'] == tenant_name:
             return t._info['id']
     return None
