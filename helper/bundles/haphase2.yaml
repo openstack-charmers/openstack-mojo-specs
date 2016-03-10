@@ -152,7 +152,6 @@ openstack-database-relations:
     - [ nova-compute, mysql ]
     - [ glance, mysql ]
     - [ cinder, mysql ]
-    - [ neutron-gateway, mysql ]
 openstack-mysql-database:
   inherits:
   - openstack-services

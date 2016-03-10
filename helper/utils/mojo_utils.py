@@ -481,7 +481,13 @@ def juju_check_hooks_complete():
 
 
 def juju_wait_finished():
-    juju_wait.wait()
+    """Use juju-wait from local utils path to block until all service
+    units quiesce and satisfy workload status ready state."""
+    log = logging.getLogger()
+    log.setLevel(logging.DEBUG)
+    logging.info('Calling juju-wait')
+    juju_wait.wait(log, wait_for_workload=True)
+    logging.debug('End of juju-wait')
 
 
 def dict_to_yaml(dict_data):
