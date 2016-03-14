@@ -480,13 +480,13 @@ def juju_check_hooks_complete():
     remote_runs(juju_units)
 
 
-def juju_wait_finished():
+def juju_wait_finished(max_wait=2700):
     """Use juju-wait from local utils path to block until all service
     units quiesce and satisfy workload status ready state."""
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
     logging.info('Calling juju-wait')
-    juju_wait.wait(log, wait_for_workload=True)
+    juju_wait.wait(log, wait_for_workload=True, max_wait=max_wait)
     logging.debug('End of juju-wait')
 
 
