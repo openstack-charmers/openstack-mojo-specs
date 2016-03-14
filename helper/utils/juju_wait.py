@@ -156,11 +156,15 @@ def wait_cmd(args=sys.argv[1:]):
     else:
         log.setLevel(logging.INFO)
 
+    # Set max_wait integer value if specified, otherwise None.
+    # This preserves the existing behavior while allowing the
+    # user to optionally specify a maximum wait time.
     if args.max_wait:
         max_wait = int(args.max_wait)
     else:
-        max_wait = args.max_wait
+        max_wait = None
 
+    # Begin watching and waiting
     try:
         wait(log, args.wait_for_workload, max_wait)
         return 0
