@@ -9,12 +9,19 @@ import utils.mojo_os_utils as mojo_os_utils
 def setup_sdn(net_topology, net_info):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     # Get os clients
-    keystonec = mojo_os_utils.get_keystone_client(overcloud_novarc)
-    neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
-
+    if overcloud_novarc.get('API_VERSION', 2) == 2:
+        keystonec = mojo_os_utils.get_keystone_client(overcloud_novarc)
+        neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
+    else:
+        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
+        keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
+        neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
     # Resolve the tenant name from the overcloud novarc into a tenant id
-    tenant_id = mojo_os_utils.get_tenant_id(keystonec,
-                                            overcloud_novarc['OS_TENANT_NAME'])
+    tenant_id = mojo_os_utils.get_tenant_id(
+        keystonec,
+        'admin',
+        api_version=overcloud_novarc['API_VERSION']
+    )
     # Create the external network
     ext_network = mojo_os_utils.create_external_network(
         neutronc,
