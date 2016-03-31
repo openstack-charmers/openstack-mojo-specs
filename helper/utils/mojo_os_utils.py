@@ -529,7 +529,7 @@ def boot_instance(nova_client, image_name, flavor_name, key_name):
                                           flavor=flavor,
                                           key_name=key_name,
                                           nics=nics)
-    logging.info('Issued booot')
+    logging.info('Issued boot')
     return instance
 
 
@@ -657,6 +657,7 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
                                  image_name=image_name,
                                  flavor_name=flavor_name,
                                  key_name='mojo')
+        logging.info("Launched {}".format(instance))
         wait_for_boot(nova_client, instance.name,
                       image_config[image_name]['bootstring'], active_wait,
                       cloudinit_wait)
