@@ -16,11 +16,12 @@ def main(argv):
         mojo_os_utils.add_users_to_roles(keystone_client, user_config)
     else:
         keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
-        keystone_client = mojo_os_utils.get_keystone_session_client(keystone_session)
+        keystone_client = mojo_os_utils.get_keystone_session_client(
+            keystone_session)
         for user in user_config:
             mojo_os_utils.domain_create(keystone_client, [user['domain']])
             mojo_os_utils.project_create(keystone_client, [user['tenant']],
-                user['domain'])
+                                         user['domain'])
         mojo_os_utils.user_create_v3(keystone_client, user_config)
 
 

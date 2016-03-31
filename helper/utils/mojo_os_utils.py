@@ -7,7 +7,6 @@ from keystoneclient.auth.identity import v3
 from keystoneclient.v3 import client as keystoneclient_v3
 from keystoneclient import session
 import mojo_utils
-#import novaclient
 from novaclient.v1_1 import client as novaclient
 from novaclient.v2 import client as novaclient_v2
 from neutronclient.v2_0 import client as neutronclient
@@ -81,9 +80,9 @@ def get_nova_client(novarc_creds, insecure=True):
     nova_creds['insecure'] = insecure
     return novaclient.Client(**nova_creds)
 
+
 def get_nova_session_client(session):
     return novaclient_v2.Client(session=session)
-
 
 
 def get_neutron_client(novarc_creds, insecure=True):
@@ -128,13 +127,9 @@ def get_glance_client(novarc_creds, insecure=True):
         glance_ep_url = kc.service_catalog.url_for(service_type='image',
                                                    endpoint_type='publicURL')
     else:
-        print novarc_creds
         keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
         kc = keystoneclient_v3.Client(**keystone_creds)
-        print keystone_creds
-#        sess = get_keystone_session(novarc_creds)
-#        kc = get_keystone_session_client(sess)
-        glance_svc_id =  kc.services.find(name='glance').id
+        glance_svc_id = kc.services.find(name='glance').id
         ep = kc.endpoints.find(service_id=glance_svc_id, interface='public')
         glance_ep_url = ep.url
     return glanceclient.Client('1', glance_ep_url, token=kc.auth_token,
@@ -179,6 +174,7 @@ def tenant_create(kclient, tenants):
             logging.info('Creating tenant %s' % (tenant))
             kclient.tenants.create(tenant_name=tenant)
 
+
 def project_create(kclient, projects, domain):
     domain_id = None
     for dom in kclient.domains.list():
@@ -194,8 +190,8 @@ def project_create(kclient, projects, domain):
                             ' exists' % (project))
         else:
             logging.info('Creating project %s' % (project))
-            print "kclient.projects.create({}, {})".format(project, domain)
             kclient.projects.create(project, domain_id)
+
 
 def domain_create(kclient, domains):
     current_domains = [domain.name for domain in kclient.domains.list()]
@@ -206,7 +202,6 @@ def domain_create(kclient, domains):
         else:
             logging.info('Creating domain %s' % (dom))
             kclient.domains.create(dom)
-
 
 
 def user_create_v2(kclient, users):
@@ -234,7 +229,7 @@ def user_create_v3(kclient, users):
             if user['scope'] == 'project':
                 logging.info('Creating user %s' % (user['username']))
                 project_id = get_tenant_id(kclient, user['tenant'],
-                    api_version=3)
+                                           api_version=3)
                 kclient.users.create(name=user['username'],
                                      password=user['password'],
                                      email=user['email'],
@@ -269,9 +264,9 @@ def add_users_to_roles(kclient, users):
 
 def get_tenant_id(ks_client, tenant_name, api_version=2):
     if api_version == 2:
-        all_tenants =  ks_client.tenants.list()
+        all_tenants = ks_client.tenants.list()
     else:
-        all_tenants =  ks_client.projects.list()
+        all_tenants = ks_client.projects.list()
     for t in all_tenants:
         if t._info['name'] == tenant_name:
             return t._info['id']
@@ -662,9 +657,6 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
                                  image_name=image_name,
                                  flavor_name=flavor_name,
                                  key_name='mojo')
-        logging.info('1 Calling wait_for_boot')
-        logging.info('{}'.format(instance))
-        logging.info('2 Calling wait_for_boot')
         wait_for_boot(nova_client, instance.name,
                       image_config[image_name]['bootstring'], active_wait,
                       cloudinit_wait)

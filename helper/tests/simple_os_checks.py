@@ -22,7 +22,8 @@ def main(argv):
     if overcloud_novarc.get('API_VERSION', 2) == 2:
         novac = mojo_os_utils.get_nova_client(overcloud_novarc)
     else:
-        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc, scope='PROJECT')
+        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
+                                                              scope='PROJECT')
         novac = mojo_os_utils.get_nova_session_client(keystone_session)
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
