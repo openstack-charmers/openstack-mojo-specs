@@ -19,9 +19,17 @@ def main(argv):
     cloudinit_wait = int(mojo_utils.parse_mojo_arg(options, 'cloudinit_wait'))
     ping_wait = int(mojo_utils.parse_mojo_arg(options, 'ping_wait'))
     overcloud_novarc = mojo_utils.get_overcloud_auth()
-    novac = mojo_os_utils.get_nova_client(overcloud_novarc)
+    if overcloud_novarc.get('API_VERSION', 2) == 2:
+        novac = mojo_os_utils.get_nova_client(overcloud_novarc)
+    else:
+        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc, scope='PROJECT')
+        novac = mojo_os_utils.get_nova_session_client(keystone_session)
+
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
     mojo_os_utils.add_secgroup_rules(novac)
+    print novac.servers.list()
+    for server in novac.servers.list():
+        novac.servers.delete(server.id)
     for instanceset in machines:
         image_name, flavor_name, count = instanceset.split(":")
         mojo_os_utils.boot_and_test(novac,
