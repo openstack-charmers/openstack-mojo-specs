@@ -224,10 +224,12 @@ def juju_get(service, option):
     cmd = ['juju', 'get', service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
+
     if (option in service_config['settings'] and
             'value' in service_config['settings'][option]):
         return service_config['settings'][option]['value']
     else:
+        # Stable charms may not yet have the same config keys as next charms
         return None
 
 
