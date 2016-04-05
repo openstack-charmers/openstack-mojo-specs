@@ -224,8 +224,11 @@ def juju_get(service, option):
     cmd = ['juju', 'get', service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
-    if 'value' in service_config['settings'][option]:
+    if (option in service_config['settings'] and
+            'value' in service_config['settings'][option]):
         return service_config['settings'][option]['value']
+    else:
+        return None
 
 
 def get_juju_environments_yaml():
