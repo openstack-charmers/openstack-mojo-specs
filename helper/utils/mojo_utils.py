@@ -285,7 +285,10 @@ def get_overcloud_auth(juju_status=None):
         transport = 'http'
         port = 5000
     address = get_auth_url()
-    if juju_get('keystone', 'preferred-api-version') == 2:
+
+    if juju_get('keystone', 'preferred-api-version') in [2, None]:
+        # V2 Explicitly, or None when charm does not possess the config key
+        logging.info('Using keystone API V2 for overcloud auth')
         auth_settings = {
             'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
             'OS_TENANT_NAME': 'admin',
@@ -294,7 +297,9 @@ def get_overcloud_auth(juju_status=None):
             'OS_REGION_NAME': 'RegionOne',
             'API_VERSION': 2,
         }
-    else:
+    elif juju_get('keystone', 'preferred-api-version') >= 3:
+        # V3 or later
+        logging.info('Using keystone API V3 (or later) for overcloud auth')
         auth_settings = {
             'OS_AUTH_URL': '%s://%s:%i/v3' % (transport, address, port),
             'OS_USERNAME': 'admin',
