@@ -675,7 +675,7 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
         elif image_config[image_name]['auth_type'] == 'privkey':
             ssh_test_args['privkey'] = privkey
         if not ssh_test(**ssh_test_args):
-            raise Exception('SSH failed' % (ip))
+            raise Exception('SSH failed to instance at %s' % (ip))
 
 
 def check_guest_connectivity(nova_client, ping_wait=180):
