@@ -14,7 +14,7 @@ def setup_sdn(net_topology, net_info):
         keystonec = mojo_os_utils.get_keystone_client(overcloud_novarc)
         neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
     else:
-        # V3+
+        # Not V2
         keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
         keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
         neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
