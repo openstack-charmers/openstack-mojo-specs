@@ -1,2 +1,2 @@
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
+This spec performs a minimalist OpenStack deploy using the next charms,
+generally useful for validating MOJO itself, or other tooling.
