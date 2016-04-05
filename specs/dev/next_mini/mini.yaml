@@ -80,8 +80,3 @@ trusty-liberty:
 wily-liberty:
   inherits: openstack-base
   series: wily
-wily-liberty-proposed:
-  inherits: wily-liberty
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
