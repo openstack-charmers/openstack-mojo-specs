@@ -224,8 +224,13 @@ def juju_get(service, option):
     cmd = ['juju', 'get', service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
-    if 'value' in service_config['settings'][option]:
+
+    if (option in service_config['settings'] and
+            'value' in service_config['settings'][option]):
         return service_config['settings'][option]['value']
+    else:
+        # Stable charms may not yet have the same config keys as next charms
+        return None
 
 
 def get_juju_environments_yaml():
@@ -280,13 +285,32 @@ def get_overcloud_auth(juju_status=None):
         transport = 'http'
         port = 5000
     address = get_auth_url()
-    auth_settings = {
-        'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
-        'OS_TENANT_NAME': 'admin',
-        'OS_USERNAME': 'admin',
-        'OS_PASSWORD': 'openstack',
-        'OS_REGION_NAME': 'RegionOne',
-    }
+
+    if juju_get('keystone', 'preferred-api-version') in [2, None]:
+        # V2 Explicitly, or None when charm does not possess the config key
+        logging.info('Using keystone API V2 for overcloud auth')
+        auth_settings = {
+            'OS_AUTH_URL': '%s://%s:%i/v2.0' % (transport, address, port),
+            'OS_TENANT_NAME': 'admin',
+            'OS_USERNAME': 'admin',
+            'OS_PASSWORD': 'openstack',
+            'OS_REGION_NAME': 'RegionOne',
+            'API_VERSION': 2,
+        }
+    elif juju_get('keystone', 'preferred-api-version') >= 3:
+        # V3 or later
+        logging.info('Using keystone API V3 (or later) for overcloud auth')
+        auth_settings = {
+            'OS_AUTH_URL': '%s://%s:%i/v3' % (transport, address, port),
+            'OS_USERNAME': 'admin',
+            'OS_PASSWORD': 'openstack',
+            'OS_REGION_NAME': 'RegionOne',
+            'OS_DOMAIN_NAME': 'admin_domain',
+            'OS_USER_DOMAIN_NAME': 'admin_domain',
+            'OS_PROJECT_NAME': 'admin',
+            'OS_PROJECT_DOMAIN_NAME': 'Default',
+            'API_VERSION': 3,
+        }
     return auth_settings
 
 
@@ -480,8 +504,14 @@ def juju_check_hooks_complete():
     remote_runs(juju_units)
 
 
-def juju_wait_finished():
-    juju_wait.wait()
+def juju_wait_finished(max_wait=2700):
+    """Use juju-wait from local utils path to block until all service
+    units quiesce and satisfy workload status ready state."""
+    log = logging.getLogger()
+    log.setLevel(logging.DEBUG)
+    logging.info('Calling juju-wait')
+    juju_wait.wait(log, wait_for_workload=True, max_wait=max_wait)
+    logging.debug('End of juju-wait')
 
 
 def dict_to_yaml(dict_data):

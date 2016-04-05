@@ -1,0 +1,2 @@
+This spec performs a minimalist OpenStack deploy using the stable charms,
+generally useful for validating MOJO itself, or other tooling.

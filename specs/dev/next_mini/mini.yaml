@@ -1,0 +1,82 @@
+# A minimal validation bundle, useful for exercising MOJO or other tooling.
+#
+openstack-base:
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=1G
+      options:
+        dataset-size: 50%
+    rabbitmq-server:
+      charm: rabbitmq-server
+      constraints: mem=1G
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    nova-compute:
+      charm: nova-compute
+      num_units: 1
+      constraints: mem=1G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=1G
+      options:
+        network-manager: Quantum
+        quantum-security-groups: "yes"
+    neutron-gateway:
+      charm: neutron-gateway
+      constraints: mem=1G
+      options:
+        instance-mtu: 1300
+    glance:
+      charm: glance
+      constraints: mem=1G
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        neutron-security-groups: True
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+  relations:
+    - [ keystone, mysql ]
+    - [ nova-cloud-controller, mysql ]
+    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ nova-cloud-controller, glance ]
+    - [ nova-cloud-controller, keystone ]
+    - [ nova-compute, nova-cloud-controller ]
+    - [ nova-compute, mysql ]
+    - - nova-compute
+      - rabbitmq-server:amqp
+    - [ nova-compute, glance ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ neutron-gateway, nova-cloud-controller ]
+    - [ "neutron-gateway:amqp", rabbitmq-server ]
+    - [ neutron-api, mysql ]
+    - [ neutron-api, rabbitmq-server ]
+    - [ neutron-api, nova-cloud-controller ]
+    - [ neutron-api, neutron-openvswitch ]
+    - [ neutron-api, keystone ]
+    - [ neutron-openvswitch, nova-compute ]
+    - [ neutron-openvswitch, rabbitmq-server ]
+# icehouse
+trusty-icehouse:
+  inherits: openstack-base
+  series: trusty
+# liberty
+trusty-liberty:
+  inherits: openstack-base
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-liberty
+    source: cloud:trusty-liberty
+wily-liberty:
+  inherits: openstack-base
+  series: wily

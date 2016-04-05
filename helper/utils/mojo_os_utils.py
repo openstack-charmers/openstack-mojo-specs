@@ -2,9 +2,13 @@
 
 import swiftclient
 import glanceclient
-from keystoneclient.v2_0 import client as keystoneclient
+from keystoneclient.v2_0 import client as keystoneclient_v2
+from keystoneclient.auth.identity import v3
+from keystoneclient.v3 import client as keystoneclient_v3
+from keystoneclient import session
 import mojo_utils
 from novaclient.v1_1 import client as novaclient
+from novaclient.v2 import client as novaclient_v2
 from neutronclient.v2_0 import client as neutronclient
 import logging
 import re
@@ -30,14 +34,33 @@ def get_nova_creds(cloud_creds):
     return auth
 
 
-def get_ks_creds(cloud_creds):
-    auth = {
-        'username': cloud_creds['OS_USERNAME'],
-        'password': cloud_creds['OS_PASSWORD'],
-        'auth_url': cloud_creds['OS_AUTH_URL'],
-        'tenant_name': cloud_creds['OS_TENANT_NAME'],
-        'region_name': cloud_creds['OS_REGION_NAME'],
-    }
+def get_ks_creds(cloud_creds, scope='DOMAIN'):
+    if cloud_creds.get('API_VERSION', 2) == 2:
+        auth = {
+            'username': cloud_creds['OS_USERNAME'],
+            'password': cloud_creds['OS_PASSWORD'],
+            'auth_url': cloud_creds['OS_AUTH_URL'],
+            'tenant_name': cloud_creds['OS_TENANT_NAME'],
+            'region_name': cloud_creds['OS_REGION_NAME'],
+        }
+    else:
+        if scope == 'DOMAIN':
+            auth = {
+                'username': cloud_creds['OS_USERNAME'],
+                'password': cloud_creds['OS_PASSWORD'],
+                'auth_url': cloud_creds['OS_AUTH_URL'],
+                'user_domain_name': cloud_creds['OS_USER_DOMAIN_NAME'],
+                'domain_name': cloud_creds['OS_DOMAIN_NAME'],
+            }
+        else:
+            auth = {
+                'username': cloud_creds['OS_USERNAME'],
+                'password': cloud_creds['OS_PASSWORD'],
+                'auth_url': cloud_creds['OS_AUTH_URL'],
+                'user_domain_name': cloud_creds['OS_USER_DOMAIN_NAME'],
+                'project_domain_name': cloud_creds['OS_PROJECT_DOMAIN_NAME'],
+                'project_name': cloud_creds['OS_PROJECT_NAME'],
+            }
     return auth
 
 
@@ -58,17 +81,38 @@ def get_nova_client(novarc_creds, insecure=True):
     return novaclient.Client(**nova_creds)
 
 
+def get_nova_session_client(session):
+    return novaclient_v2.Client(session=session)
+
+
 def get_neutron_client(novarc_creds, insecure=True):
     neutron_creds = get_ks_creds(novarc_creds)
     neutron_creds['insecure'] = insecure
-    print neutron_creds
     return neutronclient.Client(**neutron_creds)
+
+
+def get_neutron_session_client(session):
+    return neutronclient.Client(session=session)
+
+
+def get_keystone_session(novarc_creds, scope='DOMAIN'):
+    keystone_creds = get_ks_creds(novarc_creds, scope=scope)
+    auth = v3.Password(**keystone_creds)
+    return session.Session(auth=auth)
+
+
+def get_keystone_session_client(session):
+    return keystoneclient_v3.Client(session=session)
 
 
 def get_keystone_client(novarc_creds, insecure=True):
     keystone_creds = get_ks_creds(novarc_creds)
-    keystone_creds['insecure'] = insecure
-    return keystoneclient.Client(**keystone_creds)
+    if novarc_creds.get('API_VERSION', 2) == 2:
+        keystone_creds['insecure'] = insecure
+        return keystoneclient_v2.Client(**keystone_creds)
+    else:
+        sess = v3.Password(**keystone_creds)
+        return keystoneclient_v3.Client(session=sess)
 
 
 def get_swift_client(novarc_creds, insecure=True):
@@ -78,10 +122,17 @@ def get_swift_client(novarc_creds, insecure=True):
 
 
 def get_glance_client(novarc_creds, insecure=True):
-    kc = get_keystone_client(novarc_creds)
-    glance_endpoint = kc.service_catalog.url_for(service_type='image',
-                                                 endpoint_type='publicURL')
-    return glanceclient.Client('1', glance_endpoint, token=kc.auth_token,
+    if novarc_creds.get('API_VERSION', 2) == 2:
+        kc = get_keystone_client(novarc_creds)
+        glance_ep_url = kc.service_catalog.url_for(service_type='image',
+                                                   endpoint_type='publicURL')
+    else:
+        keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
+        kc = keystoneclient_v3.Client(**keystone_creds)
+        glance_svc_id = kc.services.find(name='glance').id
+        ep = kc.endpoints.find(service_id=glance_svc_id, interface='public')
+        glance_ep_url = ep.url
+    return glanceclient.Client('1', glance_ep_url, token=kc.auth_token,
                                insecure=insecure)
 
 
@@ -118,13 +169,42 @@ def tenant_create(kclient, tenants):
     for tenant in tenants:
         if tenant in current_tenants:
             logging.warning('Not creating tenant %s it already'
-                            'exists' % (tenant))
+                            ' exists' % (tenant))
         else:
             logging.info('Creating tenant %s' % (tenant))
             kclient.tenants.create(tenant_name=tenant)
 
 
-def user_create(kclient, users):
+def project_create(kclient, projects, domain):
+    domain_id = None
+    for dom in kclient.domains.list():
+        if dom.name == domain:
+            domain_id = dom.id
+    current_projects = []
+    for project in kclient.projects.list():
+        if project.domain_id == domain_id:
+            current_projects.append(project.name)
+    for project in projects:
+        if project in current_projects:
+            logging.warning('Not creating project %s it already'
+                            ' exists' % (project))
+        else:
+            logging.info('Creating project %s' % (project))
+            kclient.projects.create(project, domain_id)
+
+
+def domain_create(kclient, domains):
+    current_domains = [domain.name for domain in kclient.domains.list()]
+    for dom in domains:
+        if dom in current_domains:
+            logging.warning('Not creating domain %s it already'
+                            ' exists' % (dom))
+        else:
+            logging.info('Creating domain %s' % (dom))
+            kclient.domains.create(dom)
+
+
+def user_create_v2(kclient, users):
     current_users = [user.name for user in kclient.users.list()]
     for user in users:
         if user['username'] in current_users:
@@ -137,6 +217,23 @@ def user_create(kclient, users):
                                  password=user['password'],
                                  email=user['email'],
                                  tenant_id=tenant_id)
+
+
+def user_create_v3(kclient, users):
+    current_users = [user.name for user in kclient.users.list()]
+    for user in users:
+        if user['username'] in current_users:
+            logging.warning('Not creating user %s it already'
+                            'exists' % (user['username']))
+        else:
+            if user['scope'] == 'project':
+                logging.info('Creating user %s' % (user['username']))
+                project_id = get_tenant_id(kclient, user['tenant'],
+                                           api_version=3)
+                kclient.users.create(name=user['username'],
+                                     password=user['password'],
+                                     email=user['email'],
+                                     project_id=project_id)
 
 
 def get_roles_for_user(kclient, user_id, tenant_id):
@@ -165,8 +262,12 @@ def add_users_to_roles(kclient, users):
                                             tenant_id)
 
 
-def get_tenant_id(ks_client, tenant_name):
-    for t in ks_client.tenants.list():
+def get_tenant_id(ks_client, tenant_name, api_version=2):
+    if api_version == 2:
+        all_tenants = ks_client.tenants.list()
+    else:
+        all_tenants = ks_client.projects.list()
+    for t in all_tenants:
         if t._info['name'] == tenant_name:
             return t._info['id']
     return None
@@ -428,6 +529,7 @@ def boot_instance(nova_client, image_name, flavor_name, key_name):
                                           flavor=flavor,
                                           key_name=key_name,
                                           nics=nics)
+    logging.info('Issued boot')
     return instance
 
 
@@ -467,6 +569,7 @@ def wait_for_cloudinit(nova_client, vm_name, bootstring, wait_time):
 
 def wait_for_boot(nova_client, vm_name, bootstring, active_wait,
                   cloudinit_wait):
+    logging.info('Waiting for boot')
     if not wait_for_active(nova_client, vm_name, active_wait):
         raise Exception('Error initialising %s' % vm_name)
     if not wait_for_cloudinit(nova_client, vm_name, bootstring,
@@ -554,6 +657,7 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
                                  image_name=image_name,
                                  flavor_name=flavor_name,
                                  key_name='mojo')
+        logging.info("Launched {}".format(instance))
         wait_for_boot(nova_client, instance.name,
                       image_config[image_name]['bootstring'], active_wait,
                       cloudinit_wait)
@@ -571,7 +675,7 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
         elif image_config[image_name]['auth_type'] == 'privkey':
             ssh_test_args['privkey'] = privkey
         if not ssh_test(**ssh_test_args):
-            raise Exception('SSH failed' % (ip))
+            raise Exception('SSH failed to instance at %s' % (ip))
 
 
 def check_guest_connectivity(nova_client, ping_wait=180):

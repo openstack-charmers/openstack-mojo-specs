@@ -1,0 +1,10 @@
+cirros:
+  auth_type: password
+  bootstring: cubswin:)
+  password: cubswin:)
+  username: cirros
+  container_format: bare
+  disk_format: qcow2
+  glance_name: cirros
+  is_public: 'true'
+  url: http://10.245.161.162:80/swift/v1/images/cirros-0.3.4-x86_64-disk.img
