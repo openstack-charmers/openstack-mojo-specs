@@ -1,2 +1,0 @@
-This spec performs a phased ha deploy then runs tests to validate the
-deployment. iThen chaos pony is used to add and remove units.

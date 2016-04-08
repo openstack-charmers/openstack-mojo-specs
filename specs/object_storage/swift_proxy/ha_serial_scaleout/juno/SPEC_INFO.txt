@@ -1,3 +1,0 @@
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy is then scaled out and once that has completed swift storage is
-scaled out. The resulting object store is then retested.

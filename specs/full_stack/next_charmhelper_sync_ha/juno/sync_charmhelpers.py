@@ -1,1 +1,0 @@
-../../../../helper/setup/sync_charmhelpers.py

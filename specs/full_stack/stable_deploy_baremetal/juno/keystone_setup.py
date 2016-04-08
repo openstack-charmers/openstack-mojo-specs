@@ -1,1 +1,0 @@
-../../../../helper/setup/keystone_setup.py

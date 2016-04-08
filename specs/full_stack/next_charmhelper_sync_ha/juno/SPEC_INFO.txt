@@ -1,2 +1,0 @@
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a ha deployment and testing the resulting cloud
