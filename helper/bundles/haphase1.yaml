@@ -163,19 +163,6 @@ trusty-icehouse:
   - openstack-neutron-api
   - openstack-percona-database
   series: trusty
-trusty-juno:
-  inherits:
-  - openstack-neutron-api
-  - openstack-percona-database
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-juno
-    source: cloud:trusty-juno
-utopic-juno:
-  inherits:
-  - openstack-neutron-api
-  - openstack-percona-database
-  series: utopic
 # kilo
 trusty-kilo:
   inherits:
@@ -195,16 +182,6 @@ trusty-kilo-staging:
   overrides:
     openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
     source: ppa:ubuntu-cloud-archive/kilo-staging
-vivid-kilo:
-  inherits:
-  - openstack-neutron-api
-  - openstack-mysql-database
-  series: vivid
-vivid-kilo-proposed:
-  inherits: vivid-kilo
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
 # liberty
 trusty-liberty:
   inherits:

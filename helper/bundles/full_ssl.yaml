@@ -213,31 +213,6 @@ trusty-icehouse-trunk:
     openstack-origin: ppa:openstack-ubuntu-testing/icehouse
     source: ppa:openstack-ubuntu-testing/icehouse
     offline-compression: "no"
-# juno
-trusty-juno:
-  inherits: openstack-icehouse
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-juno
-    source: cloud:trusty-updates/juno
-trusty-juno-proposed:
-  inherits: trusty-juno
-  overrides:
-    openstack-origin: cloud:trusty-juno/proposed
-    source: cloud:trusty-proposed/juno
-trusty-juno-staging:
-  inherits: trusty-juno
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/juno-staging
-    source: ppa:ubuntu-cloud-archive/juno-staging
-utopic-juno:
-  inherits: openstack-icehouse
-  series: utopic
-utopic-juno-proposed:
-  inherits: utopic-juno
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
 # kilo
 trusty-kilo:
   inherits: openstack-icehouse
@@ -255,14 +230,6 @@ trusty-kilo-staging:
   overrides:
     openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
     source: ppa:ubuntu-cloud-archive/kilo-staging
-vivid-kilo:
-  inherits: openstack-icehouse
-  series: vivid
-vivid-kilo-proposed:
-  inherits: vivid-kilo
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
 # liberty
 trusty-liberty:
   inherits: openstack-icehouse

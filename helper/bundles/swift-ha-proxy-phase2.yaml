@@ -34,18 +34,3 @@ precise-icehouse:
 trusty-icehouse:
   inherits: openstack-services
   series: trusty
-# juno
-trusty-juno:
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-juno
-    source: cloud:trusty-juno
-utopic-juno:
-  inherits: openstack-services
-  series: utopic
-utopic-juno-proposed:
-  inherits: utopic-juno
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed

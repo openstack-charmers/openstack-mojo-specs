@@ -45,6 +45,3 @@ precise-icehouse:
 trusty-icehouse:
   inherits: openstack-services
   series: trusty
-utopic-juno:
-  inherits: openstack-services
-  series: utopic

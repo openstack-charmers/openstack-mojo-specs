@@ -26,21 +26,21 @@ trusty:
   glance_name: trusty
   is_public: 'true'
   url: http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img
-utopic:
+wily:
   auth_type: privkey
   bootstring: finished at
   username: ubuntu
   container_format: bare
   disk_format: qcow2
-  glance_name: utopic
+  glance_name: wily
   is_public: 'true'
-  url: http://cloud-images.ubuntu.com/utopic/current/utopic-server-cloudimg-amd64-disk1.img
-vivid:
+  url: http://cloud-images.ubuntu.com/wily/current/wily-server-cloudimg-amd64-disk1.img
+xenial:
   auth_type: privkey
   bootstring: finished at
   username: ubuntu
   container_format: bare
   disk_format: qcow2
-  glance_name: vivid
+  glance_name: xenial
   is_public: 'true'
-  url: http://cloud-images.ubuntu.com/vivid/current/vivid-server-cloudimg-amd64-disk1.img
+  url: http://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img

@@ -233,13 +233,7 @@ openstack-services:
 trusty-icehouse-ha:
   inherits: openstack-services
   series: trusty
-# juno
-trusty-juno-ha:
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-juno
-    source: cloud:trusty-juno
+# kilo
 trusty-kilo-ha:
   inherits: openstack-services
   series: trusty
@@ -252,9 +246,6 @@ trusty-liberty-ha:
   overrides:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
-vivid-kilo-ha:
-  inherits: openstack-services
-  series: vivid
 trusty-mitaka-ha:
   inherits: openstack-services
   series: trusty

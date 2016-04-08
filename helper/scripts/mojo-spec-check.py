@@ -23,7 +23,7 @@ UBUNTU_RELEASES = {}
 OPENSTACK_RELEASES = {
     'icehouse': ['precise', 'trusty'],
     'juno': ['trusty'],
-    'kilo': ['trusty', 'vivid'],
+    'kilo': ['trusty'],
     'liberty': ['trusty', 'wily'],
     'mitaka': ['trusty', 'xenial'],
 }
