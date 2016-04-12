@@ -1,6 +1,9 @@
 # Collect the charm branches from Launchpad
 collect config=collect-stable-${MOJO_SERIES}
 
+# Checkout stable
+script config=git_checkout_stable.py
+
 # Insert new uuid for fsid in bundle
 script config=scripts/fsid_uuid_insert.sh lxc=False
 

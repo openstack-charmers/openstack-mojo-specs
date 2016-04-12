@@ -357,16 +357,17 @@ def sync_all_charmhelpers():
             sync_charmhelpers(charm_dir)
 
 
-def git_checkout_next(charmdir):
-    pass
+def git_checkout_branch(charmdir, branch):
+    cmd = ['git', '-C', charmdir, 'checkout',  branch]
+    subprocess.check_call(cmd)
 
 
-def git_checkout_next_all():
+def git_checkout_all(branch):
     charm_base_dir = get_charm_dir()
     for direc in os.listdir(charm_base_dir):
-        charm_dir = os.path.join(charm_base_dir, direc)
-        if os.path.isdir(charm_dir):
-            print "CO next {}".format(charm_dir)
+        git_dir = os.path.join(charm_base_dir, direc, '.git')
+        if os.path.isdir(git_dir):
+            git_checkout_branch(git_dir, branch)
 
 
 def upgrade_service(svc, switch=None):

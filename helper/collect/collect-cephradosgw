@@ -1,6 +1,5 @@
-ceph                   lp:~openstack-charmers/charms/trusty/ceph/next
-ceph-osd               lp:~openstack-charmers/charms/trusty/ceph-osd/next
-ceph-radosgw           lp:~gnuoy/charms/trusty/ceph-radosgw/next-support-ha
-hacluster              lp:charms/trusty/hacluster
-keystone               lp:~openstack-charmers/charms/trusty/keystone/next
-mysql                  lp:charms/trusty/percona-cluster
+ceph                   git://github.com/openstack/charm-ceph
+ceph-radosgw           git://github.com/openstack/charm-ceph-radosgw
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
+keystone               git://github.com/openstack/charm-keystone
+mysql                  git://github.com/openstack/charm-percona-cluster
