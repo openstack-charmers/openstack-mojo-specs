@@ -1,0 +1,268 @@
+# vim: set ts=2 et:
+openstack-services:
+  services:
+    mysql:
+      charm: percona-cluster
+      constraints: mem=1G
+      num_units: 3
+      options:
+        innodb-buffer-pool-size: 200M
+        sst-password: changeme
+        root-password: changeme
+        vip: 10.5.100.1
+    mysql-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    rabbitmq-server:
+      charm: rabbitmq-server
+      constraints: mem=1G
+      num_units: 3
+    ceph:
+      charm: ceph
+      num_units: 3
+      constraints: mem=1G
+      options:
+        monitor-count: 3
+        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
+        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
+        osd-devices: /dev/vdb
+        osd-reformat: "yes"
+        ephemeral-unmount: /mnt
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      num_units: 3
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+        vip: 10.5.100.2
+    keystone-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    openstack-dashboard:
+      charm: openstack-dashboard
+      constraints: mem=1G
+      num_units: 3
+      options:
+        vip: 10.5.100.3
+    dashboard-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    nova-compute:
+      charm: nova-compute
+      num_units: 3
+      constraints: mem=4G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=1G
+      num_units: 3
+      options:
+        network-manager: Neutron
+        vip: 10.5.100.4
+    nova-cc-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    neutron-gateway:
+      charm: neutron-gateway
+      constraints: mem=1G
+      options:
+        instance-mtu: 1300
+    cinder:
+      charm: cinder
+      constraints: mem=1G
+      num_units: 3
+      options:
+        block-device: "None"
+        glance-api-version: 2
+        vip: 10.5.100.5
+    cinder-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    cinder-ceph:
+      charm: cinder-ceph
+    glance:
+      charm: glance
+      constraints: mem=1G
+      num_units: 3
+      options:
+        vip: 10.5.100.9
+    glance-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    swift-proxy:
+      charm: swift-proxy
+      constraints: mem=1G
+      num_units: 3
+      options:
+        zone-assignment: manual
+        replicas: 3
+        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+        vip: 10.5.100.6
+    swift-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    swift-storage-z1:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 1
+        block-device: vdb
+        overwrite: "true"
+    swift-storage-z2:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 2
+        block-device: vdb
+        overwrite: "true"
+    swift-storage-z3:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 3
+        block-device: vdb
+        overwrite: "true"
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+      num_units: 3
+      options:
+        vip: 10.5.100.7
+    ceilometer-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    ceilometer-agent:
+      charm: ceilometer-agent
+    heat:
+      charm: heat
+    mongodb:
+      charm: mongodb
+      constraints: mem=1G
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      num_units: 3
+      options:
+        neutron-security-groups: True
+        vip: 10.5.100.8
+    neutron-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+  relations:
+    - [ keystone, mysql ]
+    - [ nova-cloud-controller, mysql ]
+    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ nova-cloud-controller, glance ]
+    - [ nova-cloud-controller, keystone ]
+    - [ nova-compute, nova-cloud-controller ]
+    - [ nova-compute, mysql ]
+    - - nova-compute
+      - rabbitmq-server:amqp
+    - [ nova-compute, glance ]
+    - [ nova-compute, ceph ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ glance, ceph ]
+    - [ glance, cinder ]
+    - [ cinder, mysql ]
+    - [ cinder, rabbitmq-server ]
+    - [ cinder, nova-cloud-controller ]
+    - [ cinder, keystone ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph ]
+    - [ neutron-gateway, nova-cloud-controller ]
+    - [ openstack-dashboard, keystone ]
+    - [ swift-proxy, keystone ]
+    - [ swift-proxy, swift-storage-z1 ]
+    - [ swift-proxy, swift-storage-z2 ]
+    - [ swift-proxy, swift-storage-z3 ]
+    - - ceilometer
+      - keystone:identity-service
+    - [ ceilometer, rabbitmq-server ]
+    - [ ceilometer, mongodb ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - [ heat, mysql ]
+    - [ heat, keystone ]
+    - [ heat, rabbitmq-server ]
+    - [ mysql, mysql-hacluster ]
+    - [ keystone, keystone-hacluster ]
+    - [ nova-cloud-controller, nova-cc-hacluster ]
+    - [ cinder, cinder-hacluster ]
+    - [ glance, glance-hacluster ]
+    - [ openstack-dashboard, dashboard-hacluster ]
+    - [ ceilometer, ceilometer-hacluster ]
+    - [ swift-proxy, swift-hacluster ]
+    - [ "neutron-gateway:amqp", rabbitmq-server ]
+    - [ neutron-api, mysql ]
+    - [ neutron-api, rabbitmq-server ]
+    - [ neutron-api, nova-cloud-controller ]
+    - [ neutron-api, neutron-openvswitch ]
+    - [ neutron-api, keystone ]
+    - [ neutron-api, neutron-gateway ]
+    - [ neutron-openvswitch, nova-compute ]
+    - [ neutron-openvswitch, rabbitmq-server ]
+    - [ neutron-api, neutron-hacluster ]
+# icehouse
+trusty-icehouse-ha:
+  inherits: openstack-services
+  series: trusty
+# kilo
+trusty-kilo-ha:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-kilo
+    source: cloud:trusty-kilo
+trusty-liberty-ha:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-liberty
+    source: cloud:trusty-liberty
+trusty-mitaka-ha:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-mitaka/proposed
+    source: cloud:trusty-mitaka
+trusty-mitaka-proposed:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-mitaka/proposed
+    source: cloud:trusty-mitaka/proposed
+xenial-mitaka-ha:
+  inherits: openstack-services
+  series: xenial
+  services:
+    mysql:
+      branch: lp:charms/trusty/mysql
+xenial-mitaka-proposed:
+  inherits: xenial-mitaka
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
