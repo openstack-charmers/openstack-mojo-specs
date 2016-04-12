@@ -86,7 +86,6 @@ openstack-services:
       charm: nova-cloud-controller
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
       to:
         - "lxc:swift-storage-z3=0"
     neutron-gateway:

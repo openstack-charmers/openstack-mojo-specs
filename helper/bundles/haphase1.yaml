@@ -51,7 +51,6 @@ openstack-services:
       num_units: 2
       options:
         network-manager: Quantum
-        quantum-security-groups: "yes"
         vip: 10.5.100.3
     ncc-hacluster:
       charm: hacluster
