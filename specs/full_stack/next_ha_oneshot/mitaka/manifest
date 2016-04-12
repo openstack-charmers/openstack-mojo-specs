@@ -1,6 +1,9 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-ha
 
+# Checkout next
+script config=git_checkout_next.py
+
 # Use juju deployer to create the units for the deployment
 deploy config=ha.yaml delay=0 wait=True target=${MOJO_SERIES}-mitaka-ha
 

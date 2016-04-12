@@ -357,6 +357,18 @@ def sync_all_charmhelpers():
             sync_charmhelpers(charm_dir)
 
 
+def git_checkout_next(charmdir):
+    pass
+
+
+def git_checkout_next_all():
+    charm_base_dir = get_charm_dir()
+    for direc in os.listdir(charm_base_dir):
+        charm_dir = os.path.join(charm_base_dir, direc)
+        if os.path.isdir(charm_dir):
+            print "CO next"
+
+
 def upgrade_service(svc, switch=None):
     repo_dir = os.environ['MOJO_REPO_DIR']
     logging.info('Upgrading ' + svc)
