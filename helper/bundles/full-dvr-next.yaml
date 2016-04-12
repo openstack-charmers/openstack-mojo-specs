@@ -1,14 +1,11 @@
 # vim: set ts=2 et:
-# deployer bundle for development ('next') charms
-# UOSCI relies on this for OS-on-OS deployment testing
 openstack-services:
   services:
     mysql:
       charm: mysql
-      constraints: mem=4G
+      constraints: mem=1G
       options:
         dataset-size: 50%
-        max-connections: 20000
     rabbitmq-server:
       charm: rabbitmq-server
       constraints: mem=1G
@@ -29,37 +26,27 @@ openstack-services:
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-        preferred-api-version: 3
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G
     nova-compute:
       charm: nova-compute
-      num_units: 3
+      num_units: 1
       constraints: mem=4G
       options:
         enable-live-migration: True
         enable-resize: True
-        migration-auth-type: ssh
     nova-cloud-controller:
       charm: nova-cloud-controller
       constraints: mem=1G
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
-    neutron-gateway:
-      charm: neutron-gateway
-      constraints: mem=1G
-      options:
-        instance-mtu: 1300
     cinder:
       charm: cinder
       options:
         block-device: "None"
         glance-api-version: 2
-      constraints: mem=1G
-    cinder-ceph:
-      charm: cinder-ceph
+      constraints": mem=1G
     glance:
       charm: glance
       constraints: mem=1G
@@ -91,16 +78,6 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-    ceilometer:
-      charm: ceilometer
-      constraints: mem=1G
-    ceilometer-agent:
-      charm: ceilometer-agent
-    heat:
-      charm: heat
-    mongodb:
-      charm: mongodb
-      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -121,27 +98,14 @@ openstack-services:
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, cinder-ceph ]
-    - [ cinder-ceph, ceph ]
-    - [ neutron-gateway, nova-cloud-controller ]
+    - [ cinder, ceph ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    - - ceilometer
-      - keystone:identity-service
-    - [ ceilometer, rabbitmq-server ]
-    - [ ceilometer, mongodb ]
-    - [ ceilometer-agent, nova-compute ]
-    - [ ceilometer-agent, ceilometer ]
-    - [ heat, mysql ]
-    - [ heat, keystone ]
-    - [ heat, rabbitmq-server ]
 openstack-singlerabbit:
   inherits: openstack-services
-  relations:
-    - [ "neutron-gateway:amqp", rabbitmq-server ]
 openstack-icehouse:
   inherits: openstack-singlerabbit
   services:
@@ -149,16 +113,20 @@ openstack-icehouse:
       charm: neutron-api
       constraints: mem=1G
       options:
+        overlay-network-type: 'vxlan'
+        l2-population: True
         neutron-security-groups: True
+        enable-dvr: True
     neutron-openvswitch:
       charm: neutron-openvswitch
+      options:
+        enable-local-dhcp-and-metadata: True
   relations:
   - [ neutron-api, mysql ]
   - [ neutron-api, rabbitmq-server ]
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]
   - [ neutron-api, keystone ]
-  - [ neutron-api, neutron-gateway ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
 openstack-icehouse-msg-split:
@@ -180,21 +148,15 @@ openstack-icehouse-msg-split:
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]
   - [ neutron-api, keystone ]
-  - [ neutron-api, neutron-gateway ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server-neutron ]
-  - [ "neutron-gateway:amqp-nova", rabbitmq-server ]
-  - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
 # icehouse
 precise-icehouse:
   inherits: openstack-singlerabbit
   series: precise
-  services:
-    mysql:
-      branch: lp:charms/trusty/mysql
   overrides:
     openstack-origin: cloud:precise-icehouse
-    source: cloud:precise-icehouse
+    source: cloud:precise-updates/icehouse
 precise-icehouse-proposed:
   inherits: precise-icehouse
   overrides:
@@ -238,7 +200,7 @@ trusty-kilo-proposed:
   inherits: trusty-kilo
   overrides:
     openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-kilo/proposed
+    source: cloud:trusty-proposed/kilo
 trusty-kilo-staging:
   inherits: trusty-kilo
   overrides:
@@ -264,9 +226,6 @@ trusty-liberty-staging:
 wily-liberty:
   inherits: openstack-icehouse
   series: wily
-  services:
-    mysql:
-      branch: lp:charms/trusty/mysql
 wily-liberty-proposed:
   inherits: wily-liberty
   overrides:
@@ -283,7 +242,7 @@ trusty-mitaka-proposed:
   inherits: trusty-mitaka
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
-    source: cloud:trusty-mitaka/proposed
+    source: cloud:trusty-proposed/mitaka
 trusty-mitaka-staging:
   inherits: trusty-mitaka
   overrides:
@@ -292,11 +251,9 @@ trusty-mitaka-staging:
 xenial-mitaka:
   inherits: openstack-icehouse
   series: xenial
-  services:
-    mysql:
-      branch: lp:charms/trusty/mysql
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
     source: proposed
     openstack-origin: distro-proposed
+

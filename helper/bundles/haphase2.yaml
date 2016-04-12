@@ -50,7 +50,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 2
       options:
-        network-manager: Quantum
+        network-manager: Neutron
         quantum-security-groups: "yes"
         vip: 10.5.100.3
     ncc-hacluster:

@@ -2,24 +2,13 @@
 openstack-services:
   services:
     mysql:
-      charm: mysql
+      charm: percona-cluster
       constraints: mem=1G
       options:
         dataset-size: 50%
     rabbitmq-server:
       charm: rabbitmq-server
       constraints: mem=1G
-    ceph:
-      charm: ceph
-      num_units: 3
-      constraints: mem=1G
-      options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
-        ephemeral-unmount: /mnt
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -45,6 +34,7 @@ openstack-services:
     neutron-gateway:
       charm: neutron-gateway
       constraints: mem=1G
+      num_units: 2
       options:
         instance-mtu: 1300
     cinder:
@@ -55,42 +45,6 @@ openstack-services:
       constraints": mem=1G
     glance:
       charm: glance
-      constraints: mem=1G
-    swift-proxy:
-      charm: swift-proxy
-      constraints: mem=1G
-      options:
-        zone-assignment: manual
-        replicas: 3
-        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
-    swift-storage-z1:
-      charm: swift-storage
-      constraints: mem=1G
-      options:
-        zone: 1
-        block-device: vdb
-        overwrite: "true"
-    swift-storage-z2:
-      charm: swift-storage
-      constraints: mem=1G
-      options:
-        zone: 2
-        block-device: vdb
-        overwrite: "true"
-    swift-storage-z3:
-      charm: swift-storage
-      constraints: mem=1G
-      options:
-        zone: 3
-        block-device: vdb
-        overwrite: "true"
-    ceilometer:
-      charm: ceilometer
-      constraints: mem=1G
-    ceilometer-agent:
-      charm: ceilometer-agent
-    mongodb:
-      charm: mongodb
       constraints: mem=1G
   relations:
     - [ keystone, mysql ]
@@ -103,27 +57,15 @@ openstack-services:
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
-    - [ nova-compute, ceph ]
     - [ glance, mysql ]
     - [ glance, keystone ]
-    - [ glance, ceph ]
     - [ glance, cinder ]
     - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
-    - [ swift-proxy, keystone ]
-    - [ swift-proxy, swift-storage-z1 ]
-    - [ swift-proxy, swift-storage-z2 ]
-    - [ swift-proxy, swift-storage-z3 ]
-    - [ "ceilometer:identity-service", keystone ]
-    - [ ceilometer, rabbitmq-server ]
-    - [ ceilometer, mongodb ]
-    - [ ceilometer-agent, nova-compute ]
-    - [ ceilometer-agent, ceilometer ]
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
@@ -135,7 +77,11 @@ openstack-icehouse:
       charm: neutron-api
       constraints: mem=1G
       options:
+        overlay-network-type: 'vxlan'
+        l2-population: False
         neutron-security-groups: True
+        enable-dvr: False
+        enable-l3ha: True
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
@@ -144,8 +90,10 @@ openstack-icehouse:
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]
   - [ neutron-api, keystone ]
+  - [ neutron-api, "neutron-gateway:neutron-plugin-api" ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
+  - [ neutron-openvswitch, nova-cloud-controller ]
 openstack-icehouse-msg-split:
   inherits: openstack-services
   services:
@@ -209,70 +157,15 @@ trusty-icehouse-trunk:
     openstack-origin: ppa:openstack-ubuntu-testing/icehouse
     source: ppa:openstack-ubuntu-testing/icehouse
     offline-compression: "no"
-# kilo
 trusty-kilo:
   inherits: openstack-icehouse
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
     source: cloud:trusty-kilo
-trusty-kilo-proposed:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-proposed/kilo
-trusty-kilo-staging:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
-    source: ppa:ubuntu-cloud-archive/kilo-staging
-# liberty
 trusty-liberty:
   inherits: openstack-icehouse
   series: trusty
   overrides:
-    openstack-origin: cloud:trusty-liberty
-    source: cloud:trusty-liberty
-trusty-liberty-proposed:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: cloud:trusty-liberty/proposed
-    source: cloud:trusty-liberty/proposed
-trusty-liberty-staging:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
-    source: ppa:ubuntu-cloud-archive/liberty-staging
-wily-liberty:
-  inherits: openstack-icehouse
-  series: wily
-wily-liberty-proposed:
-  inherits: wily-liberty
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-# mitaka
-trusty-mitaka:
-  inherits: openstack-icehouse
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-mitaka
-    source: cloud:trusty-mitaka
-trusty-mitaka-proposed:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: cloud:trusty-mitaka/proposed
-    source: cloud:trusty-proposed/mitaka
-trusty-mitaka-staging:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
-    source: ppa:ubuntu-cloud-archive/mitaka-staging
-xenial-mitaka:
-  inherits: openstack-icehouse
-  series: xenial
-xenial-mitaka-proposed:
-  inherits: xenial-mitaka
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
+    openstack-origin: cloud:trusty-kilo
+    source: cloud:trusty-kilo

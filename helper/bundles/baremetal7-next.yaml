@@ -1,97 +1,134 @@
 # vim: set ts=2 et:
+#
+# A 7-machine bare metal bundle which is appx. equivalent to "sparse/next.yaml"
+# with some smooshing and co-location for density.  This is an EXAMPLE TEST BUNDLE.
+#
+# See example usage in README @ lp:openstack-charm-testing.
+# http://bazaar.launchpad.net/~ost-maintainers/openstack-charm-testing/trunk/view/head:/README
+#
 openstack-services:
   services:
     mysql:
       charm: mysql
-      constraints: mem=1G
       options:
         dataset-size: 50%
+      to:
+        - "0"
     rabbitmq-server:
       charm: rabbitmq-server
-      constraints: mem=1G
+      to:
+        - "lxc:0"
     ceph:
       charm: ceph
       num_units: 3
-      constraints: mem=1G
       options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
+        fsid: 11111111-2222-3333-4444-555555555555
         monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
+        osd-devices: /dev/vdb /dev/sdb
         osd-reformat: "yes"
-        ephemeral-unmount: /mnt
+      to:
+        - "nova-compute=0"
+        - "nova-compute=1"
+        - "nova-compute=2"
+    ceph-osd:
+      charm: ceph-osd
+      options:
+        osd-devices: /dev/vdb /dev/sdb
+        osd-reformat: "yes"
+      to:
+        - "0"
+    swift-proxy:
+      charm: swift-proxy
+      options:
+        zone-assignment: manual
+        replicas: 3
+        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+      to:
+        - "lxc:0"
+    swift-storage-z1:
+      charm: swift-storage
+      options:
+        zone: 1
+        block-device: /dev/vdb /dev/sdb
+        overwrite: "true"
+    swift-storage-z2:
+      charm: swift-storage
+      options:
+        zone: 2
+        block-device: /dev/vdb /dev/sdb
+        overwrite: "true"
+    swift-storage-z3:
+      charm: swift-storage
+      options:
+        zone: 3
+        block-device: /dev/vdb /dev/sdb
+        overwrite: "true"
     keystone:
       charm: keystone
-      constraints: mem=1G
       options:
         admin-password: openstack
         admin-token: ubuntutesting
+      to:
+        - "lxc:swift-storage-z1=0"
     openstack-dashboard:
       charm: openstack-dashboard
-      constraints: mem=1G
+      to:
+        - "lxc:swift-storage-z2=0"
     nova-compute:
       charm: nova-compute
       num_units: 3
-      constraints: mem=4G
       options:
         enable-live-migration: True
         enable-resize: True
+        migration-auth-type: ssh
+        enable-resize: True
     nova-cloud-controller:
       charm: nova-cloud-controller
-      constraints: mem=1G
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
+      to:
+        - "lxc:swift-storage-z3=0"
     neutron-gateway:
       charm: neutron-gateway
-      constraints: mem=1G
       options:
+        ext-port: eth1
         instance-mtu: 1300
+      to:
+        - "0"
     cinder:
       charm: cinder
       options:
         block-device: "None"
         glance-api-version: 2
-      constraints": mem=1G
+      to:
+        - "lxc:nova-compute=2"
+    cinder-ceph:
+      charm: cinder-ceph
     glance:
       charm: glance
-      constraints: mem=1G
-    swift-proxy:
-      charm: swift-proxy
-      constraints: mem=1G
-      options:
-        zone-assignment: manual
-        replicas: 3
-        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
-    swift-storage-z1:
-      charm: swift-storage
-      constraints: mem=1G
-      options:
-        zone: 1
-        block-device: vdb
-        overwrite: "true"
-    swift-storage-z2:
-      charm: swift-storage
-      constraints: mem=1G
-      options:
-        zone: 2
-        block-device: vdb
-        overwrite: "true"
-    swift-storage-z3:
-      charm: swift-storage
-      constraints: mem=1G
-      options:
-        zone: 3
-        block-device: vdb
-        overwrite: "true"
+      to:
+        - "lxc:nova-compute=1"
     ceilometer:
       charm: ceilometer
-      constraints: mem=1G
+      to:
+        - "lxc:swift-storage-z1=0"
     ceilometer-agent:
       charm: ceilometer-agent
+    heat:
+      charm: heat
+      to:
+        - "lxc:swift-storage-z2=0"
     mongodb:
       charm: mongodb
-      constraints: mem=1G
+      to:
+        - "lxc:swift-storage-z3=0"
+    ntp:
+      charm: ntp
+      num_units: 0
+#    juju-gui:
+#      charm: juju-gui
+#      to:
+#        - "lxc:swift-storage-z3=0"
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -112,18 +149,31 @@ openstack-services:
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    - [ "ceilometer:identity-service", keystone ]
+    - - ceilometer
+      - keystone:identity-service
     - [ ceilometer, rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+    - [ heat, mysql ]
+    - [ heat, keystone ]
+    - [ heat, rabbitmq-server ]
+    - - ceph-osd:mon
+      - ceph:osd
+    - - ntp:juju-info
+      - nova-compute:juju-info
+    - - ntp:juju-info
+      - neutron-gateway:juju-info
+    - - ntp:juju-info
+      - ceph-osd:juju-info
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
@@ -133,9 +183,10 @@ openstack-icehouse:
   services:
     neutron-api:
       charm: neutron-api
-      constraints: mem=1G
       options:
         neutron-security-groups: True
+      to:
+        - "lxc:nova-compute=0"
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
@@ -144,6 +195,7 @@ openstack-icehouse:
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]
   - [ neutron-api, keystone ]
+  - [ neutron-api, neutron-gateway ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
 openstack-icehouse-msg-split:
@@ -151,14 +203,12 @@ openstack-icehouse-msg-split:
   services:
     neutron-api:
       charm: neutron-api
-      constraints: mem=1G
       options:
         neutron-security-groups: True
     neutron-openvswitch:
       charm: neutron-openvswitch
     rabbitmq-server-neutron:
       charm: rabbitmq-server
-      constraints: mem=1G
   relations:
   - [ neutron-api, mysql ]
   - [ neutron-api, rabbitmq-server-neutron ]
@@ -176,7 +226,7 @@ precise-icehouse:
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse
-    source: cloud:precise-updates/icehouse
+    source: cloud:precise-icehouse
 precise-icehouse-proposed:
   inherits: precise-icehouse
   overrides:
@@ -220,7 +270,7 @@ trusty-kilo-proposed:
   inherits: trusty-kilo
   overrides:
     openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-proposed/kilo
+    source: cloud:trusty-kilo/proposed
 trusty-kilo-staging:
   inherits: trusty-kilo
   overrides:
@@ -262,7 +312,7 @@ trusty-mitaka-proposed:
   inherits: trusty-mitaka
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
-    source: cloud:trusty-proposed/mitaka
+    source: cloud:trusty-mitaka/proposed
 trusty-mitaka-staging:
   inherits: trusty-mitaka
   overrides:
