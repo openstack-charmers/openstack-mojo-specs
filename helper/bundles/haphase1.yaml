@@ -1,4 +1,7 @@
 # vim: set ts=2 et:
+#
+# Config and topology for STABLE charms
+#
 openstack-services:
   series: trusty
   services:
@@ -50,7 +53,8 @@ openstack-services:
       constraints: mem=1G
       num_units: 2
       options:
-        network-manager: Quantum
+        network-manager: Neutron
+        quantum-security-groups: "yes"
         vip: 10.5.100.3
     ncc-hacluster:
       charm: hacluster

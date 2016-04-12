@@ -14,6 +14,26 @@ for spec in $(find specs/{object_storage,full_stack} -name manifest); do
     [[ -n "$MSGS" ]] && echo -e "$MSGS\n"
 done
 
+# Keep bundle names consistent
+bundle_names="$(ls -1 ./helper/bundles/*_*)"
+if [[ -n "$bundle_names" ]]; then
+  echo -e "(!)\tFor consistency, bundle file names should not use underscores (hyphens are ok)."
+  failed=1
+  echo "$bundle_names"
+else
+  echo "Bundle file names OK"
+fi
+
+# Keep spec dir names consistent
+spec_dir_names="$(find ./specs -type d | grep -)"
+if [[ -n "$spec_dir_names" ]]; then
+  echo -e "(!)\tFor consistency, spec dir names should not use hyphens (underscores are ok)."
+  failed=1
+  echo "$spec_dir_names"
+else
+  echo "Bundle file names OK"
+fi
+
 if [[ -n "$failed" ]]; then
     echo "One or more specs failed a sanity check."
     exit 1

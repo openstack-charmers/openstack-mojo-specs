@@ -71,7 +71,7 @@ openstack-services:
       charm: nova-cloud-controller
       constraints: mem=1G
       options:
-        network-manager: Quantum
+        network-manager: Neutron
         vip: 10.5.104.1
     nova-cloud-controller-hacluster:
       charm: hacluster
