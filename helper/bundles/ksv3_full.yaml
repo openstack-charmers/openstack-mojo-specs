@@ -46,7 +46,6 @@ openstack-services:
       constraints: mem=1G
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
     neutron-gateway:
       charm: neutron-gateway
       constraints: mem=1G

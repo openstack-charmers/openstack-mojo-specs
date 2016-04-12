@@ -69,7 +69,6 @@ openstack-services:
       num_units: 3
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
         vip: 10.5.100.4
     nova-cc-hacluster:
       charm: hacluster

@@ -41,7 +41,6 @@ openstack-services:
       constraints: mem=1G
       options:
         network-manager: Quantum
-        quantum-security-groups: "yes"
     cinder:
       charm: cinder
       options:
