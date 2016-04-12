@@ -366,7 +366,7 @@ def git_checkout_next_all():
     for direc in os.listdir(charm_base_dir):
         charm_dir = os.path.join(charm_base_dir, direc)
         if os.path.isdir(charm_dir):
-            print "CO next"
+            print "CO next {}".format(charm_dir)
 
 
 def upgrade_service(svc, switch=None):
