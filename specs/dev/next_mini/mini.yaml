@@ -27,8 +27,7 @@ openstack-base:
       charm: nova-cloud-controller
       constraints: mem=1G
       options:
-        network-manager: Quantum
-        quantum-security-groups: "yes"
+        network-manager: Neutron
     neutron-gateway:
       charm: neutron-gateway
       constraints: mem=1G

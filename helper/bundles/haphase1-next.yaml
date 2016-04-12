@@ -1,7 +1,4 @@
 # vim: set ts=2 et:
-#
-# Config and topology for STABLE charms
-#
 openstack-services:
   series: trusty
   services:
@@ -54,7 +51,6 @@ openstack-services:
       num_units: 2
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
         vip: 10.5.100.3
     ncc-hacluster:
       charm: hacluster
@@ -116,49 +112,8 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-  relations:
-    - [ keystone, keystone-hacluster ]
-    - [ nova-cloud-controller, ncc-hacluster ]
-    - [ nova-cloud-controller, rabbitmq-server ]
-    - [ nova-cloud-controller, glance ]
-    - [ nova-cloud-controller, keystone ]
-    - [ nova-compute, nova-cloud-controller ]
-    - - nova-compute
-      - rabbitmq-server:amqp
-    - [ nova-compute, glance ]
-    - [ nova-compute, ceph ]
-    - [ glance, glance-hacluster ]
-    - [ glance, keystone ]
-    - [ glance, ceph ]
-    - [ glance, cinder ]
-    - [ glance, rabbitmq-server ]
-    - [ cinder, cinder-hacluster ]
-    - [ cinder, rabbitmq-server ]
-    - [ cinder, nova-cloud-controller ]
-    - [ cinder, keystone ]
-    - [ cinder, cinder-ceph ]
-    - [ cinder-ceph, ceph ]
-    - [ neutron-gateway, nova-cloud-controller ]
-    - [ "neutron-gateway:amqp", rabbitmq-server ]
-    - [ openstack-dashboard, keystone ]
-    - [ openstack-dashboard, dashboard-hacluster ]
-    - [ swift-proxy, keystone ]
-    - [ swift-proxy, swift-proxy-hacluster ]
-    - [ swift-proxy, swift-storage-z1 ]
-    - [ swift-proxy, swift-storage-z2 ]
-    - [ swift-proxy, swift-storage-z3 ]
-openstack-database-relations:
-  relations:
-    - [ mysql, mysql-hacluster ]
-    - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-compute, mysql ]
-    - [ glance, mysql ]
-    - [ cinder, mysql ]
 openstack-mysql-database:
-  inherits:
-  - openstack-services
-  - openstack-database-relations
+  inherits: openstack-services
   services:
     mysql:
       charm: mysql
@@ -168,9 +123,7 @@ openstack-mysql-database:
         vip: 10.5.100.10
         vip_cidr: 16
 openstack-percona-database:
-  inherits:
-  - openstack-services
-  - openstack-database-relations
+  inherits: openstack-services
   services:
     mysql:
       charm: percona-cluster
@@ -198,16 +151,6 @@ openstack-neutron-api:
         corosync_key: "JFgMRJhNfKnmBRGm+rbAwpZmd/1FX08SCzOzDg/teaVtfGf60QYBCrpRYQzjzM2f+iNpGFuYEW8fXd+Dvquns6E1v7JbSt7oPRi2DYfdXXHc3EYkhimPG7h/VvnhaabLQ5z8CuQzaVJL1Fp25n4Rs5V4d71sgE5IR0skkWC6YO8="
     neutron-openvswitch:
       charm: neutron-openvswitch
-  relations:
-  - [ neutron-api, mysql ]
-  - [ neutron-api, rabbitmq-server ]
-  - [ neutron-api, nova-cloud-controller ]
-  - [ neutron-api, neutron-openvswitch ]
-  - [ neutron-api, keystone ]
-  - [ neutron-openvswitch, nova-compute ]
-  - [ neutron-openvswitch, rabbitmq-server ]
-  #hacluster relation
-  - [ neutron-api, neutron-api-hacluster ]
 precise-icehouse:
   inherits: openstack-mysql-database
   series: precise
