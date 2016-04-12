@@ -101,18 +101,6 @@ charms to the devel versions and then runs tests to validate the deployment
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
-./specs/full_stack/next_ha_phased/icehouse/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
-
-./specs/full_stack/next_ha_phased/kilo/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
-
-./specs/full_stack/next_ha_phased/liberty/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
-
 ./specs/full_stack/next_ha_vrrp/kilo/
 This spec deploys and tests a deployment with neutron VRRP enabled, it then
 takes down the gateways in turn and checks a guest remains accessible
@@ -286,15 +274,27 @@ before running a ha deployment and testing the resulting cloud
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a ha deployment and testing the resulting cloud
 
-./specs/full_stack/next_ha_phased_chaos_pony/icehouse/
+./specs/deprecated/next_ha_phased/icehouse/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/deprecated/next_ha_phased/kilo/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/deprecated/next_ha_phased/liberty/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/deprecated/next_ha_phased_chaos_pony/icehouse/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
-./specs/full_stack/next_ha_phased_chaos_pony/kilo/
+./specs/deprecated/next_ha_phased_chaos_pony/kilo/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
-./specs/full_stack/next_ha_phased_chaos_pony/liberty/
+./specs/deprecated/next_ha_phased_chaos_pony/liberty/
 This spec performs a phased ha deploy then runs tests to validate the
 deployment. iThen chaos pony is used to add and remove units.
 
