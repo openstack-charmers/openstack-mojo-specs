@@ -1,4 +1,7 @@
 # vim: set ts=2 et:
+#
+# Config and topology for STABLE charms
+#
 openstack-services:
   series: trusty
   services:

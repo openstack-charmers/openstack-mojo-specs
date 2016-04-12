@@ -1,5 +1,7 @@
 # vim: set ts=2 et:
 #
+# Config and topology for STABLE charms
+#
 # A 7-machine bare metal bundle which is appx. equivalent to "sparse/next.yaml"
 # with some smooshing and co-location for density.  This is an EXAMPLE TEST BUNDLE.
 #

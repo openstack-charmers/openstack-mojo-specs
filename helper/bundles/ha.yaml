@@ -1,6 +1,7 @@
 # vim: set ts=2 et:
-# deployer bundle for development ('next') charms
-# UOSCI relies on this for OS-on-OS deployment testing
+#
+# Config and topology for STABLE charms
+#
 openstack-services:
   services:
     mysql:
