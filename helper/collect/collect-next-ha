@@ -5,7 +5,7 @@ ceph-osd               git://github.com/openstack/charm-ceph-osd
 cinder-ceph            git://github.com/openstack/charm-cinder-ceph
 cinder                 git://github.com/openstack/charm-cinder
 glance                 git://github.com/openstack/charm-glance
-hacluster              lp:~openstack-charmers/charms/brusty/hacluster/next
+hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
 heat                   git://github.com/openstack/charm-heat
 keystone               git://github.com/openstack/charm-keystone
 mongodb                lp:charms/trusty/mongodb
