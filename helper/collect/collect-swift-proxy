@@ -1,6 +1,6 @@
-glance                 lp:~openstack-charmers/charms/trusty/glance/next
+glance                 git://github.com/openstack/charm-glance
 hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
-keystone               lp:~openstack-charmers/charms/trusty/keystone/next
-mysql                  lp:charms/trusty/percona-cluster
-swift-proxy            lp:~openstack-charmers/charms/trusty/swift-proxy/next
-swift-storage          lp:~openstack-charmers/charms/trusty/swift-storage/next
+keystone               git://github.com/openstack/charm-keystone
+mysql                  git://github.com/openstack/charm-percona-cluster
+swift-proxy            git://github.com/openstack/charm-swift-proxy
+swift-storage          git://github.com/openstack/charm-swift-storage
