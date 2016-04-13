@@ -113,6 +113,10 @@ takes down the gateways in turn and checks a guest remains accessible
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
+./specs/full_stack/next_deploy_ssl/mitaka/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
 ./specs/full_stack/next_deploy_ssl/kilo/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
