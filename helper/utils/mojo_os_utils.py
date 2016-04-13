@@ -7,8 +7,7 @@ from keystoneclient.auth.identity import v3
 from keystoneclient.v3 import client as keystoneclient_v3
 from keystoneclient import session
 import mojo_utils
-from novaclient.v1_1 import client as novaclient
-from novaclient.v2 import client as novaclient_v2
+from novaclient import client as novaclient_client
 from neutronclient.v2_0 import client as neutronclient
 import logging
 import re
@@ -78,11 +77,12 @@ def get_swift_creds(cloud_creds):
 def get_nova_client(novarc_creds, insecure=True):
     nova_creds = get_nova_creds(novarc_creds)
     nova_creds['insecure'] = insecure
-    return novaclient.Client(**nova_creds)
+    nova_creds['version'] = 2
+    return novaclient_client.Client(**nova_creds)
 
 
 def get_nova_session_client(session):
-    return novaclient_v2.Client(session=session)
+    return novaclient_client.Client(2, session=session)
 
 
 def get_neutron_client(novarc_creds, insecure=True):
