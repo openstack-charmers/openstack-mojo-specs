@@ -1,6 +1,9 @@
 # Collect the stable charm branches from Launchpad
 collect config=collect-stable-${MOJO_SERIES}
 
+# Checkout stable
+script config=git_checkout_stable.py
+
 # Use juju deployer with full.yaml bundle
 deploy config=full.yaml delay=0 wait=True target=${MOJO_SERIES}-kilo
 
