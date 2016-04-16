@@ -358,6 +358,7 @@ def sync_all_charmhelpers():
 
 
 def git_checkout_branch(charmdir, branch):
+    cmd = ['git', '-C', charmdir, 'branch', '-av']  # Show all available
     cmd = ['git', '-C', charmdir, 'checkout',  branch]
     logging.info('Checking out {} in {}'.format(branch, charmdir))
     subprocess.check_call(cmd)
