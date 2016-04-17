@@ -367,7 +367,7 @@ def git_checkout_branch(charmdir, branch):
     cmd = ['git', '-C', charmdir, 'remote', '-v']
     subprocess.check_call(cmd)
 
-    # Show all available
+    # Show branches
     cmd = ['git', '-C', charmdir, 'branch', '-av']
     subprocess.check_call(cmd)
 
