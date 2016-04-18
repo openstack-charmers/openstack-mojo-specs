@@ -81,7 +81,6 @@ openstack-services:
         enable-live-migration: True
         enable-resize: True
         migration-auth-type: ssh
-        enable-resize: True
     nova-cloud-controller:
       charm: nova-cloud-controller
       options:
@@ -222,7 +221,7 @@ openstack-icehouse-msg-split:
   - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
 # icehouse
 precise-icehouse:
-  inherits: openstack-singlerabbit
+  inherits: openstack-icehouse
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse

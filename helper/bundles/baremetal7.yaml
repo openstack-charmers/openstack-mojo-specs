@@ -83,7 +83,6 @@ openstack-services:
         enable-live-migration: True
         enable-resize: True
         migration-auth-type: ssh
-        enable-resize: True
     nova-cloud-controller:
       charm: nova-cloud-controller
       options:
