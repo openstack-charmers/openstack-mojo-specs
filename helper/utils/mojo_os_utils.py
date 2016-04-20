@@ -314,11 +314,11 @@ def configure_gateway_ext_port(novaclient, neutronclient,
     for uuid in uuids:
         server = novaclient.servers.get(uuid)
         ext_port_name = "{}_ext-port".format(server.name)
-        ext_port_added = False
         for port in neutronclient.list_ports(device_id=server.id)['ports']:
             if port['name'] == ext_port_name:
-                ext_port_added = True
-        if not ext_port_added:
+                logging.warning('Neutron Gateway already has additional port')
+                break
+        else:
             logging.info('Attaching additional port to instance, '
                          'connected to net id: {}'.format(net_id))
             body_value = {
@@ -331,9 +331,6 @@ def configure_gateway_ext_port(novaclient, neutronclient,
             port = neutronclient.create_port(body=body_value)
             server.interface_attach(port_id=port['port']['id'],
                                     net_id=None, fixed_ip=None)
-        else:
-            logging.warning('Neutron Gateway already has additional port')
-            # return
     ext_port_macs = []
     for port in neutronclient.list_ports(network_id=net_id)['ports']:
         if 'ext-port' in port['name']:

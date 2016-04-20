@@ -101,7 +101,7 @@ def main(argv):
             dvr_mode=net_info.get('dvr_enabled', False),
             net_id=net_id)
 
-#    setup_sdn(net_topology, net_info)
+    setup_sdn(net_topology, net_info)
 
 
 if __name__ == "__main__":
