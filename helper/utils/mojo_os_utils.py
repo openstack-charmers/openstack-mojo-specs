@@ -313,27 +313,50 @@ def configure_gateway_ext_port(novaclient, neutronclient,
 
     for uuid in uuids:
         server = novaclient.servers.get(uuid)
-        mac_addrs = [a.mac_addr for a in server.interface_list()]
-        if len(mac_addrs) < 2:
+        ext_port_name = "{}_ext-port".format(server.name)
+        for port in neutronclient.list_ports(device_id=server.id)['ports']:
+            if port['name'] == ext_port_name:
+                logging.warning('Neutron Gateway already has additional port')
+                break
+        else:
             logging.info('Attaching additional port to instance, '
                          'connected to net id: {}'.format(net_id))
-            server.interface_attach(port_id=None, net_id=net_id,
-                                    fixed_ip=None)
-        else:
-            logging.warning('Neutron Gateway already has additional port')
+            body_value = {
+                "port": {
+                    "admin_state_up": True,
+                    "name": ext_port_name,
+                    "network_id": net_id
+                }
+            }
+            port = neutronclient.create_port(body=body_value)
+            server.interface_attach(port_id=port['port']['id'],
+                                    net_id=None, fixed_ip=None)
+    ext_port_macs = []
+    for port in neutronclient.list_ports(network_id=net_id)['ports']:
+        if 'ext-port' in port['name']:
+            ext_port_macs.append(port['mac_address'])
+    ext_port_macs.sort()
+    ext_port_macs_str = ' '.join(ext_port_macs)
+    if dvr_mode:
+        service_name = 'neutron-openvswitch'
+    else:
+        service_name = 'neutron-gateway'
     # XXX Trying to track down a failure with juju run neutron-gateway/0 in
     #     the post juju_set check. Try a sleep here to see if some network
     #     reconfigureing on the gateway is still in progress and that's
     #     causing the issue
-    if uuids:
-        if dvr_mode:
-            logging.info('Setting neutron-openvswitch external port to eth1')
-            mojo_utils.juju_set('neutron-openvswitch',
-                                'ext-port=eth1',
-                                wait=False)
-        else:
-            logging.info('Setting Neutron Gateway external port to eth1')
-            mojo_utils.juju_set('neutron-gateway', 'ext-port=eth1', wait=False)
+    if ext_port_macs:
+        logging.info('Setting ext-port on {} external port to {}'.format(
+            service_name, ext_port_macs_str))
+        current_ext_port = mojo_utils.juju_get(service_name, 'ext-port')
+        if current_ext_port == ext_port_macs_str:
+            logging.info('Config already set to value')
+            return
+        mojo_utils.juju_set(
+            service_name,
+            'ext-port={}'.format(ext_port_macs_str),
+            wait=False
+        )
         time.sleep(240)
         mojo_utils.juju_wait_finished()
 

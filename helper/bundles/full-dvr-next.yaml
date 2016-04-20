@@ -152,7 +152,7 @@ openstack-icehouse-msg-split:
   - [ neutron-openvswitch, rabbitmq-server-neutron ]
 # icehouse
 precise-icehouse:
-  inherits: openstack-singlerabbit
+  inherits: openstack-icehouse
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse

@@ -15,7 +15,7 @@ for spec in $(find specs/{object_storage,full_stack} -name manifest); do
 done
 
 # Keep bundle names consistent
-bundle_names="$(ls -1 ./helper/bundles/*_*)"
+bundle_names="$(ls -1 ./helper/bundles/*_* 2> /dev/null)"
 if [[ -n "$bundle_names" ]]; then
   echo -e "(!)\tFor consistency, bundle file names should not use underscores (hyphens are ok)."
   failed=1
@@ -31,7 +31,7 @@ if [[ -n "$spec_dir_names" ]]; then
   failed=1
   echo "$spec_dir_names"
 else
-  echo "Bundle file names OK"
+  echo "Spec dir names OK"
 fi
 
 if [[ -n "$failed" ]]; then
