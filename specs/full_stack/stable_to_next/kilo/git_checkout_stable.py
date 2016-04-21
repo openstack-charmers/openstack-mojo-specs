@@ -1,0 +1,1 @@
+../../../../helper/setup/git_checkout_stable.py

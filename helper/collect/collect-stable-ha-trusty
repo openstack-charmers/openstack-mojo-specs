@@ -9,7 +9,7 @@ glance                 git://github.com/openstack/charm-glance
 hacluster              lp:charms/trusty/hacluster
 heat                   git://github.com/openstack/charm-heat
 keystone               git://github.com/openstack/charm-keystone
-mongodb                lp:charms/mongodb
+mongodb                lp:charms/trusty/mongodb
 neutron-api            git://github.com/openstack/charm-neutron-api
 neutron-gateway        git://github.com/openstack/charm-neutron-gateway
 neutron-openvswitch    git://github.com/openstack/charm-neutron-openvswitch
