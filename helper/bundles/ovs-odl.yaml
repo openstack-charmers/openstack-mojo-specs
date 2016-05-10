@@ -1,0 +1,124 @@
+openstack-services:
+  series: trusty
+  services:
+    neutron-gateway:
+      branch: https://github.com/openstack/charm-neutron-gateway
+      options:
+        plugin: ovs-odl
+        instance-mtu: 1400
+    nova-compute:
+      branch: https://github.com/openstack/charm-nova-compute
+      num_units: 3
+      constraints: mem=4G
+      options:
+        enable-live-migration: False
+        manage-neutron-plugin-legacy-mode: False
+    neutron-api:
+      branch: https://github.com/openstack/charm-neutron-api
+      options:
+        neutron-security-groups: True
+        manage-neutron-plugin-legacy-mode: False
+    neutron-api-odl:
+      branch: https://github.com/openstack/charm-neutron-api-odl
+      options:
+        overlay-network-type: 'vxlan gre'
+        security-groups: True
+    odl-controller:
+      branch: https://github.com/openstack/charm-odl-controller
+      options:
+        install-url: "http://10.245.161.162/swift/v1/opendaylight/distribution-karaf-0.2.3-Helium-SR3.tar.gz"
+        http-proxy: "http://squid.internal:3128"
+        https-proxy: "http://squid.internal:3128"
+    openvswitch-odl:
+      branch: https://github.com/openstack/charm-openvswitch-odl
+    mysql:
+      branch: lp:charms/trusty/mysql
+      options:
+        dataset-size: 50%
+    rabbitmq-server:
+      branch: https://github.com/openstack/charm-rabbitmq-server;stable/16.04
+    keystone:
+      branch: https://github.com/openstack/charm-keystone
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    openstack-dashboard:
+      branch: https://github.com/openstack/charm-openstack-dashboard
+    nova-cloud-controller:
+      branch: https://github.com/openstack/charm-nova-cloud-controller
+      options:
+        network-manager: Neutron
+    glance:
+      branch: https://github.com/openstack/charm-glance
+  relations:
+    - ['neutron-api:neutron-plugin-api-subordinate', 'neutron-api-odl:neutron-plugin-api-subordinate']
+    - ['nova-compute:neutron-plugin', 'openvswitch-odl:neutron-plugin']
+    - ['neutron-gateway', 'openvswitch-odl']
+    - ['openvswitch-odl:ovsdb-manager', 'odl-controller:ovsdb-manager']
+    - ['neutron-api-odl:odl-controller', 'odl-controller:controller-api']
+    - ['keystone:shared-db', 'mysql:shared-db']
+    - ['nova-cloud-controller:shared-db', 'mysql:shared-db']
+    - ['nova-cloud-controller:amqp', 'rabbitmq-server:amqp']
+    - ['nova-cloud-controller:image-service', 'glance:image-service']
+    - ['nova-cloud-controller:identity-service', 'keystone:identity-service']
+    - ['nova-compute:cloud-compute', 'nova-cloud-controller:cloud-compute']
+    - ['nova-compute:amqp', 'rabbitmq-server:amqp']
+    - ['nova-compute:image-service', 'glance:image-service']
+    - ['glance:shared-db', 'mysql:shared-db']
+    - ['glance:identity-service', 'keystone:identity-service']
+    - ['glance:amqp', 'rabbitmq-server:amqp']
+    - ['neutron-api:shared-db', 'mysql:shared-db']
+    - ['neutron-api:amqp', 'rabbitmq-server:amqp']
+    - ['neutron-api:neutron-api', 'nova-cloud-controller:neutron-api']
+    - ['neutron-api:identity-service', 'keystone:identity-service']
+    - ['neutron-gateway:amqp', 'rabbitmq-server:amqp']
+    - ['neutron-gateway:neutron-plugin-api', 'neutron-api:neutron-plugin-api']
+    - ['neutron-gateway:quantum-network-service', 'nova-cloud-controller:quantum-network-service']
+trusty-liberty:
+  inherits: openstack-services
+  overrides:
+    openstack-origin: cloud:trusty-liberty
+    source: cloud:trusty-liberty
+trusty-liberty-lithium:
+  inherits: trusty-liberty
+  overrides:
+    install-url: "http://10.245.161.162/swift/v1/opendaylight/distribution-karaf-0.3.3-Lithium-SR3.tar.gz"
+    profile: openvswitch-odl-lithium
+trusty-liberty-beryllium:
+  inherits: trusty-liberty
+  overrides:
+    install-url: "http://10.245.161.162/swift/v1/opendaylight/distribution-karaf-0.4.1-Beryllium-SR1.tar.gz"
+    profile: openvswitch-odl-beryllium
+xenial-mitaka-beryllium:
+  inherits: trusty-liberty-beryllium
+  series: xenial
+  overrides:
+    openstack-origin: distro
+    source: distro
+trusty-kilo:
+  inherits: openstack-services
+  overrides:
+    openstack-origin: cloud:trusty-kilo
+trusty-juno:
+  inherits: openstack-services
+  overrides:
+    openstack-origin: cloud:trusty-juno
+trusty-icehouse:
+  inherits: openstack-services
+trusty-icehouse-cisco:
+  inherits: trusty-icehouse
+  services:
+    odl-controller:
+      options:
+        install-url: "http://10.245.161.162/swift/v1/opendaylight/distribution-karaf-1.1.0-10009.tar.gz"
+        profile: 'cisco-vpp'
+    nova-compute:
+      options:
+        hugepages: '70%'
+    neutron-api-odl:
+      options:
+        security-groups: False
+  overrides:
+    openstack-origin: ppa:cisco-vpp/icehouse-proposed
+  relations:
+    - [ 'odl-controller:controller-api', 'openvswitch-odl:controller-api' ]
