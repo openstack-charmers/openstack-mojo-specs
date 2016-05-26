@@ -20,6 +20,10 @@ generally useful for validating MOJO itself, or other tooling.
 ./specs/dev/dvr/
 This spec deploys and tests a deployment with neutron DVR enabled
 
+./specs/object_storage/ceph/default/kilo/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+
 ./specs/object_storage/ceph_radosgw/ha/icehouse/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run

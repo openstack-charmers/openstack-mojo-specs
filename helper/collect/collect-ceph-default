@@ -1,0 +1,2 @@
+ceph-mon               git://github.com/openstack/charm-ceph-mon
+ceph-osd               git://github.com/openstack/charm-ceph-osd
