@@ -349,7 +349,7 @@ def configure_gateway_ext_port(novaclient, neutronclient,
         logging.info('Setting data-port on {} external port to {}'.format(
             service_name, ext_br_macs_str))
         current_data_port = mojo_utils.juju_get(service_name, 'data-port')
-        if current_ext_port == ext_br_macs_str:
+        if current_data_port == ext_br_macs_str:
             logging.info('Config already set to value')
             return
         mojo_utils.juju_set(
