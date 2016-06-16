@@ -117,10 +117,12 @@ openstack-icehouse:
         l2-population: True
         neutron-security-groups: True
         enable-dvr: True
+        flat-network-providers: physnet1
     neutron-openvswitch:
       charm: neutron-openvswitch
       options:
         enable-local-dhcp-and-metadata: True
+        bridge-mappings: physnet1:br-ex
   relations:
   - [ neutron-api, mysql ]
   - [ neutron-api, rabbitmq-server ]

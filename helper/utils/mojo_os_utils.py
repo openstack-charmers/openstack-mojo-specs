@@ -331,12 +331,12 @@ def configure_gateway_ext_port(novaclient, neutronclient,
             port = neutronclient.create_port(body=body_value)
             server.interface_attach(port_id=port['port']['id'],
                                     net_id=None, fixed_ip=None)
-    ext_port_macs = []
+    ext_br_macs = []
     for port in neutronclient.list_ports(network_id=net_id)['ports']:
         if 'ext-port' in port['name']:
-            ext_port_macs.append(port['mac_address'])
-    ext_port_macs.sort()
-    ext_port_macs_str = ' '.join(ext_port_macs)
+            ext_br_macs.append('br-ex:'.format(port['mac_address']))
+    ext_br_macs.sort()
+    ext_br_macs_str = ' '.join(ext_br_macs)
     if dvr_mode:
         service_name = 'neutron-openvswitch'
     else:
@@ -345,16 +345,16 @@ def configure_gateway_ext_port(novaclient, neutronclient,
     #     the post juju_set check. Try a sleep here to see if some network
     #     reconfigureing on the gateway is still in progress and that's
     #     causing the issue
-    if ext_port_macs:
-        logging.info('Setting ext-port on {} external port to {}'.format(
-            service_name, ext_port_macs_str))
-        current_ext_port = mojo_utils.juju_get(service_name, 'ext-port')
-        if current_ext_port == ext_port_macs_str:
+    if ext_br_macs:
+        logging.info('Setting data-port on {} external port to {}'.format(
+            service_name, ext_br_macs_str))
+        current_data_port = mojo_utils.juju_get(service_name, 'data-port')
+        if current_ext_port == ext_br_macs_str:
             logging.info('Config already set to value')
             return
         mojo_utils.juju_set(
             service_name,
-            'ext-port={}'.format(ext_port_macs_str),
+            'data-port={}'.format(ext_br_macs_str),
             wait=False
         )
         time.sleep(240)
@@ -385,18 +385,18 @@ def create_tenant_network(neutron_client, tenant_id, net_name='private',
 
 
 def create_external_network(neutron_client, tenant_id, net_name='ext_net',
-                            network_type='gre'):
+                            network_type='flat'):
     networks = neutron_client.list_networks(name=net_name)
     if len(networks['networks']) == 0:
-        logging.info('Configuring external bridge')
+        logging.info('Configuring external network')
         network_msg = {
             'name': net_name,
             'router:external': True,
             'tenant_id': tenant_id,
+            'provider:network_type': network_type,
         }
-        if network_type == 'vxlan':
-            network_msg['provider:segmentation_id'] = 1234
-            network_msg['provider:network_type'] = network_type
+        if network_type == 'flat':
+            network_msg['provider:physical_network'] = 'physnet1'
 
         logging.info('Creating new external network definition: %s',
                      net_name)
