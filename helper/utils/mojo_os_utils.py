@@ -334,7 +334,7 @@ def configure_gateway_ext_port(novaclient, neutronclient,
     ext_br_macs = []
     for port in neutronclient.list_ports(network_id=net_id)['ports']:
         if 'ext-port' in port['name']:
-            ext_br_macs.append('br-ex:'.format(port['mac_address']))
+            ext_br_macs.append('br-ex:{}'.format(port['mac_address']))
     ext_br_macs.sort()
     ext_br_macs_str = ' '.join(ext_br_macs)
     if dvr_mode:
