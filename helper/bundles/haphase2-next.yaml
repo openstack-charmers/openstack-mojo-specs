@@ -60,6 +60,7 @@ openstack-services:
       num_units: 2
       options:
         instance-mtu: 1350
+        bridge-mappings: physnet1:br-ex
     cinder:
       charm: cinder
       num_units: 2
@@ -187,6 +188,7 @@ openstack-neutron-api:
       options:
         neutron-security-groups: True
         vip: 10.5.108.1
+        flat-network-providers: physnet1
     neutron-api-hacluster:
       charm: hacluster
       options:

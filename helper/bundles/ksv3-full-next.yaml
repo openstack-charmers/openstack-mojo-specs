@@ -51,6 +51,7 @@ openstack-services:
       constraints: mem=1G
       options:
         instance-mtu: 1300
+        bridge-mappings: physnet1:br-ex
     cinder:
       charm: cinder
       options:
@@ -149,6 +150,7 @@ openstack-icehouse:
       constraints: mem=1G
       options:
         neutron-security-groups: True
+        flat-network-providers: physnet1
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
