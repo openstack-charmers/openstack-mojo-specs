@@ -290,6 +290,25 @@ def get_ovs_uuids():
     return uuids
 
 
+BRIDGE_MAPPINGS = 'bridge-mappings'
+NEW_STYLE_NETWORKING = 'physnet1:br-ex'
+
+
+def deprecated_external_networking(dvr_mode=False):
+    '''Determine whether deprecated external network mode is in use'''
+    bridge_mappings = None
+    if dvr_mode:
+        bridge_mappings = mojo_utils.juju_get('neutron-openvswitch',
+                                              BRIDGE_MAPPINGS)
+    else:
+        bridge_mappings = mojo_utils.juju_get('neutron-gateway',
+                                              BRIDGE_MAPPINGS)
+
+    if bridge_mappings == NEW_STYLE_NETWORKING:
+        return False
+    return True
+
+
 def get_net_uuid(neutron_client, net_name):
     network = neutron_client.list_networks(name=net_name)['networks'][0]
     return network['id']
@@ -307,6 +326,12 @@ def configure_gateway_ext_port(novaclient, neutronclient,
         uuids = get_ovs_uuids()
     else:
         uuids = get_gateway_uuids()
+
+    deprecated_extnet_mode = deprecated_external_networking(dvr_mode)
+
+    config_key = 'data-port'
+    if deprecated_extnet_mode:
+        config_key = 'ext-port'
 
     if not net_id:
         net_id = get_admin_net(neutronclient)['id']
@@ -334,7 +359,10 @@ def configure_gateway_ext_port(novaclient, neutronclient,
     ext_br_macs = []
     for port in neutronclient.list_ports(network_id=net_id)['ports']:
         if 'ext-port' in port['name']:
-            ext_br_macs.append('br-ex:{}'.format(port['mac_address']))
+            if deprecated_extnet_mode:
+                ext_br_macs.append(port['mac_address'])
+            else:
+                ext_br_macs.append('br-ex:{}'.format(port['mac_address']))
     ext_br_macs.sort()
     ext_br_macs_str = ' '.join(ext_br_macs)
     if dvr_mode:
@@ -346,15 +374,16 @@ def configure_gateway_ext_port(novaclient, neutronclient,
     #     reconfigureing on the gateway is still in progress and that's
     #     causing the issue
     if ext_br_macs:
-        logging.info('Setting data-port on {} external port to {}'.format(
-            service_name, ext_br_macs_str))
-        current_data_port = mojo_utils.juju_get(service_name, 'data-port')
+        logging.info('Setting {} on {} external port to {}'.format(
+            config_key, service_name, ext_br_macs_str))
+        current_data_port = mojo_utils.juju_get(service_name, config_key)
         if current_data_port == ext_br_macs_str:
             logging.info('Config already set to value')
             return
         mojo_utils.juju_set(
             service_name,
-            'data-port={}'.format(ext_br_macs_str),
+            '{}={}'.format(config_key,
+                           ext_br_macs_str),
             wait=False
         )
         time.sleep(240)
@@ -395,7 +424,7 @@ def create_external_network(neutron_client, tenant_id, net_name='ext_net',
             'tenant_id': tenant_id,
             'provider:network_type': network_type,
         }
-        if network_type == 'flat':
+        if network_type == 'flat' and not deprecated_external_networking():
             network_msg['provider:physical_network'] = 'physnet1'
 
         logging.info('Creating new external network definition: %s',
