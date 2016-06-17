@@ -413,8 +413,7 @@ def create_tenant_network(neutron_client, tenant_id, net_name='private',
     return network
 
 
-def create_external_network(neutron_client, tenant_id, net_name='ext_net',
-                            network_type='flat'):
+def create_external_network(neutron_client, tenant_id, net_name='ext_net'):
     networks = neutron_client.list_networks(name=net_name)
     if len(networks['networks']) == 0:
         logging.info('Configuring external network')
@@ -422,10 +421,10 @@ def create_external_network(neutron_client, tenant_id, net_name='ext_net',
             'name': net_name,
             'router:external': True,
             'tenant_id': tenant_id,
-            'provider:network_type': network_type,
         }
-        if network_type == 'flat' and not deprecated_external_networking():
+        if not deprecated_external_networking():
             network_msg['provider:physical_network'] = 'physnet1'
+            network_msg['provider:network_type'] = 'flat'
 
         logging.info('Creating new external network definition: %s',
                      net_name)
