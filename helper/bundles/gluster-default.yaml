@@ -1,0 +1,7 @@
+base:
+  services:
+    gluster:
+      volume_name: test
+      num_units: 3
+      storage:
+        brick: 1,5G
