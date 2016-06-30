@@ -1,7 +1,10 @@
 base:
+  series: trusty
   services:
     gluster:
-      volume_name: test
+      charm: gluster
       num_units: 3
       storage:
         brick: 1,5G
+      options:
+        volume_name: test
