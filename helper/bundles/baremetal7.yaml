@@ -186,6 +186,7 @@ openstack-icehouse:
       charm: neutron-api
       options:
         neutron-security-groups: True
+        flat-network-providers: physnet1
       to:
         - "lxc:nova-compute=0"
     neutron-openvswitch:

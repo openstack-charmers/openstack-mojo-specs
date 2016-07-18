@@ -168,6 +168,7 @@ openstack-services:
       options:
         neutron-security-groups: True
         vip: 10.5.100.8
+        flat-network-providers: physnet1
     neutron-hacluster:
       charm: hacluster
       options:

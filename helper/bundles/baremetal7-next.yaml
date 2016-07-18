@@ -90,8 +90,9 @@ openstack-services:
     neutron-gateway:
       charm: neutron-gateway
       options:
-        ext-port: eth1
         instance-mtu: 1300
+        data-port: br-ex:eth1
+        bridge-mappings: physnet1:br-ex
       to:
         - "0"
     cinder:
@@ -184,6 +185,7 @@ openstack-icehouse:
       charm: neutron-api
       options:
         neutron-security-groups: True
+        flat-network-providers: physnet1
       to:
         - "lxc:nova-compute=0"
     neutron-openvswitch:
