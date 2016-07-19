@@ -41,5 +41,5 @@ trusty-mitaka:
   overrides:
     source: cloud:trusty-mitaka
 xenial-mitaka:
-  inherits: openstack-icehouse
+  inherits: base
   series: xenial
