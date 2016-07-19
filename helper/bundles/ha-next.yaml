@@ -260,6 +260,8 @@ trusty-mitaka-proposed:
 xenial-mitaka-ha:
   inherits: openstack-services
   series: xenial
+  overrides:
+    ha-bindiface: ens2
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
