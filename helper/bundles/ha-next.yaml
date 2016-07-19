@@ -267,3 +267,4 @@ xenial-mitaka-proposed:
   overrides:
     source: proposed
     openstack-origin: distro-proposed
+    ha-bindiface: ens2
