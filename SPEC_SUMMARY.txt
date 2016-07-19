@@ -20,10 +20,6 @@ generally useful for validating MOJO itself, or other tooling.
 ./specs/dev/dvr/
 This spec deploys and tests a deployment with neutron DVR enabled
 
-./specs/object_storage/ceph/default/kilo/
-This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
-Rados can write to and read from the cluster.
-
 ./specs/object_storage/ceph_radosgw/ha/icehouse/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
@@ -69,6 +65,42 @@ This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy is then scaled out and once that has completed swift storage is
 scaled out. The resulting object store is then retested.
 
+./specs/object_storage/ceph/encrypt/icehouse/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/encrypt/mitaka/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/encrypt/kilo/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/encrypt/liberty/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/default/icehouse/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+./specs/object_storage/ceph/default/mitaka/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+./specs/object_storage/ceph/default/kilo/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+./specs/object_storage/ceph/default/liberty/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/icehouse/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/mitaka/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/kilo/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/liberty/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
 ./specs/full_stack/stable_deploy_baremetal/icehouse/
 This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
 with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
@@ -148,6 +180,10 @@ leadership enabled.
 This spec performs a ha deploy in one shot (not phased) then runs tests to
 validate the deployment. The assumption is that the version of juju has
 leadership enabled.
+
+./specs/full_stack/odl/liberty/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
 
 ./specs/full_stack/next_dvr/mitaka/
 This spec deploys and tests a deployment with neutron DVR enabled

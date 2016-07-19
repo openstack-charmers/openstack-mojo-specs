@@ -32,9 +32,6 @@ trusty-liberty:
   series: trusty
   overrides:
     source: cloud:trusty-liberty
-wily-liberty:
-  inherits: base
-  series: wily
 # mitaka
 trusty-mitaka:
   inherits: base

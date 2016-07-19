@@ -2,7 +2,6 @@
 
 import sys
 
-# import utils.mojo_os_utils as mojo_os_utils
 import utils.mojo_utils as mojo_utils
 
 
