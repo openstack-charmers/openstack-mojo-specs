@@ -64,6 +64,7 @@ def get_swift_codename(version):
     codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
     return codenames[0]
 
+
 def get_os_version_from_pkg_version(package, pkg_version):
     os_version = None
     if PACKAGE_CODENAMES.get(package):
@@ -72,6 +73,7 @@ def get_os_version_from_pkg_version(package, pkg_version):
                 os_version = release
                 break
     return os_version
+
 
 def get_os_code_info(package, pkg_version):
     # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
@@ -174,7 +176,7 @@ def main(argv):
         svc_units = mojo_utils.get_juju_units(service=service['name'])
         mojo_utils.remote_runs(svc_units)
         mojo_utils.juju_status_check_and_wait()
-             
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
