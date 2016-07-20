@@ -67,7 +67,9 @@ def get_swift_codename(version):
 
 def get_os_code_info(package, pkg_version):
     # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
-    pkg_version = pkg_version.split(':')[1:][0]
+    # Remove epoch if it exists
+    if ':' in pkg_version:
+        pkg_version = pkg_version.split(':')[1:][0]
     if 'swift' in package:
         # Fully x.y.z match for swift versions
         match = re.match('^(\d+)\.(\d+)\.(\d+)', pkg_version)
@@ -100,6 +102,7 @@ def get_current_os_versions(deployed_services):
     for service in UPGRADE_SERVICES:
         if service['name'] not in deployed_services:
             continue
+        print(service)
         version = mojo_utils.get_pkg_version(service['name'],
                                              service['type']['pkg'])
         versions[service['name']] = get_os_code_info(service['type']['pkg'],
