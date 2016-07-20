@@ -64,6 +64,14 @@ def get_swift_codename(version):
     codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
     return codenames[0]
 
+def get_os_version_from_pkg_version(package, pkg_version):
+    os_version = None
+    if PACKAGE_CODENAMES.get(package):
+        for vers_re, release in PACKAGE_CODENAMES[package].items():
+            if re.match(vers_re, pkg_version):
+                os_version = release
+                break
+    return os_version
 
 def get_os_code_info(package, pkg_version):
     # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
@@ -80,9 +88,9 @@ def get_os_code_info(package, pkg_version):
 
     if match:
         pkg_version = match.group(0)
-    if (package in PACKAGE_CODENAMES and
-            pkg_version in PACKAGE_CODENAMES[package]):
-        return PACKAGE_CODENAMES[package][pkg_version]
+    _version = get_os_version_from_pkg_version(package, pkg_version)
+    if (package in PACKAGE_CODENAMES and _version):
+        return _version
     else:
         # < Liberty co-ordinated project versions
         if 'swift' in package:
