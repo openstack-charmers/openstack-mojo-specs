@@ -102,7 +102,6 @@ def get_current_os_versions(deployed_services):
     for service in UPGRADE_SERVICES:
         if service['name'] not in deployed_services:
             continue
-        print(service)
         version = mojo_utils.get_pkg_version(service['name'],
                                              service['type']['pkg'])
         versions[service['name']] = get_os_code_info(service['type']['pkg'],
@@ -162,7 +161,12 @@ def main(argv):
             service['type']['origin_setting'],
             ubuntu_version, target_release
         )
-        mojo_utils.juju_set(service['name'], option, wait=True)
+        mojo_utils.juju_set(service['name'], option, wait=False)
+        mojo_utils.juju_status_check_and_wait()
+        svc_units = mojo_utils.get_juju_units(service=service['name'])
+        mojo_utils.remote_runs(svc_units)
+        mojo_utils.juju_status_check_and_wait()
+             
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
