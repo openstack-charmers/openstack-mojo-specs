@@ -1,0 +1,28 @@
+cirros:
+  auth_type: password
+  bootstring: cubswin:)
+  password: cubswin:)
+  username: cirros
+  container_format: bare
+  disk_format: qcow2
+  glance_name: cirros
+  is_public: 'true'
+  url: http://10.245.161.162:80/swift/v1/images/cirros-0.3.4-x86_64-disk.img
+precise:
+  auth_type: privkey
+  bootstring: cloud-init boot finished at
+  username: ubuntu
+  container_format: bare
+  disk_format: qcow2
+  glance_name: precise
+  is_public: 'true'
+  url: http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
+trusty:
+  auth_type: privkey
+  bootstring: Cloud-init v. 0.7.5 finished
+  username: ubuntu
+  container_format: bare
+  disk_format: qcow2
+  glance_name: trusty
+  is_public: 'true'
+  url: http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img

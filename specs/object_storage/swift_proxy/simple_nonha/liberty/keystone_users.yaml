@@ -1,0 +1,14 @@
+- email: demo@dev.null
+  password: pass
+  roles: [_member_]
+  tenant: demo
+  username: demo
+  domain: norwich
+  scope: project
+- email: alt_demo@dev.null
+  password: secret
+  roles: [_member_]
+  tenant: alt_demo
+  username: alt_demo
+  domain: leeds
+  scope: project
