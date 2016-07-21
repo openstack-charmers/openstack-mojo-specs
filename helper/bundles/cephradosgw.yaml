@@ -31,11 +31,17 @@ openstack-services:
       options:
         admin-password: openstack
         admin-token: ubuntutesting
+    glance:
+      charm: glance
+      constraints: mem=1G
     ceph-radosgw:
       charm: ceph-radosgw
   relations:
     - [ keystone, mysql ]
     - [ ceph-radosgw, keystone ]
+    - [ glance, keystone ]
+    - [ glance, mysql ]
+    - [ glance, ceph ]
     - [ ceph-radosgw, ceph ]
     - [ ceph, ceph-osd ]
 precise-icehouse:
@@ -47,3 +53,12 @@ precise-icehouse:
 trusty-icehouse:
   inherits: openstack-services
   series: trusty
+trusty-liberty:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-liberty
+    source: cloud:trusty-liberty
+xenial-mitaka:
+  inherits: openstack-services
+  series: xenial
