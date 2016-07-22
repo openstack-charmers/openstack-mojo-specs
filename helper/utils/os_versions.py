@@ -1,17 +1,5 @@
 from collections import OrderedDict
 
-OPENSTACK_CODENAMES = OrderedDict([
-    ('2011.2', 'diablo'),
-    ('2012.1', 'essex'),
-    ('2012.2', 'folsom'),
-    ('2013.1', 'grizzly'),
-    ('2013.2', 'havana'),
-    ('2014.1', 'icehouse'),
-    ('2014.2', 'juno'),
-    ('2015.1', 'kilo'),
-    ('2015.2', 'liberty'),
-    ('2016.1', 'mitaka'),
-])
 
 UBUNTU_OPENSTACK_RELEASE = OrderedDict([
     ('oneiric', 'diablo'),
@@ -24,6 +12,7 @@ UBUNTU_OPENSTACK_RELEASE = OrderedDict([
     ('vivid', 'kilo'),
     ('wily', 'liberty'),
     ('xenial', 'mitaka'),
+    ('yakkety', 'newton'),
 ])
 
 
@@ -38,7 +27,10 @@ OPENSTACK_CODENAMES = OrderedDict([
     ('2015.1', 'kilo'),
     ('2015.2', 'liberty'),
     ('2016.1', 'mitaka'),
+    ('2016.2', 'newton'),
+    ('2017.1', 'ocata'),
 ])
+
 
 # The ugly duckling - must list releases oldest to newest
 SWIFT_CODENAMES = OrderedDict([
@@ -61,45 +53,65 @@ SWIFT_CODENAMES = OrderedDict([
     ('liberty',
         ['2.3.0', '2.4.0', '2.5.0']),
     ('mitaka',
-        ['2.5.0']),
+        ['2.5.0', '2.6.0', '2.7.0']),
+    ('newton',
+        ['2.8.0', '2.9.0']),
 ])
 
 # >= Liberty version->codename mapping
 PACKAGE_CODENAMES = {
     'nova-common': OrderedDict([
-        ('12.0', 'liberty'),
-        ('13.0', 'mitaka'),
+        ('12', 'liberty'),
+        ('13', 'mitaka'),
+        ('14', 'newton'),
+        ('15', 'ocata'),
     ]),
     'neutron-common': OrderedDict([
-        ('7.0', 'liberty'),
-        ('8.0', 'mitaka'),
+        ('7', 'liberty'),
+        ('8', 'mitaka'),
+        ('9', 'newton'),
+        ('10', 'ocata'),
     ]),
     'cinder-common': OrderedDict([
-        ('7.0', 'liberty'),
-        ('8.0', 'mitaka'),
+        ('7', 'liberty'),
+        ('8', 'mitaka'),
+        ('9', 'newton'),
+        ('10', 'ocata'),
     ]),
     'keystone': OrderedDict([
-        ('8\..*', 'liberty'),
-        ('9.0', 'mitaka'),
+        ('8', 'liberty'),
+        ('9', 'mitaka'),
+        ('10', 'newton'),
+        ('11', 'ocata'),
     ]),
     'horizon-common': OrderedDict([
-        ('8.0', 'liberty'),
-        ('9.0', 'mitaka'),
+        ('8', 'liberty'),
+        ('9', 'mitaka'),
+        ('10', 'newton'),
+        ('11', 'ocata'),
     ]),
     'ceilometer-common': OrderedDict([
-        ('5.0', 'liberty'),
-        ('6.0', 'mitaka'),
+        ('5', 'liberty'),
+        ('6', 'mitaka'),
+        ('7', 'newton'),
+        ('8', 'ocata'),
     ]),
     'heat-common': OrderedDict([
-        ('5.0', 'liberty'),
-        ('6.0', 'mitaka'),
+        ('5', 'liberty'),
+        ('6', 'mitaka'),
+        ('7', 'newton'),
+        ('8', 'ocata'),
     ]),
     'glance-common': OrderedDict([
-        ('11.0', 'liberty'),
-        ('12.0', 'mitaka'),
+        ('11', 'liberty'),
+        ('12', 'mitaka'),
+        ('13', 'newton'),
+        ('14', 'ocata'),
     ]),
     'openstack-dashboard': OrderedDict([
-        ('8.0', 'liberty'),
-        ('9.0', 'mitaka'),
+        ('8', 'liberty'),
+        ('9', 'mitaka'),
+        ('10', 'newton'),
+        ('11', 'ocata'),
     ]),
 }

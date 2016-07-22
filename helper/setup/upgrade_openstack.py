@@ -65,16 +65,6 @@ def get_swift_codename(version):
     return codenames[0]
 
 
-def get_os_version_from_pkg_version(package, pkg_version):
-    os_version = None
-    if PACKAGE_CODENAMES.get(package):
-        for vers_re, release in PACKAGE_CODENAMES[package].items():
-            if re.match(vers_re, pkg_version):
-                os_version = release
-                break
-    return os_version
-
-
 def get_os_code_info(package, pkg_version):
     # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
     # Remove epoch if it exists
@@ -89,16 +79,19 @@ def get_os_code_info(package, pkg_version):
         match = re.match('^(\d+)\.(\d+)', pkg_version)
 
     if match:
-        pkg_version = match.group(0)
-    _version = get_os_version_from_pkg_version(package, pkg_version)
-    if (package in PACKAGE_CODENAMES and _version):
-        return _version
+        vers = match.group(0)
+    # Generate a major version number for newer semantic
+    # versions of openstack projects
+    major_vers = vers.split('.')[0]
+    if (package in PACKAGE_CODENAMES and
+            major_vers in PACKAGE_CODENAMES[package]):
+        return PACKAGE_CODENAMES[package][major_vers]
     else:
         # < Liberty co-ordinated project versions
         if 'swift' in package:
-            return get_swift_codename(pkg_version)
+            return get_swift_codename(vers)
         else:
-            return OPENSTACK_CODENAMES[pkg_version]
+            return OPENSTACK_CODENAMES[vers]
 
 
 def next_release(release):
@@ -110,6 +103,7 @@ def next_release(release):
 def get_current_os_versions(deployed_services):
     versions = {}
     for service in UPGRADE_SERVICES:
+        print(service)
         if service['name'] not in deployed_services:
             continue
         version = mojo_utils.get_pkg_version(service['name'],
