@@ -34,3 +34,14 @@ precise-icehouse:
 trusty-icehouse:
   inherits: openstack-services
   series: trusty
+trusty-liberty:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-liberty
+    source: cloud:trusty-liberty
+xenial-mitaka:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    ha-bindiface: ens2
