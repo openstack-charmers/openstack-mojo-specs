@@ -67,7 +67,9 @@ def get_swift_codename(version):
 
 def get_os_code_info(package, pkg_version):
     # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
-    pkg_version = pkg_version.split(':')[1:][0]
+    # Remove epoch if it exists
+    if ':' in pkg_version:
+        pkg_version = pkg_version.split(':')[1:][0]
     if 'swift' in package:
         # Fully x.y.z match for swift versions
         match = re.match('^(\d+)\.(\d+)\.(\d+)', pkg_version)
@@ -77,16 +79,19 @@ def get_os_code_info(package, pkg_version):
         match = re.match('^(\d+)\.(\d+)', pkg_version)
 
     if match:
-        pkg_version = match.group(0)
+        vers = match.group(0)
+    # Generate a major version number for newer semantic
+    # versions of openstack projects
+    major_vers = vers.split('.')[0]
     if (package in PACKAGE_CODENAMES and
-            pkg_version in PACKAGE_CODENAMES[package]):
-        return PACKAGE_CODENAMES[package][pkg_version]
+            major_vers in PACKAGE_CODENAMES[package]):
+        return PACKAGE_CODENAMES[package][major_vers]
     else:
         # < Liberty co-ordinated project versions
         if 'swift' in package:
-            return get_swift_codename(pkg_version)
+            return get_swift_codename(vers)
         else:
-            return OPENSTACK_CODENAMES[pkg_version]
+            return OPENSTACK_CODENAMES[vers]
 
 
 def next_release(release):
@@ -98,6 +103,7 @@ def next_release(release):
 def get_current_os_versions(deployed_services):
     versions = {}
     for service in UPGRADE_SERVICES:
+        print(service)
         if service['name'] not in deployed_services:
             continue
         version = mojo_utils.get_pkg_version(service['name'],
@@ -159,7 +165,12 @@ def main(argv):
             service['type']['origin_setting'],
             ubuntu_version, target_release
         )
-        mojo_utils.juju_set(service['name'], option, wait=True)
+        mojo_utils.juju_set(service['name'], option, wait=False)
+        mojo_utils.juju_status_check_and_wait()
+        svc_units = mojo_utils.get_juju_units(service=service['name'])
+        mojo_utils.remote_runs(svc_units)
+        mojo_utils.juju_status_check_and_wait()
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

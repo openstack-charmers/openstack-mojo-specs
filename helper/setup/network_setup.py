@@ -28,6 +28,7 @@ def setup_sdn(net_topology, net_info):
     ext_network = mojo_os_utils.create_external_network(
         neutronc,
         tenant_id,
+        net_info.get('dvr_enabled', False),
         net_info['external_net_name'])
     mojo_os_utils.create_external_subnet(
         neutronc,
