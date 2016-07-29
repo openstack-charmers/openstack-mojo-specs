@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import sys
+import os
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import logging
@@ -14,6 +15,9 @@ def main(argv):
     options = parser.parse_args()
     service = mojo_utils.parse_mojo_arg(options, 'service')
     resource = mojo_utils.parse_mojo_arg(options, 'resource')
+    if os.environ.get('MOJO_SERIES') == 'xenial':
+    	resource = resource.replace('eth0', 'ens2')
+    print("service: {} || resource: {}".format(service, resource))
     mojo_os_utils.delete_crm_leader(service, resource)
 
 if __name__ == "__main__":

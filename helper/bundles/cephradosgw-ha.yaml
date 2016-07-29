@@ -54,3 +54,5 @@ trusty-liberty:
 xenial-mitaka:
   inherits: openstack-services
   series: xenial
+  overrides:
+    ha-bindiface: ens2
