@@ -103,24 +103,3 @@ PACKAGE_CODENAMES = {
         ('9.0', 'mitaka'),
     ]),
 }
-
-UBUNTU_CODENAMES = {
-    'oneiric' => 11.10,
-    'precise' => 12.04,
-    'quantal' => 12.10,
-    'raring' => 13.04,
-    'saucy' => 13.10,
-    'trusty' => 14.04,
-    'utopic' => 14.10,
-    'vivid' => 15.04,
-    'wily' => 15.10,
-    'xenial' => 16.04,
-    'yakkety' => 16.10
-}
-
-def ubuntu_version(codename):
-    """This function translates an Ubuntu release
-    name into a version number.
-
-    assert_eq(ubuntu_version('Xenial'), 16.04)"""
-    return UBUNTU_CODENAMES[version] or 0
