@@ -21,7 +21,6 @@ def main(argv):
     mojo_env = distro_info.UbuntuDistroInfo().all.index(series)
     if mojo_env >= xenial:
         resource = resource.replace('eth0', 'ens2')
-    print("service: {} || resource: {}".format(service, resource))
     mojo_os_utils.delete_crm_leader(service, resource)
 
 if __name__ == "__main__":
