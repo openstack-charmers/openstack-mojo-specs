@@ -1,5 +1,5 @@
 glance                 git://github.com/openstack/charm-glance
-hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
+hacluster              git://github.com/openstack/charm-hacluster
 keystone               git://github.com/openstack/charm-keystone
 mysql                  git://github.com/openstack/charm-percona-cluster
 swift-proxy            git://github.com/openstack/charm-swift-proxy
