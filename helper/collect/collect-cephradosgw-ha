@@ -1,5 +1,5 @@
 ceph                   git://github.com/openstack/charm-ceph
 ceph-radosgw           git://github.com/openstack/charm-ceph-radosgw
-hacluster              lp:~openstack-charmers/charms/trusty/hacluster/next
+hacluster              git://github.com/openstack/charm-hacluster
 keystone               git://github.com/openstack/charm-keystone
 mysql                  git://github.com/openstack/charm-percona-cluster

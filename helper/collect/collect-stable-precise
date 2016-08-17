@@ -10,7 +10,7 @@ keystone               git://github.com/openstack/charm-keystone
 mongodb                lp:charms/mongodb
 mysql                  lp:charms/precise/mysql
 neutron-api            git://github.com/openstack/charm-neutron-api
-neutron-gateway        lp:charms/trusty/neutron-gateway
+neutron-gateway        git://github.com/openstack/charm-neutron-gateway
 neutron-openvswitch    git://github.com/openstack/charm-neutron-openvswitch
 nova-cloud-controller  git://github.com/openstack/charm-nova-cloud-controller
 nova-compute           git://github.com/openstack/charm-nova-compute
