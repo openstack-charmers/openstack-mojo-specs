@@ -58,7 +58,7 @@ openstack-services:
     - [ nova-compute, glance ]
     - [ glance, mysql ]
     - [ glance, keystone ]
-    - [ glance, cinder ]
+    - [ glance, "cinder:image-service" ]
     - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
