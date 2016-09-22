@@ -1,6 +1,0 @@
-glance                 git://github.com/openstack/charm-glance
-hacluster              git://github.com/openstack/charm-hacluster
-keystone               git://github.com/openstack/charm-keystone
-mysql                  git://github.com/openstack/charm-percona-cluster
-swift-proxy            git://github.com/openstack/charm-swift-proxy
-swift-storage          git://github.com/openstack/charm-swift-storage

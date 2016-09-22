@@ -1,0 +1,5 @@
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail

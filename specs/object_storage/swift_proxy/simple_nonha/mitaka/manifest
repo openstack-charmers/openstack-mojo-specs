@@ -1,5 +1,5 @@
 # Collect the charm branches from Launchpad 
-collect config=collect-swift-proxy
+collect config=collect-next-swift-proxy
 
 # Use juju deployer with cephradosgw-ha.yaml bundle
 deploy config=swift-proxy.yaml delay=0 wait=True target=${MOJO_SERIES}-mitaka

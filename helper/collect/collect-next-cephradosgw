@@ -1,0 +1,7 @@
+ceph                   cs:~openstack-charmers-next/ceph
+ceph-osd               cs:~openstack-charmers-next/ceph-osd
+ceph-radosgw           cs:~openstack-charmers-next/ceph-radosgw
+glance                 cs:~openstack-charmers-next/glance
+hacluster              cs:~openstack-charmers-next/hacluster
+keystone               cs:~openstack-charmers-next/keystone
+mysql                  cs:~openstack-charmers-next/percona-cluster

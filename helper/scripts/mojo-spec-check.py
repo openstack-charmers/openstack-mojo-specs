@@ -5,8 +5,8 @@ import string
 import sys
 import yaml
 
-#LOGLEVEL = logging.DEBUG
-#LOGLEVEL = logging.INFO
+# LOGLEVEL = logging.DEBUG
+# LOGLEVEL = logging.INFO
 LOGLEVEL = logging.WARN
 
 WHITELIST = ['manifest', 'helper', 'utils', 'scripts', 'SPEC_INFO.txt']
@@ -24,8 +24,9 @@ OPENSTACK_RELEASES = {
     'icehouse': ['precise', 'trusty'],
     'juno': ['trusty'],
     'kilo': ['trusty'],
-    'liberty': ['trusty', 'wily'],
+    'liberty': ['trusty'],
     'mitaka': ['trusty', 'xenial'],
+    'newton': ['xenial', 'yakkety'],
 }
 
 
@@ -136,7 +137,7 @@ def check_files_are_in_manifest(dir_list, openstack_release):
     _referenced = get_manifest_referenced(openstack_release)
 
     def _manifest_check(fname):
-        if not fname in _referenced:
+        if fname not in _referenced:
             logging.warn('%s is not referenced by the manifest. '
                          'Can this file be removed?' % fname)
 
@@ -164,7 +165,7 @@ def check_files_from_manifest(dir_list, openstack_release):
             logging.debug('{} not in {}'.format(f, dir_list))
         for yamlfile in YAML_MAP.keys():
             if f == YAML_MAP[yamlfile]:
-                if not yamlfile in dir_list:
+                if yamlfile not in dir_list:
                     logging.error('%s not found.  It is referenced by the '
                                   'manifest, or expected based on Ubuntu-'
                                   'OpenStack version table.  Mojo spec '

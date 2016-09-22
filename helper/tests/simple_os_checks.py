@@ -28,7 +28,7 @@ def main(argv):
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
     mojo_os_utils.add_secgroup_rules(novac)
-    print novac.servers.list()
+    print(novac.servers.list())
     for server in novac.servers.list():
         novac.servers.delete(server.id)
     for instanceset in machines:
