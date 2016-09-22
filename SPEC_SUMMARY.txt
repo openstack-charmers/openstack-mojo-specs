@@ -25,7 +25,22 @@ This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
 after each change
 
+./specs/object_storage/ceph_radosgw/ha/mitaka/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
 ./specs/object_storage/ceph_radosgw/ha/kilo/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/liberty/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/newton/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
 after each change
@@ -35,7 +50,22 @@ This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
 Glance integeration is also tested.
 
+./specs/object_storage/ceph_radosgw/simple_nonha/mitaka/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
 ./specs/object_storage/ceph_radosgw/simple_nonha/kilo/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/liberty/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/newton/
 This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
 Glance integeration is also tested.
@@ -44,11 +74,51 @@ Glance integeration is also tested.
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
+./specs/object_storage/swift_proxy/simple_nonha/mitaka/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
+
 ./specs/object_storage/swift_proxy/simple_nonha/kilo/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
+./specs/object_storage/swift_proxy/simple_nonha/liberty/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
+
+./specs/object_storage/swift_proxy/simple_nonha/newton/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
+
 ./specs/object_storage/swift_proxy/ha_parallel_scaleout/icehouse/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail
+
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/mitaka/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail
+
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/kilo/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail
+
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/liberty/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail
+
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/newton/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy and swift storage are then simultaniously scaled out and the
 resulting object store retested. WARNING: Scaling swift-proxy and
@@ -60,7 +130,22 @@ This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy is then scaled out and once that has completed swift storage is
 scaled out. The resulting object store is then retested.
 
+./specs/object_storage/swift_proxy/ha_serial_scaleout/mitaka/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
+
 ./specs/object_storage/swift_proxy/ha_serial_scaleout/kilo/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
+
+./specs/object_storage/swift_proxy/ha_serial_scaleout/liberty/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
+
+./specs/object_storage/swift_proxy/ha_serial_scaleout/newton/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy is then scaled out and once that has completed swift storage is
 scaled out. The resulting object store is then retested.
@@ -137,6 +222,10 @@ charms to the devel versions and then runs tests to validate the deployment
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
+./specs/full_stack/next_ha_vrrp/mitaka/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
 ./specs/full_stack/next_ha_vrrp/kilo/
 This spec deploys and tests a deployment with neutron VRRP enabled, it then
 takes down the gateways in turn and checks a guest remains accessible
@@ -158,6 +247,10 @@ This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
 ./specs/full_stack/next_deploy_ssl/liberty/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/newton/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
@@ -230,6 +323,12 @@ with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
+./specs/full_stack/next_deploy_baremetal/newton/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
 ./specs/full_stack/stable_deploy/icehouse/
 This spec performs a non-ha deploy using the stable charms and then runs tests
 to validate the deployment
@@ -290,7 +389,19 @@ to validate the deployment
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
+./specs/full_stack/next_deploy/newton/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_keystone_v3/mitaka/
+This spec performs a non-ha deploy using the next charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
 ./specs/full_stack/next_keystone_v3/liberty/
+This spec performs a non-ha deploy using the next charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
+./specs/full_stack/next_keystone_v3/newton/
 This spec performs a non-ha deploy using the next charms with v3 keystone API
 enabled and then runs tests to validate the deployment
 
