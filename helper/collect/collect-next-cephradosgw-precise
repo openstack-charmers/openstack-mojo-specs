@@ -3,4 +3,4 @@ ceph-osd               cs:~openstack-charmers-next/ceph-osd
 ceph-radosgw           cs:~openstack-charmers-next/ceph-radosgw
 glance                 cs:~openstack-charmers-next/glance
 keystone               cs:~openstack-charmers-next/keystone
-mysql                  cs:~openstack-charmers-next/percona-cluster
+mysql                  cs:precise/mysql
