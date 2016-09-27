@@ -249,11 +249,20 @@ trusty-liberty-staging:
   overrides:
     openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
     source: ppa:ubuntu-cloud-archive/liberty-staging
-wily-liberty:
+# mitaka
+trusty-mitaka:
   inherits: openstack-icehouse
-  series: wily
-wily-liberty-proposed:
-  inherits: wily-liberty
+  series: trusty
   overrides:
-    source: proposed
-    openstack-origin: distro-proposed
+    openstack-origin: cloud:trusty-mitaka
+    source: cloud:trusty-mitaka
+xenial-mitaka:
+  inherits: openstack-icehouse
+  series: xenial
+# newton
+xenial-newton:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
