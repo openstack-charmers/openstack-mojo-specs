@@ -73,12 +73,12 @@ def main(argv):
     thread2.start()
     thread1.join()
     thread2.join()
-    print "Thread 1"
-    print "    Successes:" + str(thread1.successes)
-    print "    Failures:" + str(thread1.failures)
-    print "Thread 2"
-    print "    Successes:" + str(thread2.successes)
-    print "    Failures:" + str(thread2.failures)
+    print("Thread 1")
+    print("    Successes: {}".format(thread1.successes))
+    print("    Failures: {}".format(thread1.failures))
+    print("Thread 2")
+    print("    Successes: {}".format(thread2.successes))
+    print("    Failures: {}".format(thread2.failures))
     if thread2.failures > 0:
         sys.exit(1)
 

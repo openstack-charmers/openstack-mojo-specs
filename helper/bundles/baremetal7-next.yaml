@@ -8,10 +8,18 @@
 #
 openstack-services:
   services:
+# Need to either split a separate bundle for Precise, without AODH, or
+# craft AODH into inheritance here for >= Trusty.
+#    aodh:
+#      charm: aodh
+#      num_units: 1
+#      to:
+#        - "lxc:1"
     mysql:
       charm: mysql
       options:
         dataset-size: 50%
+        max-connections: 20000
       to:
         - "0"
     rabbitmq-server:
@@ -125,10 +133,6 @@ openstack-services:
     ntp:
       charm: ntp
       num_units: 0
-#    juju-gui:
-#      charm: juju-gui
-#      to:
-#        - "lxc:swift-storage-z3=0"
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -168,6 +172,12 @@ openstack-services:
     - [ heat, rabbitmq-server ]
     - - ceph-osd:mon
       - ceph:osd
+#    - - aodh:shared-db
+#      - mysql:shared-db
+#    - - aodh:identity-service
+#      - keystone:identity-service
+#    - - aodh:amqp
+#      - rabbitmq-server:amqp
     - - ntp:juju-info
       - nova-compute:juju-info
     - - ntp:juju-info
@@ -316,6 +326,31 @@ xenial-mitaka:
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+# newton
+xenial-newton:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
+xenial-newton-proposed:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: cloud:xenial-newton/proposed
+    source: cloud:xenial-proposed/newton
+xenial-newton-staging:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/newton-staging
+    source: ppa:ubuntu-cloud-archive/newton-staging
+yakkety-newton:
+  inherits: openstack-icehouse
+  series: yakkety
+yakkety-newton-proposed:
+  inherits: yakkety-newton
   overrides:
     source: proposed
     openstack-origin: distro-proposed

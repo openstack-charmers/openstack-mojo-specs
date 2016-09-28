@@ -1,5 +1,5 @@
 # Collect the charm branches from Launchpad
-collect config=collect-cephradosgw
+collect config=collect-next-cephradosgw-${MOJO_SERIES}
 
 # Use juju deployer with cephradosgw-ha.yaml bundle
 deploy config=cephradosgw.yaml delay=0 wait=True target=${MOJO_SERIES}-icehouse

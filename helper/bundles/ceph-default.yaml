@@ -40,3 +40,12 @@ trusty-mitaka:
 xenial-mitaka:
   inherits: base
   series: xenial
+# newton
+xenial-newton:
+  inherits: base
+  series: xenial
+  overrides:
+    source: cloud:xenial-newton
+yakkety-newton:
+  inherits: base
+  series: yakkety

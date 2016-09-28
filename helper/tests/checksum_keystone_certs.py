@@ -23,7 +23,7 @@ def update_hash_from_path(hash, path, recurse_depth=10):
         raise msg
 
     if not os.path.isdir(path):
-        print "WARNING: %s does not exist" % (path)
+        print("WARNING: {} does not exist".format(path))
 
     for p in glob.glob("%s/*" % path):
         if os.path.isdir(p):
@@ -31,7 +31,8 @@ def update_hash_from_path(hash, path, recurse_depth=10):
         else:
             with open(p, 'r') as fd:
                 data = fd.read()
-                print "Found: %s - %s" % (p, hashlib.sha256(data).hexdigest())
+                print("Found: {} - {}".format(
+                    p, hashlib.sha256(data).hexdigest()))
                 hash.update(data)
 
 for path in paths:
@@ -43,7 +44,7 @@ with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
     for path in [root + '/ubuntu_cloud_intermediate_ca/cacert.pem',
                  root + '/ubuntu_cloud_root_ca/cacert.pem']:
         if not os.path.exists(path):
-            print "WARNING: %s does not exist" % (path)
+            print("WARNING: {} does not exist".format(path))
             continue
 
         with open(path, 'r') as fd:
@@ -51,12 +52,12 @@ with tempfile.NamedTemporaryFile(delete=False) as tmpfile:
 
 ca = '/usr/local/share/ca-certificates/keystone_juju_ca_cert.crt'
 if not os.path.exists(ca):
-    print "WARNING: %s does not exist" % (ca)
+    print("WARNING: {} does not exist".format(ca))
 elif not filecmp.cmp(ca, name):
-    print "%s not consistent with root and intermediate ca .pems" % (ca)
-    print name
+    print("{} not consistent with root and intermediate ca .pems".format(ca))
+    print(name)
 
 os.unlink(tmpfile.name)
 
-print "TOTAL: %s" % sha.hexdigest()
+print("TOTAL: {}".format(sha.hexdigest()))
 sys.exit(0)

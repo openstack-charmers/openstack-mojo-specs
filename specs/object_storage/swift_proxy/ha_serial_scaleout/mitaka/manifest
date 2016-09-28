@@ -1,5 +1,5 @@
 # Collect the charm branches from Launchpad 
-collect config=collect-swift-proxy
+collect config=collect-next-swift-proxy
 
 # Deploy service units
 deploy config=swift-ha-proxy-phase1.yaml delay=0 wait=True target=${MOJO_SERIES}-mitaka
