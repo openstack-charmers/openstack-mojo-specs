@@ -4,6 +4,41 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import argparse
 
+FLAVORS = {
+    'm1.tiny': {
+        'flavorid': 1,
+        'ram': 512,
+        'disk': 1,
+        'vcpus': 1},
+    'm1.small': {
+        'flavorid': 2,
+        'ram': 2048,
+        'disk': 20,
+        'vcpus': 1},
+    'm1.medium': {
+        'flavorid': 3,
+        'ram': 4096,
+        'disk': 40,
+        'vcpus': 2},
+    'm1.large': {
+        'flavorid': 4,
+        'ram': 8192,
+        'disk': 40,
+        'vcpus': 4},
+}
+
+
+def init_flavors(nova_client):
+    names = [flavor.name for flavor in nova_client.flavors.list()]
+    for flavor in FLAVORS.keys():
+        if flavor not in names:
+            nova_client.flavors.create(
+                name=flavor,
+                ram=FLAVORS[flavor]['ram'],
+                vcpus=FLAVORS[flavor]['vcpus'],
+                disk=FLAVORS[flavor]['disk'],
+                flavorid=FLAVORS[flavor]['flavorid'])
+
 
 def main(argv):
     mojo_utils.setup_logging()
@@ -25,6 +60,7 @@ def main(argv):
         keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                               scope='PROJECT')
         novac = mojo_os_utils.get_nova_session_client(keystone_session)
+    init_flavors(novac)
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
     mojo_os_utils.add_secgroup_rules(novac)
