@@ -90,6 +90,7 @@ openstack-icehouse:
   - [ neutron-api, neutron-openvswitch ]
   - [ neutron-api, keystone ]
   - [ neutron-api, "neutron-gateway:neutron-plugin-api" ]
+  - [ neutron-api, neutron-gateway ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
 openstack-icehouse-msg-split:
