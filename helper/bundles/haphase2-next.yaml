@@ -202,6 +202,7 @@ openstack-neutron-api:
   - [ neutron-api, nova-cloud-controller ]
   - [ neutron-api, neutron-openvswitch ]
   - [ neutron-api, keystone ]
+  - [ neutron-gateway, neutron-api ]
   - [ neutron-openvswitch, nova-compute ]
   - [ neutron-openvswitch, rabbitmq-server ]
   #hacluster relation
