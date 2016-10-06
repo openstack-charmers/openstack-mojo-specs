@@ -46,7 +46,7 @@ openstack-services:
         network-manager: Neutron
     neutron-gateway:
       charm: neutron-gateway
-      constraints: mem=1G
+      constraints: mem=4G
       options:
         instance-mtu: 1300
     cinder:

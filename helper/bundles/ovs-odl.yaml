@@ -3,6 +3,7 @@ openstack-services:
   services:
     neutron-gateway:
       branch: https://github.com/openstack/charm-neutron-gateway
+      constraints: mem=4G
       options:
         plugin: ovs-odl
         instance-mtu: 1400
