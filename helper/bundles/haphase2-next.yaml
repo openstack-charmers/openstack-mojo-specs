@@ -56,7 +56,7 @@ openstack-services:
       charm: hacluster
     neutron-gateway:
       charm: neutron-gateway
-      constraints: mem=1G
+      constraints: mem=4G
       num_units: 2
       options:
         instance-mtu: 1350
