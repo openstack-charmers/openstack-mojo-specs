@@ -7,12 +7,19 @@ import utils.mojo_utils as mojo_utils
 
 def main(argv):
     # Mount the storage volume
-    mojo_utils.remote_run('gluster/0', 'mkdir /mnt/gluster && mount -t glusterfs localhost:test /mnt/gluster')
-    mojo_utils.remote_run('gluster/1', 'mkdir /mnt/gluster && mount -t glusterfs localhost:test /mnt/gluster')
-    mojo_utils.remote_run('gluster/2', 'mkdir /mnt/gluster && mount -t glusterfs localhost:test /mnt/gluster')
+    mojo_utils.remote_run(
+        'gluster/0',
+        'mkdir /mnt/gluster && mount -t glusterfs localhost:test /mnt/gluster')
+    mojo_utils.remote_run(
+        'gluster/1',
+        'mkdir /mnt/gluster && mount -t glusterfs localhost:test /mnt/gluster')
+    mojo_utils.remote_run(
+        'gluster/2',
+        'mkdir /mnt/gluster && mount -t glusterfs localhost:test /mnt/gluster')
 
     # Check
-    mojo_utils.remote_run('gluster/0', 'echo 123456789 > /mnt/gluster/test_input')
+    mojo_utils.remote_run('gluster/0',
+                          'echo 123456789 > /mnt/gluster/test_input')
 
     # Check
     output = mojo_utils.remote_run('gluster/1', 'cat /mnt/gluster/test_input')

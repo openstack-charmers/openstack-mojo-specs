@@ -1,5 +1,7 @@
 base:
-  series: trusty
+  series: 
+    - trusty
+    - xenial
   services:
     gluster:
       charm: gluster
