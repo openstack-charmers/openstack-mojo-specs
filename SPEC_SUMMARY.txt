@@ -161,6 +161,9 @@ It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/harden/mitaka/
 This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
 It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/newton/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/harden/kilo/
 This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
 It then tests to verify Rados can write to and read from the cluster.
@@ -171,6 +174,9 @@ It then tests to verify Rados can write to and read from the cluster.
 This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
 It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/encrypt/mitaka/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/encrypt/newton/
 This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
 It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/encrypt/kilo/

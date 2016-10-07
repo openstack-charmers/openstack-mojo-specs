@@ -52,4 +52,3 @@ xenial-newton:
 yakkety-newton:
   inherits: base
   series: yakkety
-
