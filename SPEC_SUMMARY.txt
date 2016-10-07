@@ -185,6 +185,9 @@ Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/default/mitaka/
 This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
 Rados can write to and read from the cluster.
+./specs/object_storage/ceph/default/newton/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/default/kilo/
 This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
 Rados can write to and read from the cluster.
@@ -295,6 +298,10 @@ This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
 ./specs/full_stack/stable_to_next/icehouse/
+This spec performs a non-ha deploy using the stable charms, then upgrades the
+charms to the devel versions and then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next/mitaka/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
@@ -430,6 +437,14 @@ This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 
 ./specs/full_stack/stable_deploy_ssl/icehouse/
+This spec performs a non-ha deploy using the stable charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/stable_deploy_ssl/mitaka/
+This spec performs a non-ha deploy using the stable charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/stable_deploy_ssl/newton/
 This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 

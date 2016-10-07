@@ -267,3 +267,6 @@ xenial-newton:
   overrides:
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
+yakkety-newton:
+  inherits: openstack-icehouse
+  series: yakkety
