@@ -1,0 +1,10 @@
+# Optionally inject juju/maas tags into bundle if env var is set
+script config=scripts/bundle_constrainer_inject_tags.sh lxc=False
+
+# Use juju deployer with full.yaml bundle
+deploy config=magpie.yaml delay=0 wait=False
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Success
