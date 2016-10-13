@@ -40,6 +40,12 @@ trusty-liberty:
   overrides:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
+trusty-mitaka:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-mitaka
+    source: cloud:trusty-mitaka
 xenial-mitaka:
   inherits: openstack-services
   series: xenial
