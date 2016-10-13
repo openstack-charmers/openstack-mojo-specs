@@ -1,4 +1,4 @@
-series: {{MOJO_SERIES}}
+series: {{ series }}
 machines:
   '0':
     constraints: mem=1G
