@@ -1,5 +1,5 @@
 # Optionally inject juju/maas tags into bundle if env var is set
-script config=scripts/bundle_constrainer_inject_tags.sh lxc=False
+script config=scripts/bundle_constrainer_inject_tags.sh lxc=False BUNDLE_FILE=magpie.yaml
 
 # Use juju deployer with full.yaml bundle
 deploy config=magpie.yaml delay=0 wait=False
