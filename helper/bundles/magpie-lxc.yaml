@@ -17,7 +17,6 @@ machines:
 services:
   magpie:
     charm: magpie
-    series: "xenial"
     num_units: 63
     to:
       - "0"
