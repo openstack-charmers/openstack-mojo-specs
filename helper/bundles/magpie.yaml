@@ -6,15 +6,47 @@ machines:
     constraints: mem=1G
   '2':
     constraints: mem=1G
+  '3':
+    constraints: mem=1G
 services:
   magpie:
     charm: "cs:~admcleod/xenial/magpie"
     series: "xenial"
-    num_units: 6
+    num_units: 36
     to:
+      - "0"
       - "1"
       - "2"
+      - "3"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:1"
       - "lxc:1"
       - "lxc:1"
       - "lxc:2"
       - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
