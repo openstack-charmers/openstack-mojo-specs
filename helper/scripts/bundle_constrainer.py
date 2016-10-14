@@ -103,6 +103,11 @@ def update_constraints(bundle_dict, opts):
 
     for target, t_v in bundle_dict.items():
         logging.debug('Target: {}'.format(target))
+
+        if type(t_v) is str:
+            # Such as series: "foo"
+            continue
+
         for operation, o_v in t_v.items():
             logging.debug('Operation: {}'.format(operation))
             if operation == 'services':
