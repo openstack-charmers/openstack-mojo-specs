@@ -65,7 +65,7 @@ def remote_run(unit, remote_cmd=None):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     output = p.communicate()
     if p.returncode != 0:
-        raise Exception('Error running nagios checks')
+        raise Exception('Error running remote command')
     return output
 
 
@@ -76,7 +76,7 @@ def remote_upload(unit, script, remote_dir=None):
         dst = unit + ':/tmp/'
     cmd = ['juju', 'scp', script, dst]
     return subprocess.check_call(cmd)
-    
+
 
 def delete_unit(unit):
     service = unit.split('/')[0]
