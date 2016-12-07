@@ -1,0 +1,2 @@
+This spec deploys a 3 gluster node cluster. It then tests to verify
+you can write to and read from the cluster.

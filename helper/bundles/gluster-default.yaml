@@ -1,0 +1,12 @@
+base:
+  series: 
+    - trusty
+    - xenial
+  services:
+    gluster:
+      charm: gluster
+      num_units: 3
+      storage:
+        brick: 1,5G
+      options:
+        volume_name: test
