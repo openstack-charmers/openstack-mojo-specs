@@ -2,10 +2,10 @@
 collect config=collect-magpie
 
 # Inject juju/maas tags into bundle if env var is set
-script config=scripts/bundle_constrainer_inject_tags.sh lxc=False BUNDLE_FILE=magpie.yaml
+script config=scripts/bundle_constrainer_inject_tags.sh lxc=False BUNDLE_FILE=magpie-lxc.yaml
 
 # Deploy magpie bundle
-deploy config=magpie.yaml delay=0 wait=False
+deploy config=magpie-lxc.yaml delay=0 wait=False
 
 # Wait for deployment to settle
 verify config=check_juju.py
