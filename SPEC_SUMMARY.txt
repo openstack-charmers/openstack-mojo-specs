@@ -22,6 +22,10 @@ deployment
 This spec performs a phased ha deploy then runs tests to validate the
 deployment
 
+./specs/file_storage/gluster/default/3.7/
+This spec deploys a 3 gluster node cluster. It then tests to verify
+you can write to and read from the cluster.
+
 ./specs/object_storage/swift_proxy/simple_nonha/liberty/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
@@ -204,6 +208,12 @@ generally useful for validating MOJO itself, or other tooling.
 ./specs/dev/stable_mini/icehouse/
 This spec performs a minimalist OpenStack deploy using the stable charms,
 generally useful for validating MOJO itself, or other tooling.
+
+./specs/dev/magpie/
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+
+./specs/dev/magpie_baremetal/
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
 
 ./specs/dev/dvr/
 This spec deploys and tests a deployment with neutron DVR enabled

@@ -1,0 +1,49 @@
+series: "{{ series }}"
+machines:
+  '0':
+    constraints: mem=1G
+  '1':
+    constraints: mem=1G
+  '2':
+    constraints: mem=1G
+  '3':
+    constraints: mem=1G
+  '4':
+    constraints: mem=1G
+  '5':
+    constraints: mem=1G
+services:
+  magpie:
+    charm: magpie
+    num_units: 30
+    to:
+      - "0"
+      - "1"
+      - "2"
+      - "3"
+      - "4"
+      - "5"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:0"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:1"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:2"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:3"
+      - "lxc:4"
+      - "lxc:4"
+      - "lxc:4"
+      - "lxc:4"
+      - "lxc:5"
+      - "lxc:5"
+      - "lxc:5"
+      - "lxc:5"
