@@ -12,16 +12,10 @@ machines:
     constraints: mem=1G
   '5':
     constraints: mem=1G
-  '6':
-    constraints: mem=1G
-  '7':
-    constraints: mem=1G
-  '8':
-    constraints: mem=1G
 services:
   magpie:
     charm: magpie
-    num_units: 8
+    num_units: 6
     to:
       # no 0, as bootstrap node series won't match under 1.25.x
       - "1"
@@ -29,6 +23,3 @@ services:
       - "3"
       - "4"
       - "5"
-      - "6"
-      - "7"
-      - "8"
