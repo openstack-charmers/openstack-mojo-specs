@@ -128,6 +128,7 @@ def get_glance_client(novarc_creds, insecure=True):
                                                    endpoint_type='publicURL')
     else:
         keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
+        logging.info(keystone_creds)
         kc = keystoneclient_v3.Client(**keystone_creds)
         glance_svc_id = kc.services.find(name='glance').id
         ep = kc.endpoints.find(service_id=glance_svc_id, interface='public')
@@ -262,11 +263,14 @@ def add_users_to_roles(kclient, users):
                                             tenant_id)
 
 
-def get_tenant_id(ks_client, tenant_name, api_version=2):
+def get_tenant_id(ks_client, tenant_name, api_version=2, domain_name=None):
+    domain_id = None
+    if domain_name:
+        domain_id = ks_client.domains.list(name=domain_name)[0].id
     if api_version == 2:
         all_tenants = ks_client.tenants.list()
     else:
-        all_tenants = ks_client.projects.list()
+        all_tenants = ks_client.projects.list(domain=domain_id)
     for t in all_tenants:
         if t._info['name'] == tenant_name:
             return t._info['id']
@@ -574,8 +578,8 @@ def boot_instance(nova_client, image_name, flavor_name, key_name):
     nics = [{'net-id': net.id}]
     # Obviously time may not produce a unique name
     vm_name = time.strftime("%Y%m%d%H%M%S")
-    logging.info('Creating %s %s '
-                 'instance %s' % (flavor_name, image_name, vm_name))
+    logging.info('Creating %s %s %s'
+                 'instance %s' % (flavor_name, image_name, nics, vm_name))
     instance = nova_client.servers.create(name=vm_name,
                                           image=image,
                                           flavor=flavor,

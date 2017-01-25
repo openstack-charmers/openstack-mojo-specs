@@ -15,6 +15,7 @@ YAML_MAP = {
     'images.yaml': 'image_setup.py',
     'keystone_users.yaml': 'keystone_setup.py',
     'network.yaml': 'network_setup.py',
+    'tempest_expected_results.yaml': 'tempest_test.py',
 }
 
 
