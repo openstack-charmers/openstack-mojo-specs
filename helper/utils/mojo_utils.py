@@ -660,8 +660,7 @@ def action_get_status(action_id):
     return action_get_output(action_id)['status']
 
 
-def action_wait(action_id):
-    timeout = 600
+def action_wait(action_id, timeout=600):
     delay = 10
     run_time = 0
     while run_time < timeout:
@@ -672,12 +671,12 @@ def action_wait(action_id):
         run_time = run_time + delay
 
 
-def action_run(unit, action_name, action_args=None, wait=True):
+def action_run(unit, action_name, action_args=None, timeout=600):
     cmd = ['juju', 'action', 'do', '--format=yaml', unit, action_name]
     if action_args:
         cmd.extend(action_args)
     action_out = yaml.load(subprocess.check_output(cmd))
     action_id = action_out['Action queued with id']
-    if wait:
-        action_wait(action_id)
+    if timeout:
+        action_wait(action_id, timeout)
     return action_id

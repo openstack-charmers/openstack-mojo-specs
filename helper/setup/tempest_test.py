@@ -49,9 +49,11 @@ def main(argv):
     expected_results = mojo_utils.get_mojo_config(
         'tempest_expected_results.yaml')['smoke']
     tempest_unit = mojo_utils.get_juju_units(service='tempest')
-    action_id = mojo_utils.action_run(tempest_unit[0], 'run-tempest')
-
-    action_output = mojo_utils.action_get_output(action_id)['results']
+    action_id = mojo_utils.action_run(
+        tempest_unit[0],
+        'run-tempest',
+        timeout=18000)
+    action_output = mojo_utils.action_get_output(action_id)
     logging.debug(action_output)
     actual_results = action_output['results']
 
