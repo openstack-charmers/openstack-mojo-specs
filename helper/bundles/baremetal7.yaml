@@ -1,5 +1,3 @@
-# vim: set ts=2 et:
-#
 # Config and topology for STABLE charms
 #
 # A 7-machine bare metal bundle which is appx. equivalent to "sparse/next.yaml"
@@ -10,10 +8,17 @@
 #
 openstack-services:
   services:
+# TODO: add AODH
+#    aodh:
+#      charm: aodh
+#      num_units: 1
+#      to:
+#        - "lxc:1"
     mysql:
       charm: mysql
       options:
-        dataset-size: 50%
+        dataset-size: 1G
+        max-connections: 1000
       to:
         - "0"
     rabbitmq-server:
@@ -49,18 +54,21 @@ openstack-services:
         - "lxc:0"
     swift-storage-z1:
       charm: swift-storage
+      constraints: "mem=2G"
       options:
         zone: 1
         block-device: /dev/vdb /dev/sdb
         overwrite: "true"
     swift-storage-z2:
       charm: swift-storage
+      constraints: "mem=2G"
       options:
         zone: 2
         block-device: /dev/vdb /dev/sdb
         overwrite: "true"
     swift-storage-z3:
       charm: swift-storage
+      constraints: "mem=2G"
       options:
         zone: 3
         block-device: /dev/vdb /dev/sdb
@@ -78,6 +86,7 @@ openstack-services:
         - "lxc:swift-storage-z2=0"
     nova-compute:
       charm: nova-compute
+      constraints: "mem=4G"
       num_units: 3
       options:
         enable-live-migration: True
@@ -92,8 +101,9 @@ openstack-services:
     neutron-gateway:
       charm: neutron-gateway
       options:
-        ext-port: eth1
         instance-mtu: 1300
+        data-port: br-ex:eth1
+        bridge-mappings: physnet1:br-ex
       to:
         - "0"
     cinder:
@@ -126,10 +136,6 @@ openstack-services:
     ntp:
       charm: ntp
       num_units: 0
-#    juju-gui:
-#      charm: juju-gui
-#      to:
-#        - "lxc:swift-storage-z3=0"
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -169,6 +175,12 @@ openstack-services:
     - [ heat, rabbitmq-server ]
     - - ceph-osd:mon
       - ceph:osd
+#    - - aodh:shared-db
+#      - mysql:shared-db
+#    - - aodh:identity-service
+#      - keystone:identity-service
+#    - - aodh:amqp
+#      - rabbitmq-server:amqp
     - - ntp:juju-info
       - nova-compute:juju-info
     - - ntp:juju-info
@@ -317,6 +329,31 @@ xenial-mitaka:
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+# newton
+xenial-newton:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
+xenial-newton-proposed:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: cloud:xenial-newton/proposed
+    source: cloud:xenial-proposed/newton
+xenial-newton-staging:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/newton-staging
+    source: ppa:ubuntu-cloud-archive/newton-staging
+yakkety-newton:
+  inherits: openstack-icehouse
+  series: yakkety
+yakkety-newton-proposed:
+  inherits: yakkety-newton
   overrides:
     source: proposed
     openstack-origin: distro-proposed
