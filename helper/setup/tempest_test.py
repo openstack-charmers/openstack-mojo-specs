@@ -74,14 +74,14 @@ def main(argv):
             'on_more': report_success,
             'on_less': raise_tempest_fail}}
 
-    for result_type in expected_results.keys():
-        msg = "Number of tests {} was {} expected {}".format(
-            result_type,
-            actual_results[result_type],
-            expected_results[result_type])
-        if int(actual_results[result_type]) > expected_results[result_type]:
+    for result_type, expected in expected_results.items():
+        actual = actual_results[result_type]
+        msg = "Number of tests {} was {} expected {}".format(result_type,
+                                                             actual,
+                                                             expected)
+        if int(actual) > expected:
             result_matrix[result_type]['on_more'](msg)
-        elif int(actual_results[result_type]) == expected_results[result_type]:
+        elif int(actual) == expected:
             report_success(msg)
         else:
             result_matrix[result_type]['on_less'](msg)
