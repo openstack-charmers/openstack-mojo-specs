@@ -185,8 +185,6 @@ openstack-services:
       - nova-compute:juju-info
     - - ntp:juju-info
       - neutron-gateway:juju-info
-    - - ntp:juju-info
-      - ceph-osd:juju-info
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
