@@ -49,6 +49,7 @@ openstack-services:
       constraints: mem=4G
       options:
         instance-mtu: 1300
+        bridge-mappings: physnet1:br-ex
     cinder:
       charm: cinder
       options:
@@ -94,6 +95,9 @@ openstack-services:
     mongodb:
       charm: mongodb
       constraints: mem=1G
+    tempest:
+      charm: tempest
+      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -126,6 +130,7 @@ openstack-services:
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+    - [ keystone, tempest ]
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
@@ -280,3 +285,15 @@ xenial-mitaka-proposed:
   overrides:
     source: proposed
     openstack-origin: distro-proposed
+# newton
+xenial-newton:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
+xenial-newton-proposed:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: cloud:xenial-newton/proposed
+    source: cloud:xenial-newton/proposed

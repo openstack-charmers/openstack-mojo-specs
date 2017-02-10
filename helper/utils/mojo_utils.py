@@ -16,6 +16,12 @@ JUJU_STATUSES = {
                      'allocating'],
 }
 
+JUJU_ACTION_STATUSES = {
+    'good': ['completed'],
+    'bad': ['fail'],
+    'transitional': ['pending', 'running'],
+}
+
 
 def get_juju_status(service=None, unit=None):
     cmd = ['juju', 'status', '--format=yaml']
@@ -643,3 +649,34 @@ def setup_logging():
     consoleHandler = logging.StreamHandler()
     consoleHandler.setFormatter(logFormatter)
     rootLogger.addHandler(consoleHandler)
+
+
+def action_get_output(action_id):
+    cmd = ['juju', 'action', 'fetch', '--format=yaml', action_id]
+    return yaml.load(subprocess.check_output(cmd))
+
+
+def action_get_status(action_id):
+    return action_get_output(action_id)['status']
+
+
+def action_wait(action_id, timeout=600):
+    delay = 10
+    run_time = 0
+    while run_time < timeout:
+        status = action_get_status(action_id)
+        if status not in JUJU_ACTION_STATUSES['transitional']:
+            break
+        time.sleep(delay)
+        run_time = run_time + delay
+
+
+def action_run(unit, action_name, action_args=None, timeout=600):
+    cmd = ['juju', 'action', 'do', '--format=yaml', unit, action_name]
+    if action_args:
+        cmd.extend(action_args)
+    action_out = yaml.load(subprocess.check_output(cmd))
+    action_id = action_out['Action queued with id']
+    if timeout:
+        action_wait(action_id, timeout)
+    return action_id
