@@ -268,3 +268,13 @@ xenial-mitaka-proposed:
     source: proposed
     openstack-origin: distro-proposed
     ha-bindiface: ens2
+# ocata
+xenial-ocata-ha:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-ocata
+    source: cloud:xenial-ocata
+zesty-ocata-ha:
+  inherits: openstack-services
+  series: zesty
