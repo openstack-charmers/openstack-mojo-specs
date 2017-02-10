@@ -28,6 +28,7 @@ OPENSTACK_RELEASES = {
     'liberty': ['trusty'],
     'mitaka': ['trusty', 'xenial'],
     'newton': ['xenial', 'yakkety'],
+    'ocata': ['xenial', 'zesty'],
 }
 
 
