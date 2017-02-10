@@ -9,6 +9,10 @@ import yaml
 import utils.juju_wait as juju_wait
 from collections import Counter
 
+from juju_versions import Juju
+
+juju = Juju()
+
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
     'bad': ['error'],
@@ -24,7 +28,7 @@ JUJU_ACTION_STATUSES = {
 
 
 def get_juju_status(service=None, unit=None):
-    cmd = ['juju', 'status', '--format=yaml']
+    cmd = [juju.bin, 'status', '--format=yaml']
     if service:
         cmd.append(service)
     if unit:
@@ -46,10 +50,10 @@ def get_juju_units(juju_status=None, service=None):
     if service:
         services = [service]
     else:
-        services = [svc for svc in juju_status['services']]
+        services = [svc for svc in juju_status[juju.services]]
     for svc in services:
-        if 'units' in juju_status['services'][svc]:
-            for unit in juju_status['services'][svc]['units']:
+        if 'units' in juju_status[juju.services][svc]:
+            for unit in juju_status[juju.services][svc]['units']:
                 units.append(unit)
     return units
 
@@ -58,8 +62,8 @@ def get_principle_services(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
     p_services = []
-    for svc in juju_status['services']:
-        if 'subordinate-to' not in juju_status['services'][svc]:
+    for svc in juju_status[juju.services]:
+        if 'subordinate-to' not in juju_status[juju.services][svc]:
             p_services.append(svc)
     return p_services
 
@@ -72,23 +76,23 @@ def convert_unit_to_machineno(unit):
 def convert_unit_to_machinename(unit):
     juju_status = get_juju_status(unit)
     service = unit.split('/')[0]
-    return int(juju_status['services'][service]['units'][unit]['machine'])
+    return int(juju_status[juju.services][service]['units'][unit]['machine'])
 
 
 def convert_machineno_to_unit(machineno, juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
-    services = [service for service in juju_status['services']]
+    services = [service for service in juju_status[juju.services]]
     for svc in services:
-        if 'units' in juju_status['services'][svc]:
-            for unit in juju_status['services'][svc]['units']:
-                unit_info = juju_status['services'][svc]['units'][unit]
+        if 'units' in juju_status[juju.services][svc]:
+            for unit in juju_status[juju.services][svc]['units']:
+                unit_info = juju_status[juju.services][svc]['units'][unit]
                 if unit_info['machine'] == machineno:
                     return unit
 
 
 def remote_shell_check(unit, timeout=None):
-    cmd = ['juju', 'run']
+    cmd = [juju.bin, 'run']
     if timeout:
         cmd.extend(['--timeout', str(timeout)])
     cmd.extend(['--unit', unit, 'uname -a'])
@@ -99,7 +103,7 @@ def remote_shell_check(unit, timeout=None):
 def remote_run(unit, remote_cmd=None, timeout=None, fatal=None):
     if fatal is None:
         fatal = True
-    cmd = ['juju', 'run', '--unit', unit]
+    cmd = [juju.bin, 'run', '--unit', unit]
     if timeout:
         cmd.extend(['--timeout', str(timeout)])
     if remote_cmd:
@@ -118,7 +122,7 @@ def remote_upload(unit, script, remote_dir=None):
         dst = unit + ':' + remote_dir
     else:
         dst = unit + ':/tmp/'
-    cmd = ['juju', 'scp', script, dst]
+    cmd = [juju.bin, 'scp', script, dst]
     return subprocess.check_call(cmd)
 
 
@@ -126,7 +130,7 @@ def delete_unit_juju(unit):
     service = unit.split('/')[0]
     unit_count = len(get_juju_units(service=service))
     logging.info('Removing unit ' + unit)
-    cmd = ['juju', 'destroy-unit', unit]
+    cmd = [juju.bin, juju.destroy_unit, unit]
     subprocess.check_call(cmd)
     target_num = unit_count - 1
     # Wait for the unit to disappear from juju status
@@ -185,7 +189,7 @@ def delete_machine(machine):
 
 def is_crm_clustered(service):
     juju_status = get_juju_status(service)
-    return 'ha' in juju_status['services'][service]['relations']
+    return 'ha' in juju_status[juju.services][service]['relations']
 
 
 def unit_sorted(units):
@@ -201,7 +205,7 @@ def add_unit(service, unit_num=None):
     else:
         additional_units = 1
     logging.info('Adding %i unit(s) to %s' % (additional_units, service))
-    cmd = ['juju', 'add-unit', service, '-n', str(additional_units)]
+    cmd = [juju.bin, 'add-unit', service, '-n', str(additional_units)]
     subprocess.check_call(cmd)
     target_num = unit_count + additional_units
     # Wait for the new unit to appear in juju status
@@ -214,20 +218,20 @@ def juju_set(service, option, wait=None):
     if wait is None:
         wait = True
     logging.info('Setting %s to %s' % (service, option))
-    subprocess.check_call(['juju', 'set', service, option])
+    subprocess.check_call([juju.bin, juju.set, service, option])
     if wait:
         juju_wait_finished()
 
 
 def juju_get_config_keys(service):
-    cmd = ['juju', 'get', service]
+    cmd = [juju.bin, juju.get, service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
     return service_config['settings'].keys()
 
 
 def juju_get(service, option):
-    cmd = ['juju', 'get', service]
+    cmd = [juju.bin, juju.get, service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
 
@@ -240,18 +244,21 @@ def juju_get(service, option):
 
 
 def get_juju_environments_yaml():
+    #XXX TODO
     juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
     return yaml.load(juju_env_file)
 
 
 def get_provider_type():
-    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
+    #XXX TODO
+    juju_env = subprocess.check_output([juju.bin, 'switch']).strip('\n')
     juju_env_contents = get_juju_environments_yaml()
     return juju_env_contents['environments'][juju_env]['type']
 
 
 def get_undercloud_auth():
-    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
+    #XXX TODO
+    juju_env = subprocess.check_output([juju.bin, 'switch']).strip('\n')
     juju_env_contents = get_juju_environments_yaml()
     novarc_settings = juju_env_contents['environments'][juju_env]
     auth_settings = {
@@ -265,7 +272,8 @@ def get_undercloud_auth():
 
 
 def get_undercloud_netid():
-    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
+    #XXX TODO
+    juju_env = subprocess.check_output([juju.bin, 'switch']).strip('\n')
     juju_env_contents = get_juju_environments_yaml()
     if 'network' in juju_env_contents['environments'][juju_env]:
         return juju_env_contents['environments'][juju_env]['network']
@@ -277,7 +285,7 @@ def get_auth_url(juju_status=None):
         return juju_get('keystone', 'vip')
     if not juju_status:
         juju_status = get_juju_status()
-    unit = juju_status['services']['keystone']['units'].itervalues().next()
+    unit = juju_status[juju.services]['keystone']['units'].itervalues().next()
     return unit['public-address']
 
 
@@ -387,7 +395,7 @@ def git_checkout_all(branch):
 def upgrade_service(svc, switch=None):
     repo_dir = os.environ['MOJO_REPO_DIR']
     logging.info('Upgrading ' + svc)
-    cmd = ['juju', 'upgrade-charm']
+    cmd = [juju.bin, 'upgrade-charm']
     if switch and switch.get(svc):
         cmd.extend(['--switch', switch[svc]])
     cmd.extend(['--repository', repo_dir, svc])
@@ -401,12 +409,12 @@ def upgrade_all_services(juju_status=None, switch=None):
     base_charms = ['mysql', 'percona-cluster', 'rabbitmq-server',
                    'keystone']
     for svc in base_charms:
-        if svc in juju_status['services']:
+        if svc in juju_status[juju.services]:
             upgrade_service(svc, switch=switch)
             time.sleep(30)
     time.sleep(60)
     # Upgrade the rest
-    for svc in juju_status['services']:
+    for svc in juju_status[juju.services]:
         if svc not in base_charms:
             upgrade_service(svc, switch=switch)
             time.sleep(30)
@@ -443,10 +451,10 @@ def get_machine_instance_states(juju_status):
 
 def get_service_agent_states(juju_status):
     service_state = Counter()
-    for service in juju_status['services']:
-        if 'units' in juju_status['services'][service]:
-            for unit in juju_status['services'][service]['units']:
-                unit_info = juju_status['services'][service]['units'][unit]
+    for service in juju_status[juju.services]:
+        if 'units' in juju_status[juju.services][service]:
+            for unit in juju_status[juju.services][service]['units']:
+                unit_info = juju_status[juju.services][service]['units'][unit]
                 service_state[unit_info['agent-state']] += 1
                 if 'subordinates' in unit_info:
                     for sub_unit in unit_info['subordinates']:
@@ -652,7 +660,10 @@ def setup_logging():
 
 
 def action_get_output(action_id):
-    cmd = ['juju', 'action', 'fetch', '--format=yaml', action_id]
+    cmd = [juju.bin]
+    if juju.version < 2:
+        cmd.extend([juju.action])
+    cmd.extend([juju.action_fetch, '--format=yaml', action_id])
     return yaml.load(subprocess.check_output(cmd))
 
 
@@ -672,7 +683,11 @@ def action_wait(action_id, timeout=600):
 
 
 def action_run(unit, action_name, action_args=None, timeout=600):
-    cmd = ['juju', 'action', 'do', '--format=yaml', unit, action_name]
+    cmd = [juju.bin]
+    if juju.version < 2:
+        cmd.extend([juju.action])
+    cmd.extend([juju.action_do, '--format=yaml', unit, action_name])
+
     if action_args:
         cmd.extend(action_args)
     action_out = yaml.load(subprocess.check_output(cmd))
