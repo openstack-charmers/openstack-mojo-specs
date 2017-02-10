@@ -297,3 +297,13 @@ xenial-newton-proposed:
   overrides:
     openstack-origin: cloud:xenial-newton/proposed
     source: cloud:xenial-newton/proposed
+# ocata
+xenial-ocata:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-ocata
+    source: cloud:xenial-ocata
+zesty-ocata:
+  inherits: openstack-icehouse
+  series: zesty
