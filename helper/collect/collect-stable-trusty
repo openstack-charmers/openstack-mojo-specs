@@ -20,3 +20,4 @@ openstack-dashboard    git://github.com/openstack/charm-openstack-dashboard
 rabbitmq-server        git://github.com/openstack/charm-rabbitmq-server
 swift-proxy            git://github.com/openstack/charm-swift-proxy
 swift-storage          git://github.com/openstack/charm-swift-storage
+tempest                cs:~openstack-charmers-next/tempest
