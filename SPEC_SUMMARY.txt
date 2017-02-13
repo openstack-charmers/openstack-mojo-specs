@@ -42,6 +42,10 @@ resulting object store is then tested.
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
+./specs/object_storage/swift_proxy/simple_nonha/ocata/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
+
 ./specs/object_storage/swift_proxy/simple_nonha/kilo/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
@@ -126,6 +130,11 @@ This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
 Glance integeration is also tested.
 
+./specs/object_storage/ceph_radosgw/simple_nonha/ocata/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
 ./specs/object_storage/ceph_radosgw/simple_nonha/kilo/
 This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
 The cluster is then tested with mulitple object store gets and retrivals.
@@ -147,6 +156,11 @@ The rados gw leader is removed and additional units added. With tests run
 after each change
 
 ./specs/object_storage/ceph_radosgw/ha/newton/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/ocata/
 This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
 The rados gw leader is removed and additional units added. With tests run
 after each change
@@ -248,6 +262,10 @@ to validate the deployment
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
 
+./specs/full_stack/next_deploy/ocata/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
 ./specs/full_stack/next_deploy/kilo/
 This spec performs a non-ha deploy using the next charms and then runs tests
 to validate the deployment
@@ -315,6 +333,10 @@ This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
 ./specs/full_stack/next_deploy_ssl/newton/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/ocata/
 This spec performs a non-ha deploy using the next charms wil ssl enabled
 and then runs tests to validate the deployment
 
@@ -485,6 +507,14 @@ to validate the deployment
 This spec performs a non-ha deploy using the stable charms and then runs tests
 to validate the deployment
 
+./specs/full_stack/stable_deploy/newton/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/ocata/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
 ./specs/full_stack/stable_deploy/kilo/
 This spec performs a non-ha deploy using the stable charms and then runs tests
 to validate the deployment
@@ -502,6 +532,10 @@ This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 
 ./specs/full_stack/stable_deploy_ssl/newton/
+This spec performs a non-ha deploy using the stable charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/stable_deploy_ssl/ocata/
 This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 

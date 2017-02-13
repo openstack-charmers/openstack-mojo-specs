@@ -49,3 +49,13 @@ xenial-newton:
 yakkety-newton:
   inherits: base
   series: yakkety
+# ocata
+xenial-ocata:
+  inherits: base
+  series: xenial
+  overrides:
+    source: cloud:xenial-ocata
+zesty-ocata:
+  inherits: base
+  series: zesty
+
