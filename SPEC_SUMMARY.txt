@@ -209,6 +209,9 @@ generally useful for validating MOJO itself, or other tooling.
 This spec performs a minimalist OpenStack deploy using the stable charms,
 generally useful for validating MOJO itself, or other tooling.
 
+./specs/dev/magpie_lxc_baremetal/
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+
 ./specs/dev/magpie/
 Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
 
@@ -260,6 +263,16 @@ validate the deployment. The assumption is that the version of juju has
 leadership enabled.
 
 ./specs/full_stack/next_ha_oneshot/mitaka/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/newton/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/ocata/
 This spec performs a ha deploy in one shot (not phased) then runs tests to
 validate the deployment. The assumption is that the version of juju has
 leadership enabled.
@@ -359,6 +372,18 @@ with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
+./specs/full_stack/stable_deploy_baremetal/newton/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/stable_deploy_baremetal/ocata/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
 ./specs/full_stack/stable_deploy_baremetal/kilo/
 This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
 with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
@@ -399,6 +424,12 @@ This spec deploys and tests a deployment with neutron DVR enabled
 ./specs/full_stack/next_dvr/mitaka/
 This spec deploys and tests a deployment with neutron DVR enabled
 
+./specs/full_stack/next_dvr/newton/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/full_stack/next_dvr/ocata/
+This spec deploys and tests a deployment with neutron DVR enabled
+
 ./specs/full_stack/next_dvr/kilo/
 This spec deploys and tests a deployment with neutron DVR enabled
 
@@ -426,11 +457,21 @@ with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
 
+./specs/full_stack/next_deploy_baremetal/ocata/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
 ./specs/full_stack/next_deploy_baremetal/kilo/
 This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
 with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
 roughly equivalent to the next/default yamls.  As swift is the object store,
 ceph-radosgw is not exercised.
+
+./specs/full_stack/stable_deploy_tempest/newton/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
 
 ./specs/full_stack/stable_deploy/liberty/
 This spec performs a non-ha deploy using the stable charms and then runs tests
@@ -481,6 +522,14 @@ This spec deploys and tests a deployment with neutron VRRP enabled, it then
 takes down the gateways in turn and checks a guest remains accessible
 
 ./specs/full_stack/next_ha_vrrp/mitaka/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_ha_vrrp/newton/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_ha_vrrp/ocata/
 This spec deploys and tests a deployment with neutron VRRP enabled, it then
 takes down the gateways in turn and checks a guest remains accessible
 
