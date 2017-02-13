@@ -218,4 +218,13 @@ yakkety-newton-proposed:
   overrides:
     source: proposed
     openstack-origin: distro-proposed
-
+# ocata
+xenial-ocata:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-ocata
+    source: cloud:xenial-ocata
+zesty-ocata:
+  inherits: openstack-icehouse
+  series: zesty
