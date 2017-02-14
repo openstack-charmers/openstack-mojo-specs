@@ -1,0 +1,34 @@
+# Collect the charm branches from Launchpad
+collect config=collect-next-cephradosgw-ha
+
+# Use juju deployer with cephradosgw-ha.yaml bundle
+deploy config=cephradosgw-ha.yaml delay=0 wait=True target=${MOJO_SERIES}-ocata
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Setup keystone users
+script config=keystone_setup.py
+
+# Test obj store by sending and recieving files
+verify config=test_obj_store.py
+
+# Delete the unit which is currently the leader (according to corosync)
+script config=delete_crm_leader.py SERVICE='ceph-radosgw' RESOURCE='res_cephrg_eth0_vip'
+
+# Test obj store by sending and recieving files
+verify config=test_obj_store.py
+
+# Add 2 new ceph-radosgw units
+script config=add_unit.py UNITS='ceph-radosgw:2'
+
+# Test obj store by sending and recieving files
+verify config=test_obj_store.py
+
+# Switch to using the ceph-radosgw embedded webserver
+script config=juju_set.py SERVICE="ceph-radosgw" KV="use-embedded-webserver=True"
+
+# Test obj store by sending and recieving files
+verify config=test_obj_store.py
+
+# Success

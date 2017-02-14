@@ -93,3 +93,12 @@ xenial-newton:
 yakkety-newton:
   inherits: openstack-services
   series: yakkety
+xenial-ocata:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-ocata
+    source: cloud:xenial-ocata
+zesty-ocata:
+  inherits: openstack-services
+  series: zesty
