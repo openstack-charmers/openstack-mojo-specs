@@ -4,7 +4,6 @@ collect config=collect-stable-${MOJO_SERIES}
 # Checkout stable
 script config=git_checkout_stable.py
 
-
 # Use juju deployer with full.yaml bundle
 deploy config=full-ssl.yaml delay=0 wait=True target=${MOJO_SERIES}-kilo
 

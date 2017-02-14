@@ -211,12 +211,6 @@ trusty-icehouse-trunk:
     openstack-origin: ppa:openstack-ubuntu-testing/icehouse
     source: ppa:openstack-ubuntu-testing/icehouse
     offline-compression: "no"
-trusty-juno:
-  inherits: openstack-icehouse
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-juno
-    source: cloud:trusty-juno
 # kilo
 trusty-kilo:
   inherits: openstack-icehouse
@@ -251,14 +245,6 @@ trusty-liberty-staging:
   overrides:
     openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
     source: ppa:ubuntu-cloud-archive/liberty-staging
-wily-liberty:
-  inherits: openstack-icehouse
-  series: wily
-wily-liberty-proposed:
-  inherits: wily-liberty
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
 # mitaka
 trusty-mitaka:
   inherits: openstack-icehouse
