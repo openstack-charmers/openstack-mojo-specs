@@ -7,7 +7,11 @@ cinder                 git://github.com/openstack/charm-cinder
 glance                 git://github.com/openstack/charm-glance
 heat                   git://github.com/openstack/charm-heat
 keystone               git://github.com/openstack/charm-keystone
-mongodb                lp:charms/trusty/mongodb
+# MongoDB charm temporary work-around to unblock testing:
+#   https://bugs.launchpad.net/charms/+source/mongodb/+bug/1664711
+#   https://bugs.launchpad.net/charms/+source/mongodb/+bug/1575534
+#mongodb                cs:trusty/mongodb
+mongodb                cs:~1chb1n/mongodb
 mysql                  git://github.com/openstack/charm-percona-cluster
 neutron-api            git://github.com/openstack/charm-neutron-api
 neutron-gateway        git://github.com/openstack/charm-neutron-gateway
