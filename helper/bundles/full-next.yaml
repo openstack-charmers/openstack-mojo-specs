@@ -302,6 +302,16 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+xenial-ocata-proposed:
+  inherits: xenial-ocata
+  overrides:
+    openstack-origin: cloud:xenial-ocata/proposed
+    source: cloud:xenial-proposed/ocata
+xenial-ocata-staging:
+  inherits: xenial-ocata
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
+    source: ppa:ubuntu-cloud-archive/ocata-staging
 zesty-ocata:
   inherits: openstack-icehouse
   series: zesty
