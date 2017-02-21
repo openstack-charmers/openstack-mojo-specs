@@ -70,7 +70,6 @@ openstack-services:
       num_units: 3
       options:
         network-manager: Neutron
-        quantum-security-groups: "yes"
         vip: 10.5.100.4
     nova-cc-hacluster:
       charm: hacluster
@@ -82,6 +81,7 @@ openstack-services:
       constraints: mem=4G
       options:
         instance-mtu: 1300
+        bridge-mappings: physnet1:br-ex
     cinder:
       charm: cinder
       constraints: mem=1G
@@ -272,12 +272,19 @@ xenial-mitaka-proposed:
     source: proposed
     openstack-origin: distro-proposed
 # ocata
-xenial-ocata:
+xenial-newton-ha:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
+# ocata
+xenial-ocata-ha:
   inherits: openstack-services
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
-zesty-ocata:
+zesty-ocata-ha:
   inherits: openstack-services
   series: zesty

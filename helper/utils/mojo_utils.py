@@ -314,7 +314,7 @@ def get_overcloud_auth(juju_status=None):
             'OS_DOMAIN_NAME': 'admin_domain',
             'OS_USER_DOMAIN_NAME': 'admin_domain',
             'OS_PROJECT_NAME': 'admin',
-            'OS_PROJECT_DOMAIN_NAME': 'Default',
+            'OS_PROJECT_DOMAIN_NAME': 'admin_domain',
             'API_VERSION': 3,
         }
     return auth_settings
