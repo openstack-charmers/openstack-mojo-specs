@@ -297,9 +297,18 @@ def get_undercloud_auth():
 
     os_auth_url = os.environ.get('OS_AUTH_URL')
     if os_auth_url:
-        api_version = int(os_auth_url[-1])
+        api_version = os_auth_url.split('/')[-1].translate(None, 'v')
+    else:
+        logging.error('Missing OS authentication setting: OS_AUTH_URL'
+                      ''.format(key))
+        raise MissingOSAthenticationException(
+            'One or more OpenStack authetication variables could '
+            'be found in the environment. Please export the OS_* '
+            'settings into the environment.')
 
-    if api_version == 2:
+    logging.info('AUTH_URL: {}, api_ver: {}'.format(os_auth_url, api_version))
+
+    if api_version == '2.0':
         # V2
         logging.info('Using keystone API V2 for undercloud auth')
         auth_settings = {
@@ -310,7 +319,7 @@ def get_undercloud_auth():
             'OS_REGION_NAME': os.environ.get('OS_REGION_NAME'),
             'API_VERSION': 2,
         }
-    elif api_version >= 3:
+    elif api_version >= '3':
         # V3 or later
         logging.info('Using keystone API V3 (or later) for undercloud auth')
         domain = os.environ.get('OS_DOMAIN_NAME')
@@ -335,7 +344,7 @@ def get_undercloud_auth():
     for key in auth_settings.keys():
         if auth_settings[key] is None:
             logging.error('Missing OS authentication setting: {}'
-                          .format(key))
+                          ''.format(key))
             raise MissingOSAthenticationException(
                 'One or more OpenStack authetication variables could '
                 'be found in the environment. Please export the OS_* '
