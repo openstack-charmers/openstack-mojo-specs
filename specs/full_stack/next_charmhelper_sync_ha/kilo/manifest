@@ -5,7 +5,7 @@ collect config=collect-next-ha
 script config=sync_charmhelpers.py
 
 # Use juju deployer to create the units for the deployment
-deploy config=haphase1.yaml delay=0 wait=True target=${MOJO_SERIES}-kilo
+deploy config=haphase1.yaml delay=0 wait=False target=${MOJO_SERIES}-kilo
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -14,7 +14,7 @@ verify config=check_juju.py
 script config=set_vips.py
 
 # Use juju deployer to add the relations for the deployment
-deploy config=haphase2.yaml delay=0 wait=True target=${MOJO_SERIES}-kilo
+deploy config=haphase2.yaml delay=0 wait=False target=${MOJO_SERIES}-kilo
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
