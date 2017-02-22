@@ -9,6 +9,9 @@ import yaml
 import utils.juju_wait as juju_wait
 from collections import Counter
 
+import kiki
+
+
 JUJU_STATUSES = {
     'good': ['ACTIVE', 'started'],
     'bad': ['error'],
@@ -24,7 +27,7 @@ JUJU_ACTION_STATUSES = {
 
 
 def get_juju_status(service=None, unit=None):
-    cmd = ['juju', 'status', '--format=yaml']
+    cmd = [kiki.cmd(), 'status', '--format=yaml']
     if service:
         cmd.append(service)
     if unit:
@@ -46,10 +49,10 @@ def get_juju_units(juju_status=None, service=None):
     if service:
         services = [service]
     else:
-        services = [svc for svc in juju_status['services']]
+        services = [svc for svc in juju_status[kiki.applications()]]
     for svc in services:
-        if 'units' in juju_status['services'][svc]:
-            for unit in juju_status['services'][svc]['units']:
+        if 'units' in juju_status[kiki.applications()][svc]:
+            for unit in juju_status[kiki.applications()][svc]['units']:
                 units.append(unit)
     return units
 
@@ -58,8 +61,8 @@ def get_principle_services(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
     p_services = []
-    for svc in juju_status['services']:
-        if 'subordinate-to' not in juju_status['services'][svc]:
+    for svc in juju_status[kiki.applications()]:
+        if 'subordinate-to' not in juju_status[kiki.applications()][svc]:
             p_services.append(svc)
     return p_services
 
@@ -72,23 +75,25 @@ def convert_unit_to_machineno(unit):
 def convert_unit_to_machinename(unit):
     juju_status = get_juju_status(unit)
     service = unit.split('/')[0]
-    return int(juju_status['services'][service]['units'][unit]['machine'])
+    return int(
+        juju_status[kiki.applications()][service]['units'][unit]['machine'])
 
 
 def convert_machineno_to_unit(machineno, juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
-    services = [service for service in juju_status['services']]
+    services = [service for service in juju_status[kiki.applications()]]
     for svc in services:
-        if 'units' in juju_status['services'][svc]:
-            for unit in juju_status['services'][svc]['units']:
-                unit_info = juju_status['services'][svc]['units'][unit]
+        if 'units' in juju_status[kiki.applications()][svc]:
+            for unit in juju_status[kiki.applications()][svc]['units']:
+                unit_info = juju_status[
+                    kiki.applications()][svc]['units'][unit]
                 if unit_info['machine'] == machineno:
                     return unit
 
 
 def remote_shell_check(unit, timeout=None):
-    cmd = ['juju', 'run']
+    cmd = [kiki.cmd(), 'run']
     if timeout:
         cmd.extend(['--timeout', str(timeout)])
     cmd.extend(['--unit', unit, 'uname -a'])
@@ -99,7 +104,7 @@ def remote_shell_check(unit, timeout=None):
 def remote_run(unit, remote_cmd=None, timeout=None, fatal=None):
     if fatal is None:
         fatal = True
-    cmd = ['juju', 'run', '--unit', unit]
+    cmd = [kiki.cmd(), 'run', '--unit', unit]
     if timeout:
         cmd.extend(['--timeout', str(timeout)])
     if remote_cmd:
@@ -118,7 +123,7 @@ def remote_upload(unit, script, remote_dir=None):
         dst = unit + ':' + remote_dir
     else:
         dst = unit + ':/tmp/'
-    cmd = ['juju', 'scp', script, dst]
+    cmd = [kiki.cmd(), 'scp', script, dst]
     return subprocess.check_call(cmd)
 
 
@@ -126,7 +131,7 @@ def delete_unit_juju(unit):
     service = unit.split('/')[0]
     unit_count = len(get_juju_units(service=service))
     logging.info('Removing unit ' + unit)
-    cmd = ['juju', 'destroy-unit', unit]
+    cmd = [kiki.cmd(), kiki.remove_unit(), unit]
     subprocess.check_call(cmd)
     target_num = unit_count - 1
     # Wait for the unit to disappear from juju status
@@ -185,7 +190,7 @@ def delete_machine(machine):
 
 def is_crm_clustered(service):
     juju_status = get_juju_status(service)
-    return 'ha' in juju_status['services'][service]['relations']
+    return 'ha' in juju_status[kiki.applications()][service]['relations']
 
 
 def unit_sorted(units):
@@ -201,7 +206,7 @@ def add_unit(service, unit_num=None):
     else:
         additional_units = 1
     logging.info('Adding %i unit(s) to %s' % (additional_units, service))
-    cmd = ['juju', 'add-unit', service, '-n', str(additional_units)]
+    cmd = [kiki.cmd(), 'add-unit', service, '-n', str(additional_units)]
     subprocess.check_call(cmd)
     target_num = unit_count + additional_units
     # Wait for the new unit to appear in juju status
@@ -214,20 +219,21 @@ def juju_set(service, option, wait=None):
     if wait is None:
         wait = True
     logging.info('Setting %s to %s' % (service, option))
-    subprocess.check_call(['juju', 'set', service, option])
+    subprocess.check_call([kiki.cmd(), kiki.config(change=True),
+                           service, option])
     if wait:
         juju_wait_finished()
 
 
 def juju_get_config_keys(service):
-    cmd = ['juju', 'get', service]
+    cmd = [kiki.cmd(), kiki.config(), service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
     return service_config['settings'].keys()
 
 
 def juju_get(service, option):
-    cmd = ['juju', 'get', service]
+    cmd = [kiki.cmd(), kiki.config(), service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
 
@@ -240,35 +246,102 @@ def juju_get(service, option):
 
 
 def get_juju_environments_yaml():
+    """ Get the environments.yaml data from a Juju 1 environment
+
+    @returns Dictionary of the data from the environments.yaml file
+    """
     juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
     return yaml.load(juju_env_file)
 
 
+def get_cloud_from_controller():
+    """ Get the cloud name from the Juju 2.x controller
+
+    @returns String name of the cloud for the current Juju 2.x controller
+    """
+    cmd = [kiki.cmd(), 'show-controller', '--format=yaml']
+    cloud_config = yaml.load(subprocess.check_output(cmd))
+    # There will only be one top level controller from show-controller,
+    # but we do not know its name.
+    for key in cloud_config:
+        return cloud_config[key]['details']['cloud']
+
+
 def get_provider_type():
-    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
-    juju_env_contents = get_juju_environments_yaml()
-    return juju_env_contents['environments'][juju_env]['type']
+    """ Get the type of the undercloud
+
+    @returns String name of the undercloud type
+    """
+    juju_env = subprocess.check_output([kiki.cmd(), 'switch']).strip('\n')
+    if kiki.version() < 2:
+        juju_env_contents = get_juju_environments_yaml()
+        return juju_env_contents['environments'][juju_env]['type']
+    else:
+        cmd = [kiki.cmd(), 'show-cloud', get_cloud_from_controller(),
+               '--format=yaml']
+        return yaml.load(subprocess.check_output(cmd))['type']
+
+
+class MissingOSAthenticationException(Exception):
+    pass
 
 
 def get_undercloud_auth():
-    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
-    juju_env_contents = get_juju_environments_yaml()
-    novarc_settings = juju_env_contents['environments'][juju_env]
-    auth_settings = {
-        'OS_AUTH_URL': novarc_settings['auth-url'],
-        'OS_TENANT_NAME': novarc_settings['tenant-name'],
-        'OS_USERNAME': novarc_settings['username'],
-        'OS_PASSWORD': novarc_settings['password'],
-        'OS_REGION_NAME': novarc_settings['region'],
-    }
+    """ Get the undercloud OpenStack authentication settings from the
+    environment.
+
+    @raises MissingOSAthenticationException if one or more settings are
+            missing.
+    @returns Dictionary of authentication settings
+    """
+
+    os_auth_url = os.environ.get('OS_AUTH_URL')
+    if os_auth_url:
+        api_version = int(os_auth_url[-1])
+
+    if api_version == 2:
+        # V2
+        logging.info('Using keystone API V2 for undercloud auth')
+        auth_settings = {
+            'OS_AUTH_URL': os.environ.get('OS_AUTH_URL'),
+            'OS_TENANT_NAME': os.environ.get('OS_TENANT_NAME'),
+            'OS_USERNAME': os.environ.get('OS_USERNAME'),
+            'OS_PASSWORD':  os.environ.get('OS_PASSWORD'),
+            'OS_REGION_NAME': os.environ.get('OS_REGION_NAME'),
+            'API_VERSION': 2,
+        }
+    elif api_version >= 3:
+        # V3 or later
+        logging.info('Using keystone API V3 (or later) for undercloud auth')
+        domain = os.environ.get('OS_DOMAIN_NAME')
+        auth_settings = {
+            'OS_AUTH_URL': os.environ.get('OS_AUTH_URL'),
+            'OS_USERNAME': os.environ.get('OS_USERNAME'),
+            'OS_PASSWORD': os.environ.get('OS_PASSWORD'),
+            'OS_REGION_NAME': os.environ.get('OS_REGION_NAME'),
+            'API_VERSION': 3,
+        }
+        if domain:
+            auth_settings['OS_DOMAIN_NAME': 'admin_domain'] = domain
+        else:
+            auth_settings['OS_USER_DOMAIN_NAME'] = (
+                os.environ.get('OS_USER_DOMAIN_NAME'))
+            auth_settings['OS_PROJECT_NAME'] = (
+                os.environ.get('OS_PROJECT_NAME'))
+            auth_settings['OS_PROJECT_DOMAIN_NAME'] = (
+                os.environ.get('OS_PROJECT_DOMAIN_NAME'))
+
+    # Validate settings
+    for key in auth_settings.keys():
+        if auth_settings[key] is None:
+            logging.error('Missing OS authentication setting: {}'
+                          .format(key))
+            raise MissingOSAthenticationException(
+                'One or more OpenStack authetication variables could '
+                'be found in the environment. Please export the OS_* '
+                'settings into the environment.')
+
     return auth_settings
-
-
-def get_undercloud_netid():
-    juju_env = subprocess.check_output(['juju', 'switch']).strip('\n')
-    juju_env_contents = get_juju_environments_yaml()
-    if 'network' in juju_env_contents['environments'][juju_env]:
-        return juju_env_contents['environments'][juju_env]['network']
 
 
 # Openstack Client helpers
@@ -277,7 +350,8 @@ def get_auth_url(juju_status=None):
         return juju_get('keystone', 'vip')
     if not juju_status:
         juju_status = get_juju_status()
-    unit = juju_status['services']['keystone']['units'].itervalues().next()
+    unit = juju_status[
+        kiki.applications()]['keystone']['units'].itervalues().next()
     return unit['public-address']
 
 
@@ -387,7 +461,7 @@ def git_checkout_all(branch):
 def upgrade_service(svc, switch=None):
     repo_dir = os.environ['MOJO_REPO_DIR']
     logging.info('Upgrading ' + svc)
-    cmd = ['juju', 'upgrade-charm']
+    cmd = [kiki.cmd(), 'upgrade-charm']
     if switch and switch.get(svc):
         cmd.extend(['--switch', switch[svc]])
     cmd.extend(['--repository', repo_dir, svc])
@@ -401,12 +475,12 @@ def upgrade_all_services(juju_status=None, switch=None):
     base_charms = ['mysql', 'percona-cluster', 'rabbitmq-server',
                    'keystone']
     for svc in base_charms:
-        if svc in juju_status['services']:
+        if svc in juju_status[kiki.applications()]:
             upgrade_service(svc, switch=switch)
             time.sleep(30)
     time.sleep(60)
     # Upgrade the rest
-    for svc in juju_status['services']:
+    for svc in juju_status[kiki.applications()]:
         if svc not in base_charms:
             upgrade_service(svc, switch=switch)
             time.sleep(30)
@@ -443,10 +517,11 @@ def get_machine_instance_states(juju_status):
 
 def get_service_agent_states(juju_status):
     service_state = Counter()
-    for service in juju_status['services']:
-        if 'units' in juju_status['services'][service]:
-            for unit in juju_status['services'][service]['units']:
-                unit_info = juju_status['services'][service]['units'][unit]
+    for service in juju_status[kiki.applications()]:
+        if 'units' in juju_status[kiki.applications()][service]:
+            for unit in juju_status[kiki.applications()][service]['units']:
+                unit_info = juju_status[
+                    kiki.applications()][service]['units'][unit]
                 service_state[unit_info['agent-state']] += 1
                 if 'subordinates' in unit_info:
                     for sub_unit in unit_info['subordinates']:
@@ -652,7 +727,8 @@ def setup_logging():
 
 
 def action_get_output(action_id):
-    cmd = ['juju', 'action', 'fetch', '--format=yaml', action_id]
+    cmd = kiki.show_action_output_cmd()
+    cmd.extend(['--format=yaml', action_id])
     return yaml.load(subprocess.check_output(cmd))
 
 
@@ -672,7 +748,8 @@ def action_wait(action_id, timeout=600):
 
 
 def action_run(unit, action_name, action_args=None, timeout=600):
-    cmd = ['juju', 'action', 'do', '--format=yaml', unit, action_name]
+    cmd = kiki.action_run_cmd()
+    cmd.extend(['--format=yaml', unit, action_name])
     if action_args:
         cmd.extend(action_args)
     action_out = yaml.load(subprocess.check_output(cmd))

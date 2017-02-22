@@ -33,6 +33,8 @@ import sys
 from textwrap import dedent
 import time
 
+import kiki
+
 
 class DescriptionAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
@@ -78,7 +80,7 @@ def run_or_die(cmd, env=None):
 def juju_run(unit, cmd, timeout=None):
     if timeout is None:
         timeout = 6 * 60 * 60
-    return run_or_die(['juju', 'run', '--timeout={}s'.format(timeout),
+    return run_or_die([kiki.cmd(), 'run', '--timeout={}s'.format(timeout),
                        '--unit', unit, cmd])
 
 
@@ -87,7 +89,7 @@ def get_status():
     # using the environment variable.
     env = os.environ.copy()
     env['TZ'] = 'UTC'
-    json_status = run_or_die(['juju', 'status', '--format=json'], env=env)
+    json_status = run_or_die([kiki.cmd(), 'status', '--format=json'], env=env)
     if json_status is None:
         return None
     return json.loads(json_status)
@@ -177,7 +179,7 @@ def reset_logging():
 
     Reset the environment log settings to match default juju stable.
     """
-    run_or_die(['juju', 'set-environment',
+    run_or_die([kiki.cmd(), kiki.model_config(),
                 'logging-config=juju=WARNING;unit=INFO'])
 
 
@@ -205,7 +207,8 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
             raise JujuWaitException(44)
 
         # If there is a dying service, environment is not quiescent.
-        for sname, service in sorted(status.get('services', {}).items()):
+        for sname, service in sorted(status.get(kiki.applications(),
+                                                {}).items()):
             if service.get('life') in ('dying', 'dead'):
                 logging.debug('{} is dying'.format(sname))
                 ready = False
@@ -223,7 +226,7 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
         workload_status = {}
         agent_status = {}
         agent_version = {}
-        for sname, service in status.get('services', {}).items():
+        for sname, service in status.get(kiki.applications(), {}).items():
             for uname, unit in service.get('units', {}).items():
                 all_units.add(uname)
                 agent_version[uname] = unit.get('agent-version')
