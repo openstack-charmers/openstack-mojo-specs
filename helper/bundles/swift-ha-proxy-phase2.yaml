@@ -58,3 +58,10 @@ xenial-newton:
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
     ha-bindiface: ens2
+xenial-ocata:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    ha-bindiface: ens2
+    openstack-origin: cloud:xenial-ocata
+    source: cloud:xenial-ocata
