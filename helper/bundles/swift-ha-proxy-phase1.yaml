@@ -87,3 +87,10 @@ xenial-mitaka:
   series: xenial
   overrides:
     ha-bindiface: ens2
+xenial-newton:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
+    ha-bindiface: ens2
