@@ -194,10 +194,13 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
     epoch_started = time.time()
     ready_since = None
     logging_reset = False
+    model_version = ''
 
     while True:
         status = get_status()
         ready = True
+        if 'model' in status:
+            model_version = status['model']['version']
 
         # If defined, fail if max_wait is exceeded
         epoch_elapsed = time.time() - epoch_started
@@ -229,13 +232,15 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
         for sname, service in status.get(kiki.applications(), {}).items():
             for uname, unit in service.get('units', {}).items():
                 all_units.add(uname)
-                agent_version[uname] = unit.get('agent-version')
+                agent_version[uname] = unit.get('agent-version') or model_version
                 if ('workload-status' in unit and
                         'current' in unit['workload-status']):
                     workload_status[uname] = unit['workload-status']
 
                 if 'agent-status' in unit and unit['agent-status'] != {}:
                     agent_status[uname] = unit['agent-status']
+                elif 'juju-status' in unit and 'current' in unit['juju-status']:
+                    agent_status[uname] = unit['juju-status']
                 else:
                     ready_units[uname] = unit  # Schedule for sniffing.
                 for subname, sub in unit.get('subordinates', {}).items():
@@ -243,9 +248,11 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
                             'current' in sub['workload-status']):
                         workload_status[subname] = sub['workload-status']
 
-                    agent_version[subname] = sub.get('agent-version')
+                    agent_version[subname] = sub.get('agent-version') or model_version
                     if 'agent-status' in sub and unit['agent-status'] != {}:
                         agent_status[subname] = sub['agent-status']
+                    elif 'juju-status' in unit and 'current' in unit['juju-status']:
+                        agent_status[uname] = unit['juju-status']
                     else:
                         ready_units[subname] = sub  # Schedule for sniffing.
 
@@ -271,8 +278,12 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
         # Sniff logs of units that don't provide agent-status, if necessary.
         for uname, unit in sorted(ready_units.items()):
             dying = unit.get('life') in ('dying', 'dead')
-            agent_state = unit.get('agent-state')
-            agent_state_info = unit.get('agent-state-info')
+            if kiki.version() < 2:
+                agent_state = unit.get('agent-state')
+                agent_state_info = unit.get('agent-state-info')
+            else:
+                agent_state = unit.get('workload-status').get('current')
+                agent_state_info = unit.get('workload-status').get('message')
             if dying:
                 logging.debug('{} is dying'.format(uname))
                 ready = False
@@ -280,8 +291,8 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
                 logging.error('{} failed: {}'.format(uname, agent_state_info))
                 ready = False
                 raise JujuWaitException(1)
-            elif agent_state != 'started':
-                logging.debug('{} is {}'.format(uname, agent_state))
+            elif agent_state not in ['started', 'unknown', 'active']:
+                logging.debug('{} is not ready: {}'.format(uname, agent_state))
                 ready = False
             elif ready:
                 # We only start grabbing the logs once all the units
@@ -296,28 +307,12 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
                 if logs[uname] == prev_logs.get(uname):
                     logging.debug('{} is idle - no hook activity'
                                   ''.format(uname))
+                    ready = True
                 else:
-                    logging.debug('{} is active: {}'
+                    logging.debug('{} is still executing: {}'
                                   ''.format(uname, logs[uname].strip()))
                     ready = False
 
-        # Ensure every service has a leader. If there is no leader, then
-        # one will be appointed soon and hooks should kick off.
-        if ready:
-            services = set()
-            services_with_leader = set()
-            for uname, version in agent_version.items():
-                sname = uname.split('/', 1)[0]
-                services.add(sname)
-                if (sname not in services_with_leader and version and
-                    (LooseVersion(version) <= LooseVersion('1.23') or
-                        get_is_leader(uname) is True)):
-                    services_with_leader.add(sname)
-                    logging.debug('{} is lead by {}'.format(sname, uname))
-            for sname in services:
-                if sname not in services_with_leader:
-                    logging.info('{} does not have a leader'.format(sname))
-                    ready = False
 
         if ready:
             # We are never ready until this check has been running until
@@ -331,9 +326,33 @@ def wait(log=None, wait_for_workload=False, max_wait=None):
                 logging.info('All units idle since {}Z ({})'
                              ''.format(ready_since,
                                        ', '.join(sorted(all_units))))
-                return
+                ready = True
         else:
             ready_since = None
+            ready = False
+
+        # Ensure every service has a leader. If there is no leader, then
+        # one will be appointed soon and hooks should kick off.
+        if ready:
+            services = set()
+            services_with_leader = set()
+            for uname, version in agent_version.items():
+                sname = uname.split('/', 1)[0]
+                services.add(sname)
+                if 'leader' in unit and unit['leader']:
+                    services_with_leader.add(sname)
+                    logging.debug('{} is lead by {}'.format(sname, uname))
+                elif (sname not in services_with_leader and version and
+                    (LooseVersion(version) <= LooseVersion('1.23') or
+                        get_is_leader(uname) is True)):
+                    services_with_leader.add(sname)
+                    logging.debug('{} is lead by {}'.format(sname, uname))
+            for sname in services:
+                if sname not in services_with_leader:
+                    logging.info('{} does not have a leader'.format(sname))
+                    ready = False
+                 else:
+                     return
 
         prev_logs = logs
         time.sleep(4)
