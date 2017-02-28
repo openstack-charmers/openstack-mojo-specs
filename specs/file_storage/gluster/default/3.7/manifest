@@ -2,7 +2,7 @@
 collect config=collect-gluster-default
 
 # Use juju deployer with gluster-default.yaml bundle
-deploy config=gluster-default.yaml delay=0 wait=True target=base
+deploy config=gluster-default.yaml delay=0 wait=False target=base
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

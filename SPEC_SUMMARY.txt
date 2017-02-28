@@ -1,44 +1,95 @@
-./specs/deprecated/next_ha_phased_chaos_pony/liberty/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment. iThen chaos pony is used to add and remove units.
+./specs/dev/magpie_lxc_baremetal/
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
 
-./specs/deprecated/next_ha_phased_chaos_pony/icehouse/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment. iThen chaos pony is used to add and remove units.
+./specs/dev/vxlan/
+This spec deploys and tests a deployment with VXLAN enabled
 
-./specs/deprecated/next_ha_phased_chaos_pony/kilo/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment. iThen chaos pony is used to add and remove units.
+./specs/dev/next_mini/icehouse/
+This spec performs a minimalist OpenStack deploy using the next charms,
+generally useful for validating MOJO itself, or other tooling.
 
-./specs/deprecated/next_ha_phased/liberty/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
+./specs/dev/next_mini/liberty/
+This spec performs a minimalist OpenStack deploy using the next charms,
+generally useful for validating MOJO itself, or other tooling.
 
-./specs/deprecated/next_ha_phased/icehouse/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
+./specs/dev/stable_mini/icehouse/
+This spec performs a minimalist OpenStack deploy using the stable charms,
+generally useful for validating MOJO itself, or other tooling.
 
-./specs/deprecated/next_ha_phased/kilo/
-This spec performs a phased ha deploy then runs tests to validate the
-deployment
+./specs/dev/stable_mini/liberty/
+This spec performs a minimalist OpenStack deploy using the stable charms,
+generally useful for validating MOJO itself, or other tooling.
 
-./specs/file_storage/gluster/default/3.7/
-This spec deploys a 3 gluster node cluster. It then tests to verify
-you can write to and read from the cluster.
+./specs/dev/dvr/
+This spec deploys and tests a deployment with neutron DVR enabled
 
-./specs/object_storage/swift_proxy/simple_nonha/liberty/
-This spec deploys a swift cluster fronted by a single swift proxy. The
-resulting object store is then tested.
+./specs/dev/magpie_baremetal/
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+
+./specs/dev/magpie/
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+
+./specs/object_storage/ceph_radosgw/ha/icehouse/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/ocata/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/mitaka/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/kilo/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/liberty/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/ha/newton/
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change
+
+./specs/object_storage/ceph_radosgw/simple_nonha/icehouse/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/ocata/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/mitaka/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/kilo/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/liberty/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
+
+./specs/object_storage/ceph_radosgw/simple_nonha/newton/
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
 
 ./specs/object_storage/swift_proxy/simple_nonha/icehouse/
-This spec deploys a swift cluster fronted by a single swift proxy. The
-resulting object store is then tested.
-
-./specs/object_storage/swift_proxy/simple_nonha/mitaka/
-This spec deploys a swift cluster fronted by a single swift proxy. The
-resulting object store is then tested.
-
-./specs/object_storage/swift_proxy/simple_nonha/newton/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
@@ -46,41 +97,21 @@ resulting object store is then tested.
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
+./specs/object_storage/swift_proxy/simple_nonha/mitaka/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
+
 ./specs/object_storage/swift_proxy/simple_nonha/kilo/
 This spec deploys a swift cluster fronted by a single swift proxy. The
 resulting object store is then tested.
 
-./specs/object_storage/swift_proxy/ha_serial_scaleout/liberty/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy is then scaled out and once that has completed swift storage is
-scaled out. The resulting object store is then retested.
+./specs/object_storage/swift_proxy/simple_nonha/liberty/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
 
-./specs/object_storage/swift_proxy/ha_serial_scaleout/icehouse/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy is then scaled out and once that has completed swift storage is
-scaled out. The resulting object store is then retested.
-
-./specs/object_storage/swift_proxy/ha_serial_scaleout/mitaka/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy is then scaled out and once that has completed swift storage is
-scaled out. The resulting object store is then retested.
-
-./specs/object_storage/swift_proxy/ha_serial_scaleout/newton/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy is then scaled out and once that has completed swift storage is
-scaled out. The resulting object store is then retested.
-
-./specs/object_storage/swift_proxy/ha_serial_scaleout/kilo/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy is then scaled out and once that has completed swift storage is
-scaled out. The resulting object store is then retested.
-
-./specs/object_storage/swift_proxy/ha_parallel_scaleout/liberty/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy and swift storage are then simultaniously scaled out and the
-resulting object store retested. WARNING: Scaling swift-proxy and
-swift-storage is simultaiously is currently not supported so this spec is
-known to fail
+./specs/object_storage/swift_proxy/simple_nonha/newton/
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.
 
 ./specs/object_storage/swift_proxy/ha_parallel_scaleout/icehouse/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
@@ -96,13 +127,6 @@ resulting object store retested. WARNING: Scaling swift-proxy and
 swift-storage is simultaiously is currently not supported so this spec is
 known to fail
 
-./specs/object_storage/swift_proxy/ha_parallel_scaleout/newton/
-This spec deploys a swift cluster fronted by multiple swift proxy front ends.
-Swift proxy and swift storage are then simultaniously scaled out and the
-resulting object store retested. WARNING: Scaling swift-proxy and
-swift-storage is simultaiously is currently not supported so this spec is
-known to fail
-
 ./specs/object_storage/swift_proxy/ha_parallel_scaleout/kilo/
 This spec deploys a swift cluster fronted by multiple swift proxy front ends.
 Swift proxy and swift storage are then simultaniously scaled out and the
@@ -110,243 +134,125 @@ resulting object store retested. WARNING: Scaling swift-proxy and
 swift-storage is simultaiously is currently not supported so this spec is
 known to fail
 
-./specs/object_storage/ceph_radosgw/simple_nonha/liberty/
-This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
-The cluster is then tested with mulitple object store gets and retrivals.
-Glance integeration is also tested.
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/liberty/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail
 
-./specs/object_storage/ceph_radosgw/simple_nonha/icehouse/
-This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
-The cluster is then tested with mulitple object store gets and retrivals.
-Glance integeration is also tested.
+./specs/object_storage/swift_proxy/ha_parallel_scaleout/newton/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy and swift storage are then simultaniously scaled out and the
+resulting object store retested. WARNING: Scaling swift-proxy and
+swift-storage is simultaiously is currently not supported so this spec is
+known to fail
 
-./specs/object_storage/ceph_radosgw/simple_nonha/mitaka/
-This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
-The cluster is then tested with mulitple object store gets and retrivals.
-Glance integeration is also tested.
+./specs/object_storage/swift_proxy/ha_serial_scaleout/icehouse/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
 
-./specs/object_storage/ceph_radosgw/simple_nonha/newton/
-This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
-The cluster is then tested with mulitple object store gets and retrivals.
-Glance integeration is also tested.
+./specs/object_storage/swift_proxy/ha_serial_scaleout/mitaka/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
 
-./specs/object_storage/ceph_radosgw/simple_nonha/ocata/
-This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
-The cluster is then tested with mulitple object store gets and retrivals.
-Glance integeration is also tested.
+./specs/object_storage/swift_proxy/ha_serial_scaleout/kilo/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
 
-./specs/object_storage/ceph_radosgw/simple_nonha/kilo/
-This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
-The cluster is then tested with mulitple object store gets and retrivals.
-Glance integeration is also tested.
+./specs/object_storage/swift_proxy/ha_serial_scaleout/liberty/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
 
-./specs/object_storage/ceph_radosgw/ha/liberty/
-This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
-The rados gw leader is removed and additional units added. With tests run
-after each change
+./specs/object_storage/swift_proxy/ha_serial_scaleout/newton/
+This spec deploys a swift cluster fronted by multiple swift proxy front ends.
+Swift proxy is then scaled out and once that has completed swift storage is
+scaled out. The resulting object store is then retested.
 
-./specs/object_storage/ceph_radosgw/ha/icehouse/
-This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
-The rados gw leader is removed and additional units added. With tests run
-after each change
-
-./specs/object_storage/ceph_radosgw/ha/mitaka/
-This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
-The rados gw leader is removed and additional units added. With tests run
-after each change
-
-./specs/object_storage/ceph_radosgw/ha/newton/
-This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
-The rados gw leader is removed and additional units added. With tests run
-after each change
-
-./specs/object_storage/ceph_radosgw/ha/ocata/
-This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
-The rados gw leader is removed and additional units added. With tests run
-after each change
-
-./specs/object_storage/ceph_radosgw/ha/kilo/
-This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
-The rados gw leader is removed and additional units added. With tests run
-after each change
-
-./specs/object_storage/ceph/harden/liberty/
-This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
-It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/harden/icehouse/
-This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
-It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/harden/mitaka/
-This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
-It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/harden/newton/
-This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
-It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/harden/kilo/
-This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
-It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/encrypt/liberty/
-This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
-It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/encrypt/icehouse/
 This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
 It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/encrypt/mitaka/
 This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
 It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/encrypt/newton/
-This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
-It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/encrypt/kilo/
 This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
 It then tests to verify Rados can write to and read from the cluster.
-./specs/object_storage/ceph/default/liberty/
-This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
-Rados can write to and read from the cluster.
+./specs/object_storage/ceph/encrypt/liberty/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/encrypt/newton/
+This spec deploys a 3 monitor and 3 node OSD cluster setup to use encryption.
+It then tests to verify Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/default/icehouse/
 This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
 Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/default/mitaka/
 This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
 Rados can write to and read from the cluster.
-./specs/object_storage/ceph/default/newton/
-This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
-Rados can write to and read from the cluster.
 ./specs/object_storage/ceph/default/kilo/
 This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
 Rados can write to and read from the cluster.
-./specs/dev/stable_mini/liberty/
-This spec performs a minimalist OpenStack deploy using the stable charms,
-generally useful for validating MOJO itself, or other tooling.
+./specs/object_storage/ceph/default/liberty/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+./specs/object_storage/ceph/default/newton/
+This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
+Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/icehouse/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/mitaka/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/kilo/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/liberty/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/object_storage/ceph/harden/newton/
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.
+./specs/full_stack/stable_deploy_baremetal/icehouse/
+This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./specs/dev/stable_mini/icehouse/
-This spec performs a minimalist OpenStack deploy using the stable charms,
-generally useful for validating MOJO itself, or other tooling.
+./specs/full_stack/stable_deploy_baremetal/ocata/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./specs/dev/magpie_lxc_baremetal/
-Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+./specs/full_stack/stable_deploy_baremetal/mitaka/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./specs/dev/magpie/
-Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+./specs/full_stack/stable_deploy_baremetal/kilo/
+This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./specs/dev/magpie_baremetal/
-Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
+./specs/full_stack/stable_deploy_baremetal/liberty/
+This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
-./specs/dev/dvr/
-This spec deploys and tests a deployment with neutron DVR enabled
-
-./specs/dev/vxlan/
-This spec deploys and tests a deployment with VXLAN enabled
-
-./specs/dev/next_mini/liberty/
-This spec performs a minimalist OpenStack deploy using the next charms,
-generally useful for validating MOJO itself, or other tooling.
-
-./specs/dev/next_mini/icehouse/
-This spec performs a minimalist OpenStack deploy using the next charms,
-generally useful for validating MOJO itself, or other tooling.
-
-./specs/full_stack/next_deploy/liberty/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/next_deploy/icehouse/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/next_deploy/mitaka/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/next_deploy/newton/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/next_deploy/ocata/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/next_deploy/kilo/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/next_ha_oneshot/liberty/
-This spec performs a ha deploy in one shot (not phased) then runs tests to
-validate the deployment. The assumption is that the version of juju has
-leadership enabled.
-
-./specs/full_stack/next_ha_oneshot/icehouse/
-This spec performs a ha deploy in one shot (not phased) then runs tests to
-validate the deployment. The assumption is that the version of juju has
-leadership enabled.
-
-./specs/full_stack/next_ha_oneshot/mitaka/
-This spec performs a ha deploy in one shot (not phased) then runs tests to
-validate the deployment. The assumption is that the version of juju has
-leadership enabled.
-
-./specs/full_stack/next_ha_oneshot/newton/
-This spec performs a ha deploy in one shot (not phased) then runs tests to
-validate the deployment. The assumption is that the version of juju has
-leadership enabled.
-
-./specs/full_stack/next_ha_oneshot/ocata/
-This spec performs a ha deploy in one shot (not phased) then runs tests to
-validate the deployment. The assumption is that the version of juju has
-leadership enabled.
-
-./specs/full_stack/next_ha_oneshot/kilo/
-This spec performs a ha deploy in one shot (not phased) then runs tests to
-validate the deployment. The assumption is that the version of juju has
-leadership enabled.
-
-./specs/full_stack/next_charmhelper_sync/liberty/
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a non-ha deployment and testing the resulting cloud
-
-./specs/full_stack/next_charmhelper_sync/icehouse/
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a non-ha deployment and testing the resulting cloud
-
-./specs/full_stack/next_charmhelper_sync/mitaka/
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a non-ha deployment and testing the resulting cloud
-
-./specs/full_stack/next_charmhelper_sync/newton/
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a non-ha deployment and testing the resulting cloud
-
-./specs/full_stack/next_charmhelper_sync/kilo/
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a non-ha deployment and testing the resulting cloud
-
-./specs/full_stack/next_deploy_ssl/liberty/
-This spec performs a non-ha deploy using the next charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/next_deploy_ssl/icehouse/
-This spec performs a non-ha deploy using the next charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/next_deploy_ssl/mitaka/
-This spec performs a non-ha deploy using the next charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/next_deploy_ssl/newton/
-This spec performs a non-ha deploy using the next charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/next_deploy_ssl/ocata/
-This spec performs a non-ha deploy using the next charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/next_deploy_ssl/kilo/
-This spec performs a non-ha deploy using the next charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/stable_to_next/liberty/
-This spec performs a non-ha deploy using the stable charms, then upgrades the
-charms to the devel versions and then runs tests to validate the deployment
+./specs/full_stack/stable_deploy_baremetal/newton/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
 
 ./specs/full_stack/stable_to_next/icehouse/
 This spec performs a non-ha deploy using the stable charms, then upgrades the
@@ -360,9 +266,206 @@ charms to the devel versions and then runs tests to validate the deployment
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
-./specs/full_stack/next_openstack_upgrade/liberty/
-This spec performs a non-ha deploy using the next charms and then upgrades
-to the next version of openstack
+./specs/full_stack/stable_to_next/liberty/
+This spec performs a non-ha deploy using the stable charms, then upgrades the
+charms to the devel versions and then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next/newton/
+This spec performs a non-ha deploy using the stable charms, then upgrades the
+charms to the devel versions and then runs tests to validate the deployment
+
+./specs/full_stack/stable_deploy_tempest/newton/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_ha_vrrp/ocata/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_ha_vrrp/mitaka/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_ha_vrrp/kilo/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_ha_vrrp/liberty/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_ha_vrrp/newton/
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible
+
+./specs/full_stack/next_deploy_ssl/icehouse/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/ocata/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/mitaka/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/kilo/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/liberty/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_ssl/newton/
+This spec performs a non-ha deploy using the next charms wil ssl enabled
+and then runs tests to validate the deployment
+
+./specs/full_stack/stable_keystone_v3/ocata/
+This spec performs a non-ha deploy using the stable charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
+./specs/full_stack/stable_keystone_v3/mitaka/
+This spec performs a non-ha deploy using the stable charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
+./specs/full_stack/stable_keystone_v3/liberty/
+This spec performs a non-ha deploy using the stable charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
+./specs/full_stack/stable_keystone_v3/newton/
+This spec performs a non-ha deploy using the stable charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
+./specs/full_stack/next_ha_oneshot/icehouse/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/ocata/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/mitaka/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/kilo/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/liberty/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/next_ha_oneshot/newton/
+This spec performs a ha deploy in one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
+
+./specs/full_stack/odl/liberty/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_dvr/ocata/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/full_stack/next_dvr/mitaka/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/full_stack/next_dvr/kilo/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/full_stack/next_dvr/liberty/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/full_stack/next_dvr/newton/
+This spec deploys and tests a deployment with neutron DVR enabled
+
+./specs/full_stack/stable_to_next_ha/icehouse/
+This spec performs a phased ha deploy using the stable charms then upgrades
+charms to the next branches then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next_ha/mitaka/
+This spec performs a phased ha deploy using the stable charms then upgrades
+charms to the next branches then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next_ha/kilo/
+This spec performs a phased ha deploy using the stable charms then upgrades
+charms to the next branches then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next_ha/liberty/
+This spec performs a phased ha deploy using the stable charms then upgrades
+charms to the next branches then runs tests to validate the deployment
+
+./specs/full_stack/stable_to_next_ha/newton/
+This spec performs a phased ha deploy using the stable charms then upgrades
+charms to the next branches then runs tests to validate the deployment
+
+./specs/full_stack/next_deploy_baremetal/icehouse/
+This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy_baremetal/ocata/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy_baremetal/mitaka/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy_baremetal/kilo/
+This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy_baremetal/liberty/
+This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/next_deploy_baremetal/newton/
+This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
+with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
+roughly equivalent to the next/default yamls.  As swift is the object store,
+ceph-radosgw is not exercised.
+
+./specs/full_stack/stable_deploy/icehouse/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/ocata/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/mitaka/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/kilo/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/liberty/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/stable_deploy/newton/
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
 
 ./specs/full_stack/next_openstack_upgrade/icehouse/
 This spec performs a non-ha deploy using the next charms and then upgrades
@@ -376,43 +479,59 @@ to the next version of openstack
 This spec performs a non-ha deploy using the next charms and then upgrades
 to the next version of openstack
 
-./specs/full_stack/stable_deploy_baremetal/liberty/
-This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
+./specs/full_stack/next_openstack_upgrade/liberty/
+This spec performs a non-ha deploy using the next charms and then upgrades
+to the next version of openstack
 
-./specs/full_stack/stable_deploy_baremetal/icehouse/
-This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
+./specs/full_stack/next_openstack_upgrade/newton/
+This spec performs a non-ha deploy using the next charms and then upgrades
+to the next version of openstack
 
-./specs/full_stack/stable_deploy_baremetal/mitaka/
-This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
+./specs/full_stack/next_charmhelper_sync/icehouse/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a non-ha deployment and testing the resulting cloud
 
-./specs/full_stack/stable_deploy_baremetal/newton/
-This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
+./specs/full_stack/next_charmhelper_sync/mitaka/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a non-ha deployment and testing the resulting cloud
 
-./specs/full_stack/stable_deploy_baremetal/ocata/
-This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
+./specs/full_stack/next_charmhelper_sync/kilo/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a non-ha deployment and testing the resulting cloud
 
-./specs/full_stack/stable_deploy_baremetal/kilo/
-This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
+./specs/full_stack/next_charmhelper_sync/liberty/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a non-ha deployment and testing the resulting cloud
 
-./specs/full_stack/next_keystone_v3/liberty/
+./specs/full_stack/next_charmhelper_sync/newton/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a non-ha deployment and testing the resulting cloud
+
+./specs/full_stack/next_deploy/icehouse/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_deploy/ocata/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_deploy/mitaka/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_deploy/kilo/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_deploy/liberty/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_deploy/newton/
+This spec performs a non-ha deploy using the next charms and then runs tests
+to validate the deployment
+
+./specs/full_stack/next_keystone_v3/ocata/
 This spec performs a non-ha deploy using the next charms with v3 keystone API
 enabled and then runs tests to validate the deployment
 
@@ -420,118 +539,15 @@ enabled and then runs tests to validate the deployment
 This spec performs a non-ha deploy using the next charms with v3 keystone API
 enabled and then runs tests to validate the deployment
 
+./specs/full_stack/next_keystone_v3/liberty/
+This spec performs a non-ha deploy using the next charms with v3 keystone API
+enabled and then runs tests to validate the deployment
+
 ./specs/full_stack/next_keystone_v3/newton/
 This spec performs a non-ha deploy using the next charms with v3 keystone API
 enabled and then runs tests to validate the deployment
 
-./specs/full_stack/odl/liberty/
-This spec performs a non-ha deploy using the next charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_to_next_ha/liberty/
-This spec performs a phased ha deploy using the stable charms then upgrades
-charms to the next branches then runs tests to validate the deployment
-
-./specs/full_stack/stable_to_next_ha/icehouse/
-This spec performs a phased ha deploy using the stable charms then upgrades
-charms to the next branches then runs tests to validate the deployment
-
-./specs/full_stack/stable_to_next_ha/kilo/
-This spec performs a phased ha deploy using the stable charms then upgrades
-charms to the next branches then runs tests to validate the deployment
-
-./specs/full_stack/next_dvr/liberty/
-This spec deploys and tests a deployment with neutron DVR enabled
-
-./specs/full_stack/next_dvr/mitaka/
-This spec deploys and tests a deployment with neutron DVR enabled
-
-./specs/full_stack/next_dvr/newton/
-This spec deploys and tests a deployment with neutron DVR enabled
-
-./specs/full_stack/next_dvr/ocata/
-This spec deploys and tests a deployment with neutron DVR enabled
-
-./specs/full_stack/next_dvr/kilo/
-This spec deploys and tests a deployment with neutron DVR enabled
-
-./specs/full_stack/next_deploy_baremetal/liberty/
-This LIBERTY spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
-
-./specs/full_stack/next_deploy_baremetal/icehouse/
-This ICEHOUSE spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
-
-./specs/full_stack/next_deploy_baremetal/mitaka/
-This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
-
-./specs/full_stack/next_deploy_baremetal/newton/
-This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
-
-./specs/full_stack/next_deploy_baremetal/ocata/
-This MITAKA spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
-
-./specs/full_stack/next_deploy_baremetal/kilo/
-This KILO spec deploys a non-ha 7-machine bundle, intended for bare metal
-with smoosh.  It uses the baremetal7.yaml bundle which aims to exercise a stack
-roughly equivalent to the next/default yamls.  As swift is the object store,
-ceph-radosgw is not exercised.
-
-./specs/full_stack/stable_deploy_tempest/newton/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy/liberty/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy/icehouse/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy/mitaka/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy/newton/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy/ocata/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy/kilo/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
-./specs/full_stack/stable_deploy_ssl/liberty/
-This spec performs a non-ha deploy using the stable charms wil ssl enabled
-and then runs tests to validate the deployment
-
 ./specs/full_stack/stable_deploy_ssl/icehouse/
-This spec performs a non-ha deploy using the stable charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/stable_deploy_ssl/mitaka/
-This spec performs a non-ha deploy using the stable charms wil ssl enabled
-and then runs tests to validate the deployment
-
-./specs/full_stack/stable_deploy_ssl/newton/
 This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 
@@ -539,41 +555,21 @@ and then runs tests to validate the deployment
 This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 
+./specs/full_stack/stable_deploy_ssl/mitaka/
+This spec performs a non-ha deploy using the stable charms wil ssl enabled
+and then runs tests to validate the deployment
+
 ./specs/full_stack/stable_deploy_ssl/kilo/
 This spec performs a non-ha deploy using the stable charms wil ssl enabled
 and then runs tests to validate the deployment
 
-./specs/full_stack/stable_keystone_v3/liberty/
-This spec performs a non-ha deploy using the stable charms with v3 keystone API
-enabled and then runs tests to validate the deployment
+./specs/full_stack/stable_deploy_ssl/liberty/
+This spec performs a non-ha deploy using the stable charms wil ssl enabled
+and then runs tests to validate the deployment
 
-./specs/full_stack/stable_keystone_v3/mitaka/
-This spec performs a non-ha deploy using the stable charms with v3 keystone API
-enabled and then runs tests to validate the deployment
-
-./specs/full_stack/next_ha_vrrp/liberty/
-This spec deploys and tests a deployment with neutron VRRP enabled, it then
-takes down the gateways in turn and checks a guest remains accessible
-
-./specs/full_stack/next_ha_vrrp/mitaka/
-This spec deploys and tests a deployment with neutron VRRP enabled, it then
-takes down the gateways in turn and checks a guest remains accessible
-
-./specs/full_stack/next_ha_vrrp/newton/
-This spec deploys and tests a deployment with neutron VRRP enabled, it then
-takes down the gateways in turn and checks a guest remains accessible
-
-./specs/full_stack/next_ha_vrrp/ocata/
-This spec deploys and tests a deployment with neutron VRRP enabled, it then
-takes down the gateways in turn and checks a guest remains accessible
-
-./specs/full_stack/next_ha_vrrp/kilo/
-This spec deploys and tests a deployment with neutron VRRP enabled, it then
-takes down the gateways in turn and checks a guest remains accessible
-
-./specs/full_stack/next_charmhelper_sync_ha/liberty/
-This spec collects the charms and then upgrades charmhelpers in each charm
-before running a ha deployment and testing the resulting cloud
+./specs/full_stack/stable_deploy_ssl/newton/
+This spec performs a non-ha deploy using the stable charms wil ssl enabled
+and then runs tests to validate the deployment
 
 ./specs/full_stack/next_charmhelper_sync_ha/icehouse/
 This spec collects the charms and then upgrades charmhelpers in each charm
@@ -582,4 +578,36 @@ before running a ha deployment and testing the resulting cloud
 ./specs/full_stack/next_charmhelper_sync_ha/kilo/
 This spec collects the charms and then upgrades charmhelpers in each charm
 before running a ha deployment and testing the resulting cloud
+
+./specs/full_stack/next_charmhelper_sync_ha/liberty/
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a ha deployment and testing the resulting cloud
+
+./specs/deprecated/next_ha_phased/icehouse/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/deprecated/next_ha_phased/kilo/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/deprecated/next_ha_phased/liberty/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment
+
+./specs/deprecated/next_ha_phased_chaos_pony/icehouse/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment. iThen chaos pony is used to add and remove units.
+
+./specs/deprecated/next_ha_phased_chaos_pony/kilo/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment. iThen chaos pony is used to add and remove units.
+
+./specs/deprecated/next_ha_phased_chaos_pony/liberty/
+This spec performs a phased ha deploy then runs tests to validate the
+deployment. iThen chaos pony is used to add and remove units.
+
+./specs/file_storage/gluster/default/3.7/
+This spec deploys a 3 gluster node cluster. It then tests to verify
+you can write to and read from the cluster.
 

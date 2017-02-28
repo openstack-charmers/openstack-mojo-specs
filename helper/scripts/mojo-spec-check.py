@@ -127,6 +127,17 @@ def check_manifest_ubuntu_release():
                              'Ubuntu release. Consider using ${MOJO_SERIES}')
 
 
+def check_manifest_no_wait(openstack_release):
+    """Check that manifests do not use Mojo built-in wait feature"""
+    logging.info('Checking that manifests do not use built-in wait feature')
+    with open('manifest', 'r') as f:
+        for line in f.readlines():
+            words = line.split()
+            if words and words[0] == "deploy" and "wait=True" in words:
+                logging.error('Manifest calls built-in Mojo wait, which is '
+                              'not allowed in these specs.')
+
+
 def check_spec_info(dir_list):
     """Check spec has a SPEC_INFO.txt file describing the spec"""
     if 'SPEC_INFO.txt' not in dir_list:
@@ -238,6 +249,7 @@ def main(argv):
     check_manifest_ubuntu_release()
     check_yaml_syntax(dir_list)
     check_dirname(openstack_release)
+    check_manifest_no_wait(openstack_release)
 
 
 if __name__ == "__main__":

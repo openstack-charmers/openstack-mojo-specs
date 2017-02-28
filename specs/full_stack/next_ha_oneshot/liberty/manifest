@@ -2,7 +2,7 @@
 collect config=collect-next-ha
 
 # Use juju deployer to create the units for the deployment
-deploy config=ha.yaml delay=0 wait=True target=${MOJO_SERIES}-liberty-ha
+deploy config=ha.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty-ha
 
 # Create sdn on overcloud
 script config=network_setup.py

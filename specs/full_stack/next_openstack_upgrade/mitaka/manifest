@@ -2,7 +2,7 @@
 collect config=collect-next-xenial
 
 # Use juju deployer with full.yaml bundle
-deploy config=full.yaml delay=0 wait=True target=${MOJO_SERIES}-mitaka
+deploy config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
 
 # Create sdn on overcloud
 script config=network_setup.py

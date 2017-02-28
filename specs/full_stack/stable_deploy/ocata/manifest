@@ -6,7 +6,7 @@ script config=git_checkout_stable.py
 
 
 # Use juju deployer with full.yaml bundle
-deploy config=full.yaml delay=0 wait=True target=${MOJO_SERIES}-ocata
+deploy config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
