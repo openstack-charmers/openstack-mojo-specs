@@ -7,6 +7,27 @@ import subprocess
 import sys
 
 
+"""
+kiki is a set of helpers to allow coding against both Juju 1.25 and 2.1
+commands.
+
+kiki supports Juju 1.25.x and >= 2.1.0 CLI command structures.
+Juju 2.0.x has a third set of command structure that could be added to kiki at
+a later date if it becomes necessary.
+
+Usage:
+
+import kiki
+
+cmd = [kiki.cmd(), kiki.remove_unit(), unit]
+subprocess.check_call(cmd)
+
+if kiki.version() < 2:
+   ...
+
+"""
+
+
 def cmd():
     if os.environ.get('JUJU_BINARY'):
         juju = os.environ.get('JUJU_BINARY')

@@ -26,6 +26,10 @@ JUJU_ACTION_STATUSES = {
 }
 
 
+class ConfigFileNotFound(Exception):
+    pass
+
+
 def get_juju_status(service=None, unit=None):
     cmd = [kiki.cmd(), 'status', '--format=yaml']
     if service:
@@ -277,9 +281,18 @@ def get_provider_type():
         juju_env_contents = get_juju_environments_yaml()
         return juju_env_contents['environments'][juju_env]['type']
     else:
-        cmd = [kiki.cmd(), 'show-cloud', get_cloud_from_controller(),
-               '--format=yaml']
-        return yaml.load(subprocess.check_output(cmd))['type']
+        cloud = get_cloud_from_controller()
+        if cloud:
+            # If the controller was deployed from this system with
+            # the cloud configured in ~/.local/share/juju/clouds.yaml
+            # Determine the cloud type directly
+            cmd = [kiki.cmd(), 'show-cloud', cloud, '--format=yaml']
+            return yaml.load(subprocess.check_output(cmd))['type']
+        else:
+            # If the controller was deployed elsewhere
+            # show-controllers unhelpfully returns an empty string for cloud
+            # For now assume openstack
+            return 'openstack'
 
 
 class MissingOSAthenticationException(Exception):
@@ -299,8 +312,7 @@ def get_undercloud_auth():
     if os_auth_url:
         api_version = os_auth_url.split('/')[-1].translate(None, 'v')
     else:
-        logging.error('Missing OS authentication setting: OS_AUTH_URL'
-                      ''.format(key))
+        logging.error('Missing OS authentication setting: OS_AUTH_URL')
         raise MissingOSAthenticationException(
             'One or more OpenStack authetication variables could '
             'be found in the environment. Please export the OS_* '
@@ -404,13 +416,32 @@ def get_overcloud_auth(juju_status=None):
 
 
 def get_mojo_file(filename):
+    """Search for a stage specific version,
+    then the current working directory,
+    then in the directory where the script was called,
+    then in the directory above where the script was called.
+
+    @returns string path to configuration file
+    @raises ConfigFileNotFound if no file can be located
+    """
+    files = []
     if 'MOJO_SPEC_DIR' in os.environ and 'MOJO_STAGE' in os.environ:
-        mfile = '{}/{}/{}'.format(os.environ['MOJO_SPEC_DIR'],
-                                  os.environ['MOJO_STAGE'], filename)
-    else:
-        if os.path.isfile(filename):
-            mfile = filename
-    return mfile
+        # Spec location
+        files.append('{}/{}/{}'.format(os.environ['MOJO_SPEC_DIR'],
+                                       os.environ['MOJO_STAGE'], filename))
+
+    # CWD
+    files.append(filename)
+    # Called file directory
+    files.append(os.path.join(os.path.dirname(__file__), filename))
+    # Up one directory from called file
+    files.append(os.path.join(
+                     os.path.dirname(os.path.dirname(__file__)),
+                     filename))
+
+    for file_path in files:
+        if os.path.isfile(file_path):
+            return file_path
 
 
 def get_mojo_config(filename):
