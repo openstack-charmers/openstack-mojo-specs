@@ -267,8 +267,11 @@ def get_cloud_from_controller():
     cloud_config = yaml.load(subprocess.check_output(cmd))
     # There will only be one top level controller from show-controller,
     # but we do not know its name.
-    for key in cloud_config:
-        return cloud_config[key]['details']['cloud']
+    assert len(cloud_config) == 1
+    try:
+        return cloud_config.values()[0]['details']['cloud']
+    except KeyError:
+        raise KeyError("Failed to get cloud information from the controller")
 
 
 def get_provider_type():
@@ -353,8 +356,8 @@ def get_undercloud_auth():
                 os.environ.get('OS_PROJECT_DOMAIN_NAME'))
 
     # Validate settings
-    for key in auth_settings.keys():
-        if auth_settings[key] is None:
+    for key, settings in auth_settings.items():
+        if settings is None:
             logging.error('Missing OS authentication setting: {}'
                           ''.format(key))
             raise MissingOSAthenticationException(
@@ -371,8 +374,9 @@ def get_auth_url(juju_status=None):
         return juju_get('keystone', 'vip')
     if not juju_status:
         juju_status = get_juju_status()
-    unit = juju_status[
-        kiki.applications()]['keystone']['units'].itervalues().next()
+    unit = (juju_status[kiki.applications()]['keystone']['units']
+            .itervalues()
+            .next())
     return unit['public-address']
 
 
@@ -557,6 +561,7 @@ def get_machine_instance_states(juju_status):
 
 def get_service_agent_states(juju_status):
     service_state = Counter()
+
     for service in juju_status[kiki.applications()]:
         if 'units' in juju_status[kiki.applications()][service]:
             for unit in juju_status[kiki.applications()][service]['units']:
@@ -767,8 +772,7 @@ def setup_logging():
 
 
 def action_get_output(action_id):
-    cmd = kiki.show_action_output_cmd()
-    cmd.extend(['--format=yaml', action_id])
+    cmd = kiki.show_action_output_cmd() + ['--format=yaml', action_id]
     return yaml.load(subprocess.check_output(cmd))
 
 
@@ -788,8 +792,7 @@ def action_wait(action_id, timeout=600):
 
 
 def action_run(unit, action_name, action_args=None, timeout=600):
-    cmd = kiki.action_run_cmd()
-    cmd.extend(['--format=yaml', unit, action_name])
+    cmd = kiki.run_action_cmd() + ['--format=yaml', unit, action_name]
     if action_args:
         cmd.extend(action_args)
     action_out = yaml.load(subprocess.check_output(cmd))
