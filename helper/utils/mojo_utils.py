@@ -223,21 +223,21 @@ def juju_set(service, option, wait=None):
     if wait is None:
         wait = True
     logging.info('Setting %s to %s' % (service, option))
-    subprocess.check_call([kiki.cmd(), kiki.config(change=True),
+    subprocess.check_call([kiki.cmd(), kiki.set_config(),
                            service, option])
     if wait:
         juju_wait_finished()
 
 
 def juju_get_config_keys(service):
-    cmd = [kiki.cmd(), kiki.config(), service]
+    cmd = [kiki.cmd(), kiki.get_config(), service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
     return service_config['settings'].keys()
 
 
 def juju_get(service, option):
-    cmd = [kiki.cmd(), kiki.config(), service]
+    cmd = [kiki.cmd(), kiki.get_config(), service]
     juju_get_output = subprocess.Popen(cmd, stdout=subprocess.PIPE).stdout
     service_config = yaml.load(juju_get_output)
 
