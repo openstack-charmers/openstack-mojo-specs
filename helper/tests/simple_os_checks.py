@@ -43,7 +43,7 @@ def init_flavors(nova_client):
 def main(argv):
     mojo_utils.setup_logging()
     parser = argparse.ArgumentParser()
-    default_machines = ["precise:m1.small:1", "cirros:m1.tiny:1"]
+    default_machines = ["trusty:m1.small:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")
     parser.add_argument("--active_wait", default=180)
     parser.add_argument("--cloudinit_wait", default=180)
@@ -54,22 +54,20 @@ def main(argv):
     cloudinit_wait = int(mojo_utils.parse_mojo_arg(options, 'cloudinit_wait'))
     ping_wait = int(mojo_utils.parse_mojo_arg(options, 'ping_wait'))
     overcloud_novarc = mojo_utils.get_overcloud_auth()
-    if overcloud_novarc.get('API_VERSION', 2) == 2:
-        novac = mojo_os_utils.get_nova_client(overcloud_novarc)
-    else:
-        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                              scope='PROJECT')
-        novac = mojo_os_utils.get_nova_session_client(keystone_session)
+    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
+                                                          scope='PROJECT')
+    novac = mojo_os_utils.get_nova_session_client(keystone_session)
+    neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
+
     init_flavors(novac)
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
-    mojo_os_utils.add_secgroup_rules(novac)
-    print(novac.servers.list())
+    mojo_os_utils.add_neutron_secgroup_rules(neutronc)
     for server in novac.servers.list():
         novac.servers.delete(server.id)
     for instanceset in machines:
         image_name, flavor_name, count = instanceset.split(":")
-        mojo_os_utils.boot_and_test(novac,
+        mojo_os_utils.boot_and_test(novac, neutronc,
                                     image_name=image_name,
                                     flavor_name=flavor_name,
                                     number=int(count),

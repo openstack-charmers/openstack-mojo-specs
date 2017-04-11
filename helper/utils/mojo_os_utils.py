@@ -1,11 +1,15 @@
 #!/usr/bin/python
 
+
 import swiftclient
 import glanceclient
 from keystoneclient.v2_0 import client as keystoneclient_v2
-from keystoneclient.auth.identity import v3
 from keystoneclient.v3 import client as keystoneclient_v3
-from keystoneclient import session
+from keystoneauth1 import session
+from keystoneauth1.identity import (
+    v3,
+    v2,
+)
 import mojo_utils
 from novaclient import client as novaclient_client
 from neutronclient.v2_0 import client as neutronclient
@@ -23,24 +27,20 @@ import StringIO
 
 # Openstack Client helpers
 def get_nova_creds(cloud_creds):
-    auth = {
-        'username': cloud_creds['OS_USERNAME'],
-        'api_key': cloud_creds['OS_PASSWORD'],
-        'auth_url': cloud_creds['OS_AUTH_URL'],
-        'project_id': cloud_creds['OS_TENANT_NAME'],
-        'region_name': cloud_creds['OS_REGION_NAME'],
-    }
+    auth = get_ks_creds(cloud_creds)
+    if os.environ.get('OS_PROJECT_ID'):
+        auth['project_id'] = os.environ.get('OS_PROJECT_ID')
     return auth
 
 
-def get_ks_creds(cloud_creds, scope='DOMAIN'):
+def get_ks_creds(cloud_creds, scope='PROJECT'):
     if cloud_creds.get('API_VERSION', 2) == 2:
         auth = {
             'username': cloud_creds['OS_USERNAME'],
             'password': cloud_creds['OS_PASSWORD'],
             'auth_url': cloud_creds['OS_AUTH_URL'],
-            'tenant_name': cloud_creds['OS_TENANT_NAME'],
-            'region_name': cloud_creds['OS_REGION_NAME'],
+            'tenant_name': (cloud_creds.get('OS_PROJECT_NAME') or
+                            cloud_creds['OS_TENANT_NAME']),
         }
     else:
         if scope == 'DOMAIN':
@@ -95,9 +95,12 @@ def get_neutron_session_client(session):
     return neutronclient.Client(session=session)
 
 
-def get_keystone_session(novarc_creds, scope='DOMAIN'):
+def get_keystone_session(novarc_creds, scope='PROJECT'):
     keystone_creds = get_ks_creds(novarc_creds, scope=scope)
-    auth = v3.Password(**keystone_creds)
+    if novarc_creds.get('API_VERSION', 2) == 2:
+        auth = v2.Password(**keystone_creds)
+    else:
+        auth = v3.Password(**keystone_creds)
     return session.Session(auth=auth)
 
 
@@ -108,8 +111,8 @@ def get_keystone_session_client(session):
 def get_keystone_client(novarc_creds, insecure=True):
     keystone_creds = get_ks_creds(novarc_creds)
     if novarc_creds.get('API_VERSION', 2) == 2:
-        keystone_creds['insecure'] = insecure
-        return keystoneclient_v2.Client(**keystone_creds)
+        sess = v2.Password(**keystone_creds)
+        return keystoneclient_v2.Client(session=sess)
     else:
         sess = v3.Password(**keystone_creds)
         return keystoneclient_v3.Client(session=sess)
@@ -121,6 +124,10 @@ def get_swift_client(novarc_creds, insecure=True):
     return swiftclient.client.Connection(**swift_creds)
 
 
+def get_glance_session_client(session, insecure=True):
+    return glanceclient.Client('1', session=session)
+
+
 def get_glance_client(novarc_creds, insecure=True):
     if novarc_creds.get('API_VERSION', 2) == 2:
         kc = get_keystone_client(novarc_creds)
@@ -128,7 +135,6 @@ def get_glance_client(novarc_creds, insecure=True):
                                                    endpoint_type='publicURL')
     else:
         keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
-        logging.info(keystone_creds)
         kc = keystoneclient_v3.Client(**keystone_creds)
         glance_svc_id = kc.services.find(name='glance').id
         ep = kc.endpoints.find(service_id=glance_svc_id, interface='public')
@@ -176,14 +182,14 @@ def tenant_create(kclient, tenants):
             kclient.tenants.create(tenant_name=tenant)
 
 
-def project_create(kclient, projects, domain):
+def project_create(kclient, projects, domain=None):
     domain_id = None
     for dom in kclient.domains.list():
         if dom.name == domain:
             domain_id = dom.id
     current_projects = []
     for project in kclient.projects.list():
-        if project.domain_id == domain_id:
+        if not domain_id or project.domain_id == domain_id:
             current_projects.append(project.name)
     for project in projects:
         if project in current_projects:
@@ -213,11 +219,11 @@ def user_create_v2(kclient, users):
                             'exists' % (user['username']))
         else:
             logging.info('Creating user %s' % (user['username']))
-            tenant_id = get_tenant_id(kclient, user['tenant'])
+            project_id = get_project_id(kclient, user['project'])
             kclient.users.create(name=user['username'],
                                  password=user['password'],
                                  email=user['email'],
-                                 tenant_id=tenant_id)
+                                 tenant_id=project_id)
 
 
 def user_create_v3(kclient, users):
@@ -229,8 +235,8 @@ def user_create_v3(kclient, users):
         else:
             if user['scope'] == 'project':
                 logging.info('Creating user %s' % (user['username']))
-                project_id = get_tenant_id(kclient, user['tenant'],
-                                           api_version=3)
+                project_id = get_project_id(kclient, user['tenant'],
+                                            api_version=3)
                 kclient.users.create(name=user['username'],
                                      password=user['password'],
                                      email=user['email'],
@@ -247,7 +253,7 @@ def get_roles_for_user(kclient, user_id, tenant_id):
 
 def add_users_to_roles(kclient, users):
     for user_details in users:
-        tenant_id = get_tenant_id(kclient, user_details['tenant'])
+        tenant_id = get_project_id(kclient, user_details['project'])
         for role_name in user_details['roles']:
             role = kclient.roles.find(name=role_name)
             user = kclient.users.find(name=user_details['username'])
@@ -263,16 +269,13 @@ def add_users_to_roles(kclient, users):
                                             tenant_id)
 
 
-def get_tenant_id(ks_client, tenant_name, api_version=2, domain_name=None):
+def get_project_id(ks_client, project_name, api_version=2, domain_name=None):
     domain_id = None
     if domain_name:
         domain_id = ks_client.domains.list(name=domain_name)[0].id
-    if api_version == 2:
-        all_tenants = ks_client.tenants.list()
-    else:
-        all_tenants = ks_client.projects.list(domain=domain_id)
-    for t in all_tenants:
-        if t._info['name'] == tenant_name:
+    all_projects = ks_client.projects.list(domain=domain_id)
+    for t in all_projects:
+        if t._info['name'] == project_name:
             return t._info['id']
     return None
 
@@ -354,7 +357,8 @@ def configure_gateway_ext_port(novaclient, neutronclient,
                 "port": {
                     "admin_state_up": True,
                     "name": ext_port_name,
-                    "network_id": net_id
+                    "network_id": net_id,
+                    "port_security_enabled": False,
                 }
             }
             port = neutronclient.create_port(body=body_value)
@@ -394,8 +398,8 @@ def configure_gateway_ext_port(novaclient, neutronclient,
         mojo_utils.juju_wait_finished()
 
 
-def create_tenant_network(neutron_client, tenant_id, net_name='private',
-                          shared=False, network_type='gre'):
+def create_project_network(neutron_client, project_id, net_name='private',
+                           shared=False, network_type='gre', domain=None):
     networks = neutron_client.list_networks(name=net_name)
     if len(networks['networks']) == 0:
         logging.info('Creating network: %s',
@@ -404,7 +408,7 @@ def create_tenant_network(neutron_client, tenant_id, net_name='private',
             'network': {
                 'name': net_name,
                 'shared': shared,
-                'tenant_id': tenant_id,
+                'tenant_id': project_id,
             }
         }
         if network_type == 'vxlan':
@@ -417,7 +421,7 @@ def create_tenant_network(neutron_client, tenant_id, net_name='private',
     return network
 
 
-def create_external_network(neutron_client, tenant_id, dvr_mode,
+def create_external_network(neutron_client, project_id, dvr_mode,
                             net_name='ext_net'):
     networks = neutron_client.list_networks(name=net_name)
     if len(networks['networks']) == 0:
@@ -425,7 +429,7 @@ def create_external_network(neutron_client, tenant_id, dvr_mode,
         network_msg = {
             'name': net_name,
             'router:external': True,
-            'tenant_id': tenant_id,
+            'tenant_id': project_id,
         }
         if not deprecated_external_networking(dvr_mode):
             network_msg['provider:physical_network'] = 'physnet1'
@@ -442,8 +446,8 @@ def create_external_network(neutron_client, tenant_id, dvr_mode,
     return network
 
 
-def create_tenant_subnet(neutron_client, tenant_id, network, cidr, dhcp=True,
-                         subnet_name='private_subnet'):
+def create_project_subnet(neutron_client, project_id, network, cidr, dhcp=True,
+                          subnet_name='private_subnet', domain=None):
     # Create subnet
     subnets = neutron_client.list_subnets(name=subnet_name)
     if len(subnets['subnets']) == 0:
@@ -455,7 +459,7 @@ def create_tenant_subnet(neutron_client, tenant_id, network, cidr, dhcp=True,
                 'enable_dhcp': dhcp,
                 'cidr': cidr,
                 'ip_version': 4,
-                'tenant_id': tenant_id
+                'tenant_id': project_id
             }
         }
         subnet = neutron_client.create_subnet(subnet_msg)['subnet']
@@ -571,11 +575,14 @@ def create_keypair(nova_client, keypair_name):
     return new_key.private_key
 
 
-def boot_instance(nova_client, image_name, flavor_name, key_name):
-    image = nova_client.images.find(name=image_name)
+def boot_instance(nova_client, neutron_client, image_name,
+                  flavor_name, key_name):
+    image = nova_client.glance.find_image(image_name)
     flavor = nova_client.flavors.find(name=flavor_name)
-    net = nova_client.networks.find(label="private")
-    nics = [{'net-id': net.id}]
+    logging.warn(dir(neutron_client))
+    net = neutron_client.find_resource("network", "private")
+    logging.warn("NET: {}".format(net))
+    nics = [{'net-id': net.get('id')}]
     # Obviously time may not produce a unique name
     vm_name = time.strftime("%Y%m%d%H%M%S")
     logging.info('Creating %s %s %s'
@@ -675,6 +682,43 @@ def add_secgroup_rules(nova_client):
                                                 to_port=-1)
 
 
+def add_neutron_secgroup_rules(neutron_client):
+    for group in neutron_client.list_security_groups().get('security_groups'):
+        if group.get('name') == 'default':
+            secgroup = group
+    # Using presence of a 22 rule to indicate whether secgroup rules
+    # have been added
+    port_rules = [rule['port_range_min'] for rule in
+                  secgroup.get('security_group_rules')]
+    protocol_rules = [rule['protocol'] for rule in
+                      secgroup.get('security_group_rules')]
+    if 22 in port_rules:
+        logging.warn('Security group rules for ssh already added')
+    else:
+        logging.info('Adding ssh security group rule')
+        neutron_client.create_security_group_rule(
+            {'security_group_rule':
+                {'security_group_id': secgroup.get('id'),
+                 'protocol': 'tcp',
+                 'port_range_min': 22,
+                 'port_range_max': 22,
+                 'direction': 'ingress',
+                 }
+             })
+
+    if 'icmp' in protocol_rules:
+        logging.warn('Security group rules for ping already added')
+    else:
+        logging.info('Adding ping security group rule')
+        neutron_client.create_security_group_rule(
+            {'security_group_rule':
+                {'security_group_id': secgroup.get('id'),
+                 'protocol': 'icmp',
+                 'direction': 'ingress',
+                 }
+             })
+
+
 def ping(ip):
     # Use the system ping command with count of 1 and wait time of 1.
     ret = subprocess.call(['ping', '-c', '1', '-W', '1', ip],
@@ -705,11 +749,13 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
         return False
 
 
-def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
-                  active_wait=180, cloudinit_wait=180, ping_wait=180):
+def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
+                  number, privkey, active_wait=180, cloudinit_wait=180,
+                  ping_wait=180):
     image_config = mojo_utils.get_mojo_config('images.yaml')
     for counter in range(number):
         instance = boot_instance(nova_client,
+                                 neutron_client,
                                  image_name=image_name,
                                  flavor_name=flavor_name,
                                  key_name='mojo')
