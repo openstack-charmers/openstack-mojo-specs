@@ -43,7 +43,7 @@ def init_flavors(nova_client):
 def main(argv):
     mojo_utils.setup_logging()
     parser = argparse.ArgumentParser()
-    default_machines = ["trusty:m1.small:1"]
+    default_machines = ["cirros:m1.tiny:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")
     parser.add_argument("--active_wait", default=180)
     parser.add_argument("--cloudinit_wait", default=180)

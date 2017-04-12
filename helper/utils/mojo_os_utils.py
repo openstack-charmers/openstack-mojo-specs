@@ -579,9 +579,7 @@ def boot_instance(nova_client, neutron_client, image_name,
                   flavor_name, key_name):
     image = nova_client.glance.find_image(image_name)
     flavor = nova_client.flavors.find(name=flavor_name)
-    logging.warn(dir(neutron_client))
     net = neutron_client.find_resource("network", "private")
-    logging.warn("NET: {}".format(net))
     nics = [{'net-id': net.get('id')}]
     # Obviously time may not produce a unique name
     vm_name = time.strftime("%Y%m%d%H%M%S")
@@ -608,7 +606,7 @@ def wait_for_active(nova_client, vm_name, wait_time):
             logging.error('instance %s in unknown '
                           'state %s' % (instance.name, instance.status))
             return False
-        time.sleep(10)
+        time.sleep(1)
     logging.error('instance %s failed to reach '
                   'active state in %is' % (instance.name, wait_time))
     return False
@@ -624,7 +622,7 @@ def wait_for_cloudinit(nova_client, vm_name, bootstring, wait_time):
         if bootstring in console_log:
             logging.info('Cloudinit for %s is complete' % (vm_name))
             return True
-        time.sleep(10)
+        time.sleep(1)
     logging.error('cloudinit for instance %s failed '
                   'to complete in %is' % (instance.name, wait_time))
     return False
@@ -651,12 +649,24 @@ def wait_for_ping(ip, wait_time):
     return False
 
 
-def assign_floating_ip(nova_client, vm_name):
-    floating_ip = nova_client.floating_ips.create()
-    logging.info('Assigning floating IP %s to %s' % (floating_ip.ip, vm_name))
+def assign_floating_ip(nova_client, neutron_client, vm_name):
+    ext_net_id = None
+    instance_port = None
+    for network in neutron_client.list_networks().get('networks'):
+        if 'ext_net' in network.get('name'):
+            ext_net_id = network.get('id')
     instance = nova_client.servers.find(name=vm_name)
-    instance.add_floating_ip(floating_ip)
-    return floating_ip.ip
+    for port in neutron_client.list_ports().get('ports'):
+        if instance.id in port.get('device_id'):
+            instance_port = port
+    floating_ip = neutron_client.create_floatingip({'floatingip':
+                                                    {'floating_network_id':
+                                                     ext_net_id,
+                                                     'port_id':
+                                                     instance_port.get('id')}})
+    ip = floating_ip.get('floatingip').get('floating_ip_address')
+    logging.info('Assigning floating IP %s to %s' % (ip, vm_name))
+    return ip
 
 
 def add_secgroup_rules(nova_client):
@@ -763,7 +773,7 @@ def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
         wait_for_boot(nova_client, instance.name,
                       image_config[image_name]['bootstring'], active_wait,
                       cloudinit_wait)
-        ip = assign_floating_ip(nova_client, instance.name)
+        ip = assign_floating_ip(nova_client, neutron_client, instance.name)
         wait_for_ping(ip, ping_wait)
         if not wait_for_ping(ip, ping_wait):
             raise Exception('Ping of %s failed' % (ip))
