@@ -692,9 +692,10 @@ def add_secgroup_rules(nova_client):
                                                 to_port=-1)
 
 
-def add_neutron_secgroup_rules(neutron_client):
+def add_neutron_secgroup_rules(neutron_client, project_id):
     for group in neutron_client.list_security_groups().get('security_groups'):
-        if group.get('name') == 'default':
+        if (group.get('name') == 'default' and
+            group.get('project_id') == project_id):
             secgroup = group
     # Using presence of a 22 rule to indicate whether secgroup rules
     # have been added

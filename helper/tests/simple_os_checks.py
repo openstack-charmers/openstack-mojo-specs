@@ -56,13 +56,19 @@ def main(argv):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope='PROJECT')
+    keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
+    project_id = mojo_os_utils.get_project_id(
+        keystonec,
+        'admin',
+        api_version=overcloud_novarc['API_VERSION']
+    )
     novac = mojo_os_utils.get_nova_session_client(keystone_session)
     neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
 
     init_flavors(novac)
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
-    mojo_os_utils.add_neutron_secgroup_rules(neutronc)
+    mojo_os_utils.add_neutron_secgroup_rules(neutronc, project_id)
     for server in novac.servers.list():
         novac.servers.delete(server.id)
     for instanceset in machines:
