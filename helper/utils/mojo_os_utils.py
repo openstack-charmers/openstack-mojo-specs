@@ -95,13 +95,13 @@ def get_neutron_session_client(session):
     return neutronclient.Client(session=session)
 
 
-def get_keystone_session(novarc_creds, scope='PROJECT'):
+def get_keystone_session(novarc_creds, insecure=True, scope='PROJECT'):
     keystone_creds = get_ks_creds(novarc_creds, scope=scope)
     if novarc_creds.get('API_VERSION', 2) == 2:
         auth = v2.Password(**keystone_creds)
     else:
         auth = v3.Password(**keystone_creds)
-    return session.Session(auth=auth)
+    return session.Session(auth=auth, verify=not insecure)
 
 
 def get_keystone_session_client(session):
@@ -124,7 +124,7 @@ def get_swift_client(novarc_creds, insecure=True):
     return swiftclient.client.Connection(**swift_creds)
 
 
-def get_glance_session_client(session, insecure=True):
+def get_glance_session_client(session):
     return glanceclient.Client('1', session=session)
 
 
