@@ -124,6 +124,10 @@ def get_swift_client(novarc_creds, insecure=True):
     return swiftclient.client.Connection(**swift_creds)
 
 
+def get_swift_session_client(session):
+    return swiftclient.client.Connection(session=session)
+
+
 def get_glance_session_client(session):
     return glanceclient.Client('1', session=session)
 
@@ -229,13 +233,14 @@ def user_create_v2(kclient, users):
 def user_create_v3(kclient, users):
     current_users = [user.name for user in kclient.users.list()]
     for user in users:
+        project = user.get('project') or user.get('tenant')
         if user['username'] in current_users:
             logging.warning('Not creating user %s it already'
                             'exists' % (user['username']))
         else:
             if user['scope'] == 'project':
                 logging.info('Creating user %s' % (user['username']))
-                project_id = get_project_id(kclient, user['tenant'],
+                project_id = get_project_id(kclient, project,
                                             api_version=3)
                 kclient.users.create(name=user['username'],
                                      password=user['password'],
@@ -693,10 +698,14 @@ def add_secgroup_rules(nova_client):
 
 
 def add_neutron_secgroup_rules(neutron_client, project_id):
+    secgroup = None
     for group in neutron_client.list_security_groups().get('security_groups'):
         if (group.get('name') == 'default' and
-            group.get('project_id') == project_id):
+            (group.get('project_id') == project_id or
+                (group.get('tenant_id') == project_id))):
             secgroup = group
+    if not secgroup:
+        raise Exception("Failed to find default security group")
     # Using presence of a 22 rule to indicate whether secgroup rules
     # have been added
     port_rules = [rule['port_range_min'] for rule in

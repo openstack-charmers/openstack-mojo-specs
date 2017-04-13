@@ -57,10 +57,12 @@ def main(argv):
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope='PROJECT')
     keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
+    domain = overcloud_novarc.get('OS_PROJECT_DOMAIN_NAME')
     project_id = mojo_os_utils.get_project_id(
         keystonec,
         'admin',
-        api_version=overcloud_novarc['API_VERSION']
+        api_version=overcloud_novarc['API_VERSION'],
+        domain_name=domain
     )
     novac = mojo_os_utils.get_nova_session_client(keystone_session)
     neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)

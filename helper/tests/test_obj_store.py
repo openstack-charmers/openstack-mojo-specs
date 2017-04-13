@@ -47,8 +47,9 @@ class ObjectPushPull(threading.Thread):
                 self.failures += 1
 
     def get_swiftclient(self):
-        overcloud_novarc = mojo_utils.get_overcloud_auth()
-        swift_client = mojo_os_utils.get_swift_client(overcloud_novarc)
+        keystone_session = mojo_os_utils.get_keystone_session(
+                               mojo_utils.get_overcloud_auth())
+        swift_client = mojo_os_utils.get_swift_session_client(keystone_session)
         return swift_client
 
     def get_checkstring(self, fname):
@@ -81,6 +82,7 @@ def main(argv):
     print("    Failures: {}".format(thread2.failures))
     if thread2.failures > 0:
         sys.exit(1)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
