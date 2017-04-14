@@ -8,18 +8,11 @@ import utils.mojo_os_utils as mojo_os_utils
 
 def setup_sdn(net_topology, net_info):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
-    # Get os clients
-    if overcloud_novarc.get('API_VERSION', 2) == 2:
-        # V2 explicitly, or assume V2 if not defined
-        keystonec = mojo_os_utils.get_keystone_client(overcloud_novarc)
-        neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
-    else:
-        # Not V2
-        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
-        keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
-        neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
-    # Resolve the tenant name from the overcloud novarc into a tenant id
-    tenant_id = mojo_os_utils.get_tenant_id(
+    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
+    keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
+    neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
+    # Resolve the project name from the overcloud novarc into a project id
+    project_id = mojo_os_utils.get_project_id(
         keystonec,
         'admin',
         api_version=overcloud_novarc['API_VERSION']
@@ -27,42 +20,43 @@ def setup_sdn(net_topology, net_info):
     # Create the external network
     ext_network = mojo_os_utils.create_external_network(
         neutronc,
-        tenant_id,
+        project_id,
         net_info.get('dvr_enabled', False),
         net_info['external_net_name'])
     mojo_os_utils.create_external_subnet(
         neutronc,
-        tenant_id,
+        project_id,
         ext_network,
         net_info['default_gateway'],
         net_info['external_net_cidr'],
         net_info['start_floating_ip'],
         net_info['end_floating_ip'],
         net_info['external_subnet_name'])
-    provider_router = mojo_os_utils.create_provider_router(neutronc, tenant_id)
+    provider_router = (
+        mojo_os_utils.create_provider_router(neutronc, project_id))
     mojo_os_utils.plug_extnet_into_router(
         neutronc,
         provider_router,
         ext_network)
-    tenant_network = mojo_os_utils.create_tenant_network(
+    project_network = mojo_os_utils.create_project_network(
         neutronc,
-        tenant_id,
+        project_id,
         shared=False,
         network_type=net_info['network_type'])
-    tenant_subnet = mojo_os_utils.create_tenant_subnet(
+    project_subnet = mojo_os_utils.create_project_subnet(
         neutronc,
-        tenant_id,
-        tenant_network,
+        project_id,
+        project_network,
         net_info['private_net_cidr'])
     mojo_os_utils.update_subnet_dns(
         neutronc,
-        tenant_subnet,
+        project_subnet,
         net_info['external_dns'])
     mojo_os_utils.plug_subnet_into_router(
         neutronc,
         net_info['router_name'],
-        tenant_network,
-        tenant_subnet)
+        project_network,
+        project_subnet)
 
 
 def main(argv):
@@ -84,9 +78,10 @@ def main(argv):
     # Handle network for Openstack-on-Openstack scenarios
     if mojo_utils.get_provider_type() == 'openstack':
         logging.info('Configuring network for OpenStack undercloud/provider')
-        undercloud_novarc = mojo_utils.get_undercloud_auth()
-        novac = mojo_os_utils.get_nova_client(undercloud_novarc)
-        neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
+        session = mojo_os_utils.get_keystone_session(
+                       mojo_utils.get_undercloud_auth())
+        novac = mojo_os_utils.get_nova_session_client(session)
+        neutronc = mojo_os_utils.get_neutron_session_client(session)
 
         # Add an interface to the neutron-gateway units and tell juju to use it
         # as the external port.
