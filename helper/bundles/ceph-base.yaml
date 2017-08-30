@@ -1,24 +1,36 @@
+# This bundle is intended to closely resemble the ceph-base bundle from openstack-bundles.
 base:
+  relations:
+  - - ceph-osd:mon
+    - ceph-mon:osd
+  - - ntp:juju-info
+    - ceph-osd:juju-info
   services:
-    ceph-osd:
+    ceph-mon:
+      annotations:
+        gui-x: '750'
+        gui-y: '500'
+      charm: ceph-mon
       num_units: 3
       options:
-        harden: os ssh
+        expected-osd-count: 3
+    ceph-osd:
+      annotations:
+        gui-x: '1000'
+        gui-y: '500'
+      charm: ceph-osd
+      num_units: 3
+      options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-    ceph-mon:
-      num_units: 3
-      options:
-        harden: os ssh
-  relations:
-    - - "ceph-osd:mon"
-      - "ceph-mon:osd"
+        osd-reformat: 'yes'
+    ntp:
+      annotations:
+        gui-x: '1000'
+        gui-y: '0'
+      charm: ntp
+      num_units: 0
 # icehouse
-precise-icehouse:
-  inherits: base
-  series: precise
-  overrides:
-    source: cloud:precise-updates/icehouse
 trusty-icehouse:
   inherits: base
   series: trusty
@@ -70,4 +82,3 @@ xenial-pike:
 artful-pike:
   inherits: base
   series: artful
-

@@ -112,4 +112,3 @@ xenial-pike:
 artful-pike:
   inherits: openstack-services
   series: artful
-
