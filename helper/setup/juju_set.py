@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import utils.mojo_utils as mojo_utils
 import argparse
@@ -14,6 +14,7 @@ def main(argv):
     print("Service: {}".format(service))
     print("Option: {}".format(kv))
     mojo_utils.juju_set(service, kv)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

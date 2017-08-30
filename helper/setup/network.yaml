@@ -1,3 +1,6 @@
+# NOTE: the HA specs cannot run in OSCI on dynamic slaves until
+# the spec helpers start to consume the advertised network addresses.
+# https://bugs.launchpad.net/openstack-mojo-specs/+bug/1526511
 gre:
   default_gateway: 10.5.0.1
   end_floating_ip: 10.5.200.254

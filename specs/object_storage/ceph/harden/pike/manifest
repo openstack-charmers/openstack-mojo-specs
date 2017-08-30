@@ -1,0 +1,13 @@
+# Collect the charm branches from Launchpad
+collect config=collect-ceph-default
+
+# Use juju deployer with ceph-default.yaml bundle
+deploy config=ceph-harden.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Test obj store by sending and recieving files
+verify config=test_ceph_store.py
+
+# Success

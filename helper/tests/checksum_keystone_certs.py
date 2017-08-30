@@ -35,6 +35,7 @@ def update_hash_from_path(hash, path, recurse_depth=10):
                     p, hashlib.sha256(data).hexdigest()))
                 hash.update(data)
 
+
 for path in paths:
     update_hash_from_path(sha, path)
 

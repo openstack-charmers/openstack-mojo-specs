@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import logging
 import os
 import string
@@ -22,13 +22,14 @@ YAML_MAP = {
 # OpenStack-to-Ubuntu Release Map
 UBUNTU_RELEASES = {}
 OPENSTACK_RELEASES = {
-    'icehouse': ['precise', 'trusty'],
+    'icehouse': ['trusty'],
     'juno': ['trusty'],
     'kilo': ['trusty'],
     'liberty': ['trusty'],
     'mitaka': ['trusty', 'xenial'],
-    'newton': ['xenial', 'yakkety'],
+    'newton': ['xenial'],
     'ocata': ['xenial', 'zesty'],
+    'pike': ['xenial', 'artful'],
 }
 
 

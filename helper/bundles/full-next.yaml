@@ -315,3 +315,23 @@ xenial-ocata-staging:
 zesty-ocata:
   inherits: openstack-icehouse
   series: zesty
+# pike
+xenial-pike:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+xenial-pike-proposed:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-pike/proposed
+    source: cloud:xenial-proposed/pike
+xenial-pike-staging:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
+    source: ppa:ubuntu-cloud-archive/pike-staging
+artful-pike:
+  inherits: openstack-icehouse
+  series: artful

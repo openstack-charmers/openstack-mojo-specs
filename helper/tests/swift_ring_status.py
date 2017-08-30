@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import utils.mojo_utils as mojo_utils
 import logging
@@ -20,6 +20,7 @@ def verify_ring_data(ring_data):
         if ring_data[unit] != ring_dict:
             return False
     return True
+
 
 juju_status = mojo_utils.get_juju_status(service='swift-proxy')
 sp_units = mojo_utils.get_juju_units(juju_status=juju_status)

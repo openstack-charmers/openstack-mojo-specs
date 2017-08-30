@@ -1,5 +1,5 @@
 base:
-  series: 
+  series:
     - trusty
     - xenial
   services:

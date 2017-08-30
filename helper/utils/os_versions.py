@@ -14,6 +14,7 @@ UBUNTU_OPENSTACK_RELEASE = OrderedDict([
     ('xenial', 'mitaka'),
     ('yakkety', 'newton'),
     ('zesty', 'ocata'),
+    ('artful', 'pike'),
 ])
 
 

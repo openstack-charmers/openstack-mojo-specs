@@ -58,4 +58,12 @@ xenial-ocata:
 zesty-ocata:
   inherits: base
   series: zesty
-
+# pike
+xenial-pike:
+  inherits: base
+  series: xenial
+  overrides:
+    source: cloud:xenial-pike
+artful-pike:
+  inherits: base
+  series: artful
