@@ -1,7 +1,7 @@
 # Collect the charm branches from Launchpad 
 collect config=collect-next-swift-proxy
 
-# Use juju deployer with cephradosgw-ha.yaml bundle
+# Deploying bundle
 deploy config=swift-proxy.yaml delay=0 wait=False target=${MOJO_SERIES}-icehouse
 
 # Check juju statuses are green and that hooks have finished
