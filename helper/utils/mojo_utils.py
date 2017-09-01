@@ -508,7 +508,7 @@ def upgrade_service(svc, switch=None):
     cmd = [kiki.cmd(), 'upgrade-charm']
     if switch and switch.get(svc):
         cmd.extend(['--switch', switch[svc]])
-    cmd.extend(['--repository', repo_dir, svc])
+    cmd.extend(['--path', repo_dir, svc])
     subprocess.check_call(cmd)
 
 
