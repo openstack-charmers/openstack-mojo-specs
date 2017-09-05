@@ -554,7 +554,7 @@ def get_machine_state(juju_status, state_type):
 
 
 def get_machine_agent_states(juju_status):
-    return get_machine_state(juju_status, 'agent-state')
+    return get_machine_state(juju_status, kiki.juju_state())
 
 
 def get_machine_instance_states(juju_status):
@@ -569,11 +569,11 @@ def get_service_agent_states(juju_status):
             for unit in juju_status[kiki.applications()][service]['units']:
                 unit_info = juju_status[
                     kiki.applications()][service]['units'][unit]
-                service_state[unit_info['agent-state']] += 1
+                service_state[unit_info[kiki.juju_state()]] += 1
                 if 'subordinates' in unit_info:
                     for sub_unit in unit_info['subordinates']:
-                        sub_sstate = \
-                            unit_info['subordinates'][sub_unit]['agent-state']
+                        sub_sstate = (unit_info['subordinates'][sub_unit]
+                                      [kiki.juju_state()])
                         service_state[sub_sstate] += 1
     return service_state
 
@@ -604,6 +604,8 @@ def juju_status_all_stable(states):
 
 
 def juju_status_check_and_wait():
+    logging.warn('The juju_status_check_and_wait function is deprecated. '
+                 ' Use juju_wait_finished instead.')
     checks = {
         'Machines': [
             {
