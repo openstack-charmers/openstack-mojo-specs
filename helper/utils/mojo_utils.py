@@ -509,9 +509,6 @@ def upgrade_service(svc, switch=None):
     # Switch and path are now mutually exclusive
     if switch and switch.get(svc):
         cmd.extend(['--switch', charm_dir, svc])
-    elif switch and not switch.get(svc):
-        raise Exception('Ambiguous upgrade_service usage: {} {} '
-                        '{}'.format(charm_dir, svc, switch))
     else:
         cmd.extend(['--path', charm_dir, svc])
     subprocess.check_call(cmd)
