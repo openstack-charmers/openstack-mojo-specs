@@ -506,9 +506,11 @@ def upgrade_service(svc, switch=None):
     charm_dir = os.path.join(get_charm_dir(), svc)
     logging.info('Upgrading ' + svc)
     cmd = [kiki.cmd(), 'upgrade-charm']
+    # Switch and path are now mutually exclusive
     if switch and switch.get(svc):
-        cmd.extend(['--switch', switch[svc]])
-    cmd.extend(['--path', charm_dir, svc])
+        cmd.extend(['--switch', charm_dir, svc])
+    elif not switch:
+        cmd.extend(['--path', charm_dir, svc])
     subprocess.check_call(cmd)
 
 
