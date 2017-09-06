@@ -267,3 +267,16 @@ zesty-ocata:
   inherits: openstack-icehouse
   series: zesty
 
+# pike
+xenial-pike:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+zesty-pike:
+  inherits: openstack-icehouse
+  series: zesty
+  overrides:
+    openstack-origin: cloud:zesty-pike
+    source: cloud:zesty-pike
