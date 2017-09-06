@@ -251,6 +251,31 @@ def remove_unit():
 
 
 @cached
+def juju_state():
+    """Translate identifier for juju-state
+
+    @returns string Juju identifier for juju-state
+    """
+    if min_version('2.1'):
+        return "juju-status"
+    else:
+        return "agent-state"
+
+
+def get_unit_info_state(unit_info):
+    """Translate juju unit information
+
+    @param unit_info: Dictionary of unit information
+    @returns string Juju unit information state
+    """
+
+    if min_version('2.1'):
+        return unit_info[juju_state()]['current']
+    else:
+        return unit_info['agent-state']
+
+
+@cached
 def actions():
     """Translate argument for actions
 

@@ -1,25 +1,5 @@
 series: "{{ series }}"
-machines:
-  '0':
-    constraints: mem=1G
-  '1':
-    constraints: mem=1G
-  '2':
-    constraints: mem=1G
-  '3':
-    constraints: mem=1G
-  '4':
-    constraints: mem=1G
-  '5':
-    constraints: mem=1G
 services:
   magpie:
     charm: magpie
     num_units: 6
-    to:
-      # no 0, as bootstrap node series won't match under 1.25.x
-      - "1"
-      - "2"
-      - "3"
-      - "4"
-      - "5"

@@ -8,7 +8,7 @@ cinder                 git://github.com/openstack/charm-cinder
 glance                 git://github.com/openstack/charm-glance
 heat                   git://github.com/openstack/charm-heat
 keystone               git://github.com/openstack/charm-keystone
-mongodb                nosmart+lp:charms/trusty/mongodb
+mongodb                git://git.launchpad.net/mongodb-charm
 mysql                  git://github.com/openstack/charm-percona-cluster
 neutron-api            git://github.com/openstack/charm-neutron-api
 neutron-gateway        git://github.com/openstack/charm-neutron-gateway
@@ -19,5 +19,7 @@ ntp                    lp:charms/trusty/ntp
 openstack-dashboard    git://github.com/openstack/charm-openstack-dashboard
 rabbitmq-server        git://github.com/openstack/charm-rabbitmq-server
 swift-proxy            git://github.com/openstack/charm-swift-proxy
-swift-storage          git://github.com/openstack/charm-swift-storage
+swift-storage-z1       git://github.com/openstack/charm-swift-storage
+swift-storage-z2       git://github.com/openstack/charm-swift-storage
+swift-storage-z3       git://github.com/openstack/charm-swift-storage
 tempest                cs:~openstack-charmers-next/tempest

@@ -11,11 +11,11 @@ openstack-services:
     swift-proxy:
       charm: swift-proxy
     swift-storage-z1:
-      charm: swift-storage
+      charm: swift-storage-z1
     swift-storage-z2:
-      charm: swift-storage
+      charm: swift-storage-z2
     swift-storage-z3:
-      charm: swift-storage
+      charm: swift-storage-z3
     swift-hacluster:
       charm: hacluster
   relations:

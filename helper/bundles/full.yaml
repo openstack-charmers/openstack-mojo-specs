@@ -67,21 +67,21 @@ openstack-services:
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
     swift-storage-z1:
-      charm: swift-storage
+      charm: swift-storage-z1
       constraints: mem=1G
       options:
         zone: 1
         block-device: vdb
         overwrite: "true"
     swift-storage-z2:
-      charm: swift-storage
+      charm: swift-storage-z2
       constraints: mem=1G
       options:
         zone: 2
         block-device: vdb
         overwrite: "true"
     swift-storage-z3:
-      charm: swift-storage
+      charm: swift-storage-z3
       constraints: mem=1G
       options:
         zone: 3
