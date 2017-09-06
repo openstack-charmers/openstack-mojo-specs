@@ -8,14 +8,14 @@ cinder                 git://github.com/openstack/charm-cinder
 glance                 git://github.com/openstack/charm-glance
 heat                   git://github.com/openstack/charm-heat
 keystone               git://github.com/openstack/charm-keystone
-mongodb                git://git.launchpad.net/~thedac/mongodb-charm
+mongodb                git://git.launchpad.net/~thedac/mongodb-charm;revno=zesty
 mysql                  git://github.com/openstack/charm-percona-cluster
 neutron-api            git://github.com/openstack/charm-neutron-api
 neutron-gateway        git://github.com/openstack/charm-neutron-gateway
 neutron-openvswitch    git://github.com/openstack/charm-neutron-openvswitch
 nova-cloud-controller  git://github.com/openstack/charm-nova-cloud-controller
 nova-compute           git://github.com/openstack/charm-nova-compute
-ntp                    lp:charms/trusty/ntp
+ntp                    git://git.launchpad.net/~thedac/ntp-charm;revno=zesty
 openstack-dashboard    git://github.com/openstack/charm-openstack-dashboard
 rabbitmq-server        git://github.com/openstack/charm-rabbitmq-server
 swift-proxy            git://github.com/openstack/charm-swift-proxy
