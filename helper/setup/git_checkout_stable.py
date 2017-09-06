@@ -7,7 +7,7 @@ import utils.mojo_utils as mojo_utils
 def main(argv):
     log = logging.getLogger()
     log.setLevel(logging.DEBUG)
-    mojo_utils.git_checkout_all('stable/16.10')
+    mojo_utils.git_checkout_all('stable/17.02')
 
 
 if __name__ == "__main__":
