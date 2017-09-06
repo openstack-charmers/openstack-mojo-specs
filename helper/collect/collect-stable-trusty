@@ -8,7 +8,7 @@ cinder                 git://github.com/openstack/charm-cinder
 glance                 git://github.com/openstack/charm-glance
 heat                   git://github.com/openstack/charm-heat
 keystone               git://github.com/openstack/charm-keystone
-mongodb                git://git.launchpad.net/mongodb-charm
+mongodb                git://git.launchpad.net/~thedac/mongodb-charm
 mysql                  git://github.com/openstack/charm-percona-cluster
 neutron-api            git://github.com/openstack/charm-neutron-api
 neutron-gateway        git://github.com/openstack/charm-neutron-gateway

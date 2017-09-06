@@ -8,14 +8,14 @@ cinder                 cs:~openstack-charmers-next/cinder
 glance                 cs:~openstack-charmers-next/glance
 heat                   cs:~openstack-charmers-next/heat
 keystone               cs:~openstack-charmers-next/keystone
-mongodb                git://git.launchpad.net/mongodb-charm
+mongodb                git://git.launchpad.net/~thedac/mongodb-charm
 mysql                  cs:~openstack-charmers-next/percona-cluster
 neutron-api            cs:~openstack-charmers-next/neutron-api
 neutron-gateway        cs:~openstack-charmers-next/neutron-gateway
 neutron-openvswitch    cs:~openstack-charmers-next/neutron-openvswitch
 nova-cloud-controller  cs:~openstack-charmers-next/nova-cloud-controller
 nova-compute           cs:~openstack-charmers-next/nova-compute
-ntp                    cs:trusty/ntp
+ntp                    git://git.launchpad.net/~thedac/ntp-charm
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
 rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
