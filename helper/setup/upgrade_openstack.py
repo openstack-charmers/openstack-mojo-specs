@@ -166,10 +166,7 @@ def main(argv):
             ubuntu_version, target_release
         )
         mojo_utils.juju_set(service['name'], option, wait=False)
-        mojo_utils.juju_status_check_and_wait()
-        svc_units = mojo_utils.get_juju_units(service=service['name'])
-        mojo_utils.remote_runs(svc_units)
-        mojo_utils.juju_status_check_and_wait()
+        mojo_utils.juju_wait_finished()
 
 
 if __name__ == "__main__":
