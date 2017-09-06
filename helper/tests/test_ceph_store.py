@@ -6,6 +6,8 @@ import utils.mojo_utils as mojo_utils
 
 
 def main(argv):
+    mojo_utils.remote_run(
+        'ceph-mon/0', 'ceph osd pool create rbd 128')
     # Check
     mojo_utils.remote_run('ceph-mon/0', 'echo 123456789 > /tmp/input.txt')
     mojo_utils.remote_run(
