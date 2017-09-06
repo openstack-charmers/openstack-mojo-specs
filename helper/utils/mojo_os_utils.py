@@ -28,8 +28,8 @@ import StringIO
 # Openstack Client helpers
 def get_nova_creds(cloud_creds):
     auth = get_ks_creds(cloud_creds)
-    if os.environ.get('OS_PROJECT_ID'):
-        auth['project_id'] = os.environ.get('OS_PROJECT_ID')
+    if cloud_creds.get('OS_PROJECT_ID'):
+        auth['project_id'] = cloud_creds.get('OS_PROJECT_ID')
     return auth
 
 
@@ -111,11 +111,16 @@ def get_keystone_session_client(session):
 def get_keystone_client(novarc_creds, insecure=True):
     keystone_creds = get_ks_creds(novarc_creds)
     if novarc_creds.get('API_VERSION', 2) == 2:
-        sess = v2.Password(**keystone_creds)
-        return keystoneclient_v2.Client(session=sess)
+        auth = v2.Password(**keystone_creds)
+        sess = session.Session(auth=auth, verify=True)
+        client = keystoneclient_v2.Client(session=sess)
     else:
-        sess = v3.Password(**keystone_creds)
-        return keystoneclient_v3.Client(session=sess)
+        auth = v3.Password(**keystone_creds)
+        sess = get_keystone_session(novarc_creds, insecure)
+        client = keystoneclient_v3.Client(session=sess)
+    # This populates the client.service_catalog
+    client.auth_ref = auth.get_access(sess)
+    return client
 
 
 def get_swift_client(novarc_creds, insecure=True):
@@ -136,7 +141,7 @@ def get_glance_client(novarc_creds, insecure=True):
     if novarc_creds.get('API_VERSION', 2) == 2:
         kc = get_keystone_client(novarc_creds)
         glance_ep_url = kc.service_catalog.url_for(service_type='image',
-                                                   endpoint_type='publicURL')
+                                                   interface='publicURL')
     else:
         keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
         kc = keystoneclient_v3.Client(**keystone_creds)

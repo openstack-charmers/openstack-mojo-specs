@@ -354,6 +354,9 @@ def get_undercloud_auth():
                 os.environ.get('OS_PROJECT_NAME'))
             auth_settings['OS_PROJECT_DOMAIN_NAME'] = (
                 os.environ.get('OS_PROJECT_DOMAIN_NAME'))
+            os_project_id = os.environ.get('OS_PROJECT_ID')
+            if os_project_id is not None:
+                auth_settings['OS_PROJECT_ID'] = os_project_id
 
     # Validate settings
     for key, settings in auth_settings.items():
