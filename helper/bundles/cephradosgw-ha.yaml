@@ -27,7 +27,7 @@ openstack-services:
       charm: ceph-radosgw
       num_units: 3
       options:
-        vip: 10.5.100.10
+        vip: {{ MOJO_OS_VIP01 }}
     cephrgw-hacluster:
       charm: hacluster
   relations:

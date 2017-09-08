@@ -9,7 +9,7 @@ openstack-services:
         innodb-buffer-pool-size: 200M
         sst-password: changeme
         root-password: changeme
-        vip: 10.5.100.1
+        vip: {{ MOJO_OS_VIP01 }}
     mysql-hacluster:
       charm: hacluster
       options:
@@ -37,7 +37,7 @@ openstack-services:
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-        vip: 10.5.100.2
+        vip: {{ MOJO_OS_VIP02 }}
     keystone-hacluster:
       charm: hacluster
       options:
@@ -48,7 +48,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 3
       options:
-        vip: 10.5.100.3
+        vip: {{ MOJO_OS_VIP03 }}
     dashboard-hacluster:
       charm: hacluster
       options:
@@ -67,7 +67,7 @@ openstack-services:
       num_units: 3
       options:
         network-manager: Neutron
-        vip: 10.5.100.4
+        vip: {{ MOJO_OS_VIP04 }}
     nova-cc-hacluster:
       charm: hacluster
       options:
@@ -86,7 +86,7 @@ openstack-services:
       options:
         block-device: "None"
         glance-api-version: 2
-        vip: 10.5.100.5
+        vip: {{ MOJO_OS_VIP05 }}
     cinder-hacluster:
       charm: hacluster
       options:
@@ -99,7 +99,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 3
       options:
-        vip: 10.5.100.9
+        vip: {{ MOJO_OS_VIP06 }}
     glance-hacluster:
       charm: hacluster
       options:
@@ -113,7 +113,7 @@ openstack-services:
         zone-assignment: manual
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
-        vip: 10.5.100.6
+        vip: {{ MOJO_OS_VIP07 }}
     swift-hacluster:
       charm: hacluster
       options:
@@ -145,7 +145,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 3
       options:
-        vip: 10.5.100.7
+        vip: {{ MOJO_OS_VIP08 }}
     ceilometer-hacluster:
       charm: hacluster
       options:
@@ -164,7 +164,7 @@ openstack-services:
       num_units: 3
       options:
         neutron-security-groups: True
-        vip: 10.5.100.8
+        vip: {{ MOJO_OS_VIP09 }}
         flat-network-providers: physnet1
     neutron-hacluster:
       charm: hacluster
