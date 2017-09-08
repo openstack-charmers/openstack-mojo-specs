@@ -166,6 +166,12 @@ def main(argv):
             ubuntu_version, target_release
         )
         mojo_utils.juju_set(service['name'], option, wait=False)
+        # NOTE: For liberty->mitaka upgrade ceilometer-agent gets stuck at
+        # 'Services not running that should be: memcached' after nova-compute
+        # upgrade, and test would wait forever. Therefore we upgrade
+        # ceilometer-agent immediately after nova-compute.
+        if service['name'] == 'nova-compute':
+            mojo_utils.juju_set('ceilometer-agent', option, wait=False)
         mojo_utils.juju_wait_finished()
 
 
