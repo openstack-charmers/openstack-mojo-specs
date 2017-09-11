@@ -1,3 +1,6 @@
+# Validate env variables
+script config=preflight.py
+
 # Collect the charm branches from Launchpad
 collect config=collect-next-ha
 
