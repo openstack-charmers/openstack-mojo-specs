@@ -29,7 +29,7 @@ openstack-services:
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-        vip: {{ MOJO_OS_VIP01 }}
+        vip: "{{ MOJO_OS_VIP01 }}"
     keystone-hacluster:
       charm: hacluster
     openstack-dashboard:
@@ -37,7 +37,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 2
       options:
-        vip: {{ MOJO_OS_VIP02 }}
+        vip: "{{ MOJO_OS_VIP02 }}"
     dashboard-hacluster:
       charm: hacluster
     nova-compute:
@@ -55,7 +55,7 @@ openstack-services:
       options:
         network-manager: Neutron
         quantum-security-groups: "yes"
-        vip: {{ MOJO_OS_VIP03 }}
+        vip: "{{ MOJO_OS_VIP03 }}"
     ncc-hacluster:
       charm: hacluster
     neutron-gateway:
@@ -70,7 +70,7 @@ openstack-services:
       options:
         block-device: "None"
         glance-api-version: 2
-        vip: {{ MOJO_OS_VIP04 }}
+        vip: "{{ MOJO_OS_VIP04 }}"
       constraints": mem=1G
     cinder-hacluster:
       charm: hacluster
@@ -81,7 +81,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 2
       options:
-        vip: {{ MOJO_OS_VIP05 }}
+        vip: "{{ MOJO_OS_VIP05 }}"
     glance-hacluster:
       charm: hacluster
     swift-proxy:
@@ -92,7 +92,7 @@ openstack-services:
         zone-assignment: manual
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
-        vip: {{ MOJO_OS_VIP06 }}
+        vip: "{{ MOJO_OS_VIP06 }}"
     swift-proxy-hacluster:
       charm: hacluster
     swift-storage-z1:
@@ -124,7 +124,7 @@ openstack-mysql-database:
       constraints: mem=1G
       num_units: 2
       options:
-        vip: {{ MOJO_OS_VIP07 }}
+        vip: "{{ MOJO_OS_VIP07 }}"
         vip_cidr: 16
 openstack-percona-database:
   inherits: openstack-services
@@ -134,7 +134,7 @@ openstack-percona-database:
       constraints: mem=1G
       num_units: 2
       options:
-        vip: {{ MOJO_OS_VIP08 }}
+        vip: "{{ MOJO_OS_VIP08 }}"
         vip_cidr: 16
         root-password: crapper
         sst-password: crapper
@@ -147,7 +147,7 @@ openstack-neutron-api:
       constraints: mem=1G
       options:
         neutron-security-groups: True
-        vip: {{ MOJO_OS_VIP09 }}
+        vip: "{{ MOJO_OS_VIP09 }}"
     neutron-api-hacluster:
       charm: hacluster
       options:

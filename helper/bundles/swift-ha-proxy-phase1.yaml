@@ -23,7 +23,7 @@ openstack-services:
       options:
         zone-assignment: manual
         replicas: 3
-        vip: {{ MOJO_OS_VIP01 }}
+        vip: "{{ MOJO_OS_VIP01 }}"
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
         disable-ring-balance: False
     swift-storage-z1:
