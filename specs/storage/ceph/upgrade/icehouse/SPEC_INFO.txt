@@ -1,2 +1,4 @@
-This spec deploys a 3 monitor and 3 node OSD cluster. It then tests to verify
-Rados can write to and read from the cluster.
+This spec deploys a 3 monitor and 3 node OSD cluster. It tests to verify
+Rados can write to and read from the cluster. It deploys ceph-mon in addition
+to ceph, and then tears down ceph to verify that the cluster upgrade
+works.

@@ -10,7 +10,9 @@ def main(argv):
     parser = argparse.ArgumentParser()
     parser.add_argument("application", nargs="*")
     options = parser.parse_args()
-    unit_args = mojo_utils.parse_mojo_arg(options, 'application', multiargs=True)
+    unit_args = mojo_utils.parse_mojo_arg(
+        options,
+        'application', multiargs=True)
     for application in unit_args:
         mojo_utils.delete_application(application)
 
