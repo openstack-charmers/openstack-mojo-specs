@@ -1,0 +1,88 @@
+# This bundle is intended to closely resemble the ceph-base bundle from openstack-bundles.
+base:
+  relations:
+  - - ceph-osd:mon
+    - ceph:osd
+  - - ntp:juju-info
+    - ceph-osd:juju-info
+  services:
+    ceph:
+      annotations:
+        gui-x: '750'
+        gui-y: '500'
+      charm: ceph
+      num_units: 3
+      options:
+        ephemeral-unmount: /mnt
+        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
+        osd-reformat: 'yes'
+        fsid: 5a791d94-980b-11e4-b6f6-3c970e8b1cf7
+        monitor-secret: AQAi5a9UeJXUExAA+By9u+GPhl8/XiUQ4nwI3A==
+    ceph-osd:
+      annotations:
+        gui-x: '1000'
+        gui-y: '500'
+      charm: ceph-osd
+      num_units: 3
+      options:
+        ephemeral-unmount: /mnt
+        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
+        osd-reformat: 'yes'
+    ntp:
+      annotations:
+        gui-x: '1000'
+        gui-y: '0'
+      charm: ntp
+      num_units: 0
+# icehouse
+trusty-icehouse:
+  inherits: base
+  series: trusty
+# kilo
+trusty-kilo:
+  inherits: base
+  series: trusty
+  overrides:
+    source: cloud:trusty-kilo
+# liberty
+trusty-liberty:
+  inherits: base
+  series: trusty
+  overrides:
+    source: cloud:trusty-liberty
+# mitaka
+trusty-mitaka:
+  inherits: base
+  series: trusty
+  overrides:
+    source: cloud:trusty-mitaka
+xenial-mitaka:
+  inherits: base
+  series: xenial
+# newton
+xenial-newton:
+  inherits: base
+  series: xenial
+  overrides:
+    source: cloud:xenial-newton
+yakkety-newton:
+  inherits: base
+  series: yakkety
+# ocata
+xenial-ocata:
+  inherits: base
+  series: xenial
+  overrides:
+    source: cloud:xenial-ocata
+zesty-ocata:
+  inherits: base
+  series: zesty
+# pike
+xenial-pike:
+  inherits: base
+  series: xenial
+  overrides:
+    source: cloud:xenial-pike
+artful-pike:
+  inherits: base
+  series: artful

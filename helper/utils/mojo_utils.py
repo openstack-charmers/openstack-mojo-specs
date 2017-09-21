@@ -181,6 +181,12 @@ def delete_unit(unit, method='juju'):
         delete_unit_provider(unit)
 
 
+def delete_application(application, wait=True):
+    logging.info('Removing application ' + application)
+    cmd = [kiki.cmd(), kiki.remove_application(), application]
+    subprocess.check_call(cmd)
+
+
 def delete_oldest(service, method='juju'):
     units = unit_sorted(get_juju_units(service=service))
     delete_unit(units[0], method='juju')

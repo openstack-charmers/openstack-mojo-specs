@@ -1,3 +1,4 @@
+ceph                   git://github.com/openstack/charm-ceph
 ceph-mon               git://github.com/openstack/charm-ceph-mon
 ceph-osd               git://github.com/openstack/charm-ceph-osd
 ntp                    git://git.launchpad.net/~thedac/ntp-charm;revno=zesty
