@@ -19,7 +19,7 @@ def main(argv):
         '{}/{}'.format(application, units[0]), 'ceph osd pool create rbd 128')
     # Check
     mojo_utils.remote_run(
-        '{}/{}'.format(application, units[0])
+        '{}/{}'.format(application, units[0]),
         'echo 123456789 > /tmp/input.txt')
     mojo_utils.remote_run(
         '{}/{}'.format(application, units[0]),
