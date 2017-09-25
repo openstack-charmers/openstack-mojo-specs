@@ -251,6 +251,18 @@ def remove_unit():
 
 
 @cached
+def remove_application():
+    """Translate argument for remove-unit
+
+    @returns string Juju argument for remove-unit
+    """
+    if min_version('2.1'):
+        return "remove-application"
+    else:
+        return "remove-service"
+
+
+@cached
 def juju_state():
     """Translate identifier for juju-state
 

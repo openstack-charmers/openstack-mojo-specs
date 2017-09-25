@@ -1,0 +1,25 @@
+# Collect the charm branches from Launchpad
+collect config=collect-ceph-default
+
+# Use juju deployer with charm-ceph.yaml bundle
+deploy config=charm-ceph.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Test obj store by sending and recieving files
+verify config=test_ceph_store.py APPLICATION=ceph UNITS="0 1"
+
+# Use juju deployer with ceph-charm-migration.yaml bundle
+deploy config=ceph-charm-migration.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Remove charm-ceph from the deployment
+verify config=delete_application.py APPLICATION=ceph
+
+# Test obj store by sending and recieving files
+verify config=test_ceph_store.py APPLICATION=ceph-mon UNITS="0 1"
+
+# Success
