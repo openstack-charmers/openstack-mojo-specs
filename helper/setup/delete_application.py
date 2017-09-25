@@ -16,5 +16,6 @@ def main(argv):
     for application in unit_args:
         mojo_utils.delete_application(application)
 
+
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
