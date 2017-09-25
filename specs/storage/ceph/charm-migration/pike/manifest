@@ -2,7 +2,7 @@
 collect config=collect-ceph-default
 
 # Use juju deployer with charm-ceph.yaml bundle
-deploy config=charm-ceph.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
+deploy config=charm-ceph.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -10,8 +10,8 @@ verify config=check_juju.py
 # Test obj store by sending and recieving files
 verify config=test_ceph_store.py APPLICATION=ceph UNITS="0 1"
 
-# Use juju deployer with ceph-upgrade.yaml bundle
-deploy config=ceph-upgrade.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
+# Use juju deployer with ceph-charm-migration.yaml bundle
+deploy config=ceph-charm-migration.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
