@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
@@ -85,6 +85,7 @@ def main(argv):
             report_success(msg)
         else:
             result_matrix[result_type]['on_less'](msg)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

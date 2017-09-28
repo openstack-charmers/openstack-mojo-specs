@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import utils.mojo_utils as mojo_utils
 import logging
@@ -13,6 +13,7 @@ def main(argv):
     services = mojo_utils.parse_mojo_arg(options, 'services', multiargs=True)
     for service in services:
         mojo_utils.upgrade_service(service)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

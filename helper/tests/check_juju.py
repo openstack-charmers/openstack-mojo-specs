@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 from utils.mojo_utils import juju_wait_finished
 

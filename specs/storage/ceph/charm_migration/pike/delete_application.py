@@ -1,0 +1,1 @@
+../../../../../helper/setup/delete_application.py

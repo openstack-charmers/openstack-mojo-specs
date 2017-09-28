@@ -92,3 +92,13 @@ xenial-ocata:
 zesty-ocata:
   inherits: openstack-services
   series: zesty
+xenial-pike:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+artful-pike:
+  inherits: openstack-services
+  series: artful
+

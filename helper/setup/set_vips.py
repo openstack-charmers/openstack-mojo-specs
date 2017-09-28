@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import netaddr
@@ -36,6 +36,7 @@ class VipPool():
             return next_ip
         else:
             raise Exception("vip pool exhausted")
+
 
 logging.basicConfig(level=logging.INFO)
 vp = VipPool()

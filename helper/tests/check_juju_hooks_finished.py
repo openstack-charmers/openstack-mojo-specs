@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import utils.mojo_utils as mojo_utils
 import sys

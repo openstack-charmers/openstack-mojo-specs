@@ -1,0 +1,2 @@
+This spec deploys a 3 monitor and 3 node OSD cluster configured with hardening.
+It then tests to verify Rados can write to and read from the cluster.

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import logging
 import os
@@ -181,6 +181,12 @@ def delete_unit(unit, method='juju'):
         delete_unit_provider(unit)
 
 
+def delete_application(application, wait=True):
+    logging.info('Removing application ' + application)
+    cmd = [kiki.cmd(), kiki.remove_application(), application]
+    subprocess.check_call(cmd)
+
+
 def delete_oldest(service, method='juju'):
     units = unit_sorted(get_juju_units(service=service))
     delete_unit(units[0], method='juju')
@@ -354,6 +360,9 @@ def get_undercloud_auth():
                 os.environ.get('OS_PROJECT_NAME'))
             auth_settings['OS_PROJECT_DOMAIN_NAME'] = (
                 os.environ.get('OS_PROJECT_DOMAIN_NAME'))
+            os_project_id = os.environ.get('OS_PROJECT_ID')
+            if os_project_id is not None:
+                auth_settings['OS_PROJECT_ID'] = os_project_id
 
     # Validate settings
     for key, settings in auth_settings.items():
@@ -503,12 +512,14 @@ def git_checkout_all(branch):
 
 
 def upgrade_service(svc, switch=None):
-    repo_dir = os.environ['MOJO_REPO_DIR']
+    charm_dir = os.path.join(get_charm_dir(), svc)
     logging.info('Upgrading ' + svc)
     cmd = [kiki.cmd(), 'upgrade-charm']
+    # Switch and path are now mutually exclusive
     if switch and switch.get(svc):
-        cmd.extend(['--switch', switch[svc]])
-    cmd.extend(['--repository', repo_dir, svc])
+        cmd.extend(['--switch', charm_dir, svc])
+    else:
+        cmd.extend(['--path', charm_dir, svc])
     subprocess.check_call(cmd)
 
 
@@ -567,11 +578,11 @@ def get_service_agent_states(juju_status):
             for unit in juju_status[kiki.applications()][service]['units']:
                 unit_info = juju_status[
                     kiki.applications()][service]['units'][unit]
-                service_state[unit_info['agent-state']] += 1
+                service_state[kiki.get_unit_info_state(unit_info)] += 1
                 if 'subordinates' in unit_info:
                     for sub_unit in unit_info['subordinates']:
-                        sub_sstate = \
-                            unit_info['subordinates'][sub_unit]['agent-state']
+                        sub_sstate = (kiki.get_unit_info_state(
+                            unit_info['subordinates'][sub_unit]))
                         service_state[sub_sstate] += 1
     return service_state
 
@@ -602,6 +613,8 @@ def juju_status_all_stable(states):
 
 
 def juju_status_check_and_wait():
+    logging.warn('The juju_status_check_and_wait function is deprecated. '
+                 ' Use juju_wait_finished instead.')
     checks = {
         'Machines': [
             {

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import os
 import utils.mojo_utils as mojo_utils
@@ -22,6 +22,7 @@ def main(argv):
     if mojo_env >= xenial:
         resource = resource.replace('eth0', 'ens2')
     mojo_os_utils.delete_crm_leader(service, resource)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

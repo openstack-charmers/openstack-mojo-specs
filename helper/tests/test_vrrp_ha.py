@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import time
 import sys
 import utils.mojo_utils as mojo_utils
@@ -123,6 +123,7 @@ def main(argv):
             raise Exception('Server failed to reach SHUTOFF state')
         if not check_neutron_agent_states(over_neutronc, gateway_hostname):
             raise Exception('Server agents failed to reach active state')
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

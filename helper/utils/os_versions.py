@@ -14,6 +14,7 @@ UBUNTU_OPENSTACK_RELEASE = OrderedDict([
     ('xenial', 'mitaka'),
     ('yakkety', 'newton'),
     ('zesty', 'ocata'),
+    ('artful', 'pike'),
 ])
 
 
@@ -30,6 +31,8 @@ OPENSTACK_CODENAMES = OrderedDict([
     ('2016.1', 'mitaka'),
     ('2016.2', 'newton'),
     ('2017.1', 'ocata'),
+    ('2017.2', 'pike'),
+    ('2018.1', 'queens'),
 ])
 
 

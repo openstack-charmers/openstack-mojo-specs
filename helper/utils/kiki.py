@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # Copyright 2014-2017 Canonical Limited.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -248,6 +248,43 @@ def remove_unit():
         return "remove-unit"
     else:
         return "destroy-unit"
+
+
+@cached
+def remove_application():
+    """Translate argument for remove-unit
+
+    @returns string Juju argument for remove-unit
+    """
+    if min_version('2.1'):
+        return "remove-application"
+    else:
+        return "remove-service"
+
+
+@cached
+def juju_state():
+    """Translate identifier for juju-state
+
+    @returns string Juju identifier for juju-state
+    """
+    if min_version('2.1'):
+        return "juju-status"
+    else:
+        return "agent-state"
+
+
+def get_unit_info_state(unit_info):
+    """Translate juju unit information
+
+    @param unit_info: Dictionary of unit information
+    @returns string Juju unit information state
+    """
+
+    if min_version('2.1'):
+        return unit_info[juju_state()]['current']
+    else:
+        return unit_info['agent-state']
 
 
 @cached

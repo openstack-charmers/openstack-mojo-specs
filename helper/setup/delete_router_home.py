@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
@@ -18,6 +18,7 @@ def main(argv):
     l3_agent = neutron_client.list_l3_agent_hosting_routers(router=router)
     hosting_machine = l3_agent['agents'][0]['host']
     mojo_utils.delete_machine(hosting_machine)
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
