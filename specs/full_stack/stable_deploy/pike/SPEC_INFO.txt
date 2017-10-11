@@ -1,0 +1,2 @@
+This spec performs a non-ha deploy using the stable charms and then runs tests
+to validate the deployment
