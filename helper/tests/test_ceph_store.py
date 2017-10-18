@@ -16,7 +16,7 @@ def main(argv):
     units = mojo_utils.parse_mojo_arg(options, 'units', multiargs=True)
 
     mojo_utils.remote_run(
-        '{}/{}'.format(application, units[0]), 'ceph osd pool create rbd 128')
+        '{}/{}'.format(application, units[0]), 'ceph osd pool create rbd 128 || true')
     # Check
     mojo_utils.remote_run(
         '{}/{}'.format(application, units[0]),
