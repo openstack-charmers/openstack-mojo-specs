@@ -8,7 +8,8 @@ import utils.mojo_os_utils as mojo_os_utils
 
 def setup_sdn(net_topology, net_info):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
+    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
+                                                          scope='DOMAIN')
     keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
     neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
     # Resolve the project name from the overcloud novarc into a project id

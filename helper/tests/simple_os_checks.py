@@ -56,7 +56,9 @@ def main(argv):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope='PROJECT')
-    keystonec = mojo_os_utils.get_keystone_session_client(keystone_session)
+    keystone_domain_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
+                                                          scope='DOMAIN')
+    keystonec = mojo_os_utils.get_keystone_session_client(keystone_domain_session)
     domain = overcloud_novarc.get('OS_PROJECT_DOMAIN_NAME')
     project_id = mojo_os_utils.get_project_id(
         keystonec,

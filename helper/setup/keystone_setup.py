@@ -8,7 +8,8 @@ def main(argv):
     mojo_utils.setup_logging()
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     user_config = mojo_utils.get_mojo_config('keystone_users.yaml')
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
+    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
+                                                          scope='DOMAIN')
     keystone_client = (
         mojo_os_utils.get_keystone_session_client(keystone_session))
     if overcloud_novarc.get('API_VERSION', 2) == 2:
