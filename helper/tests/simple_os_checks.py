@@ -56,9 +56,17 @@ def main(argv):
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope='PROJECT')
-    keystone_domain_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                          scope='DOMAIN')
-    keystonec = mojo_os_utils.get_keystone_session_client(keystone_domain_session)
+    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
+    # Keystone policy.json shipped the charm with liberty requires a domain
+    # scoped token. Bug #1649106
+    if os_version == 'liberty':
+        project_query_session = mojo_os_utils.get_keystone_session(
+            overcloud_novarc,
+            scope='DOMAIN')
+    else:
+        project_query_session = keystone_session
+    keystonec = mojo_os_utils.get_keystone_session_client(
+        project_query_session)
     domain = overcloud_novarc.get('OS_PROJECT_DOMAIN_NAME')
     project_id = mojo_os_utils.get_project_id(
         keystonec,
