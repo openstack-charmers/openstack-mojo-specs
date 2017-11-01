@@ -961,4 +961,3 @@ def get_lowest_os_version(current_versions):
         if current_versions[svc] < lowest_version:
             lowest_version = current_versions[svc]
     return lowest_version
-

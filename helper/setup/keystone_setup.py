@@ -8,13 +8,13 @@ def main(argv):
     mojo_utils.setup_logging()
     overcloud_novarc = mojo_utils.get_overcloud_auth()
     user_config = mojo_utils.get_mojo_config('keystone_users.yaml')
-    os_version =  mojo_os_utils.get_current_os_versions('keystone')['keystone']
+    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
     # Keystone policy.json shipped the charm with liberty requires a domain
     # scoped token. Bug #1649106
     if os_version == 'liberty':
-        scope='DOMAIN'
+        scope = 'DOMAIN'
     else:
-        scope='PROJECT'
+        scope = 'PROJECT'
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope=scope)
     keystone_client = (
