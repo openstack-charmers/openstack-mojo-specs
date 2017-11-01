@@ -27,6 +27,10 @@ base:
       options:
         expected-osd-count: 6
         no-bootstrap: True
+      to:
+        - "lxc:ceph=0"
+        - "lxc:ceph=1"
+        - "lxc:ceph=2"
     ceph-osd:
       annotations:
         gui-x: '1000'
@@ -37,7 +41,13 @@ base:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
         osd-reformat: 'no'
-      to: ceph
+      to:
+        - "3"
+        - "4"
+        - "5"
+        - "ceph=0"
+        - "ceph=1"
+        - "ceph=2"
 # icehouse
 trusty-icehouse:
   inherits: base
