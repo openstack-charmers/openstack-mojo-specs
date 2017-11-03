@@ -27,10 +27,10 @@ base:
       options:
         expected-osd-count: 6
         no-bootstrap: True
-      to:
-        - "lxc:ceph=0"
-        - "lxc:ceph=1"
-        - "lxc:ceph=2"
+      # to:
+      #   - "lxc:ceph=0"
+      #   - "lxc:ceph=1"
+      #   - "lxc:ceph=2"
     ceph-osd:
       annotations:
         gui-x: '1000'
