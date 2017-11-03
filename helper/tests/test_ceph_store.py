@@ -16,7 +16,7 @@ def main(argv):
     units = mojo_utils.parse_mojo_arg(options, 'units', multiargs=True)
 
     mojo_utils.remote_run(
-        '{}/{}'.format(application, units[0]), 'ceph osd pool create rbd 128')
+        '{}/{}'.format(application, units[-1]), 'ceph osd pool create rbd 128')
     # Check
     mojo_utils.remote_run(
         '{}/{}'.format(application, units[0]),
@@ -26,12 +26,9 @@ def main(argv):
         'rados put -p rbd test_input /tmp/input.txt')
 
     # Check
-    mojo_utils.remote_run(
-        '{}/{}'.format(application, units[-1]),
-        'rados get -p rbd test_input /tmp/input.txt')
     output = mojo_utils.remote_run(
         '{}/{}'.format(application, units[-1]),
-        'cat /tmp/input.txt')
+        'rados get -p rbd test_input /dev/stdout')
 
     # Cleanup
     mojo_utils.remote_run(
