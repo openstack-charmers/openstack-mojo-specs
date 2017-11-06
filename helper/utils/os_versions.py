@@ -61,9 +61,9 @@ SWIFT_CODENAMES = OrderedDict([
     ('newton',
         ['2.8.0', '2.9.0']),
     ('ocata',
-        ['2.11.0', '2.12.1']),
+        ['2.11.0', '2.12.0', '2.13.0']),
     ('pike',
-        ['2.14.0', '2.15.0']),
+        ['2.13.0', '2.15.0']),
 ])
 
 # >= Liberty version->codename mapping
@@ -74,6 +74,8 @@ PACKAGE_CODENAMES = {
         ('14', 'newton'),
         ('15', 'ocata'),
         ('16', 'pike'),
+        ('17', 'queens'),
+        ('18', 'rocky'),
     ]),
     'neutron-common': OrderedDict([
         ('7', 'liberty'),
@@ -81,6 +83,8 @@ PACKAGE_CODENAMES = {
         ('9', 'newton'),
         ('10', 'ocata'),
         ('11', 'pike'),
+        ('12', 'queens'),
+        ('13', 'rocky'),
     ]),
     'cinder-common': OrderedDict([
         ('7', 'liberty'),
@@ -88,6 +92,8 @@ PACKAGE_CODENAMES = {
         ('9', 'newton'),
         ('10', 'ocata'),
         ('11', 'pike'),
+        ('12', 'queens'),
+        ('13', 'rocky'),
     ]),
     'keystone': OrderedDict([
         ('8', 'liberty'),
@@ -95,6 +101,8 @@ PACKAGE_CODENAMES = {
         ('10', 'newton'),
         ('11', 'ocata'),
         ('12', 'pike'),
+        ('13', 'queens'),
+        ('14', 'rocky'),
     ]),
     'horizon-common': OrderedDict([
         ('8', 'liberty'),
@@ -102,6 +110,8 @@ PACKAGE_CODENAMES = {
         ('10', 'newton'),
         ('11', 'ocata'),
         ('12', 'pike'),
+        ('13', 'queens'),
+        ('14', 'rocky'),
     ]),
     'ceilometer-common': OrderedDict([
         ('5', 'liberty'),
@@ -109,6 +119,8 @@ PACKAGE_CODENAMES = {
         ('7', 'newton'),
         ('8', 'ocata'),
         ('9', 'pike'),
+        ('10', 'queens'),
+        ('11', 'rocky'),
     ]),
     'heat-common': OrderedDict([
         ('5', 'liberty'),
@@ -116,6 +128,8 @@ PACKAGE_CODENAMES = {
         ('7', 'newton'),
         ('8', 'ocata'),
         ('9', 'pike'),
+        ('10', 'queens'),
+        ('11', 'rocky'),
     ]),
     'glance-common': OrderedDict([
         ('11', 'liberty'),
@@ -123,6 +137,8 @@ PACKAGE_CODENAMES = {
         ('13', 'newton'),
         ('14', 'ocata'),
         ('15', 'pike'),
+        ('16', 'queens'),
+        ('17', 'rocky'),
     ]),
     'openstack-dashboard': OrderedDict([
         ('8', 'liberty'),
@@ -130,5 +146,7 @@ PACKAGE_CODENAMES = {
         ('10', 'newton'),
         ('11', 'ocata'),
         ('12', 'pike'),
+        ('13', 'queens'),
+        ('14', 'rocky'),
     ]),
 }
