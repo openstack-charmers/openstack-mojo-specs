@@ -60,6 +60,10 @@ SWIFT_CODENAMES = OrderedDict([
         ['2.5.0', '2.6.0', '2.7.0']),
     ('newton',
         ['2.8.0', '2.9.0']),
+    ('ocata',
+        ['2.11.0', '2.12.1']),
+    ('pike',
+        ['2.14.0', '2.15.0']),
 ])
 
 # >= Liberty version->codename mapping
@@ -69,53 +73,62 @@ PACKAGE_CODENAMES = {
         ('13', 'mitaka'),
         ('14', 'newton'),
         ('15', 'ocata'),
+        ('16', 'pike'),
     ]),
     'neutron-common': OrderedDict([
         ('7', 'liberty'),
         ('8', 'mitaka'),
         ('9', 'newton'),
         ('10', 'ocata'),
+        ('11', 'pike'),
     ]),
     'cinder-common': OrderedDict([
         ('7', 'liberty'),
         ('8', 'mitaka'),
         ('9', 'newton'),
         ('10', 'ocata'),
+        ('11', 'pike'),
     ]),
     'keystone': OrderedDict([
         ('8', 'liberty'),
         ('9', 'mitaka'),
         ('10', 'newton'),
         ('11', 'ocata'),
+        ('12', 'pike'),
     ]),
     'horizon-common': OrderedDict([
         ('8', 'liberty'),
         ('9', 'mitaka'),
         ('10', 'newton'),
         ('11', 'ocata'),
+        ('12', 'pike'),
     ]),
     'ceilometer-common': OrderedDict([
         ('5', 'liberty'),
         ('6', 'mitaka'),
         ('7', 'newton'),
         ('8', 'ocata'),
+        ('9', 'pike'),
     ]),
     'heat-common': OrderedDict([
         ('5', 'liberty'),
         ('6', 'mitaka'),
         ('7', 'newton'),
         ('8', 'ocata'),
+        ('9', 'pike'),
     ]),
     'glance-common': OrderedDict([
         ('11', 'liberty'),
         ('12', 'mitaka'),
         ('13', 'newton'),
         ('14', 'ocata'),
+        ('15', 'pike'),
     ]),
     'openstack-dashboard': OrderedDict([
         ('8', 'liberty'),
         ('9', 'mitaka'),
         ('10', 'newton'),
         ('11', 'ocata'),
+        ('12', 'pike'),
     ]),
 }
