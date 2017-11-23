@@ -7,12 +7,6 @@ deploy config=swift-ha-proxy-phase1.yaml delay=0 wait=False target=${MOJO_SERIES
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
 
-# Add service relations
-deploy config=swift-ha-proxy-phase2.yaml delay=0 wait=False target=${MOJO_SERIES}-kilo
-
-# Check juju statuses are green and that hooks have finished
-verify config=check_juju.py
-
 # Setup glance images
 script config=image_setup.py
 

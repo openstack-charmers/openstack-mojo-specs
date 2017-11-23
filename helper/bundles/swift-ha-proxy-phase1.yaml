@@ -56,6 +56,8 @@ openstack-services:
     - [ keystone, mysql ]
     - [ glance, mysql ]
     - [ glance, keystone ]
+    - [ glance, swift-proxy ]
+    - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-hacluster ]
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
