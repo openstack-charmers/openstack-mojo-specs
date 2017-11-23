@@ -14,7 +14,7 @@ script config=keystone_setup.py
 verify config=test_obj_store.py
 
 # Delete the unit which is currently the leader (according to corosync)
-script config=delete_crm_leader.py SERVICE='ceph-radosgw' RESOURCE='res_cephrg_eth0_vip'
+script config=delete_crm_leader.py SERVICE='ceph-radosgw' RESOURCE='res_cephrg_.*_vip'
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py

@@ -80,9 +80,20 @@ xenial-ocata:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+xenial-pike:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    ha-bindiface: ens2
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
 zesty-ocata:
   inherits: openstack-services
   series: zesty
   overrides:
     ha-bindiface: ens2
-
+artful-pike:
+  inherits: openstack-services
+  series: artful
+  overrides:
+    ha-bindiface: ens2
