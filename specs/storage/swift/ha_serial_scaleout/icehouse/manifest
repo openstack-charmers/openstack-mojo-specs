@@ -26,7 +26,7 @@ verify config=swift_ring_status.py
 verify config=test_obj_store.py
 
 # Inc. cluster count
-script config=juju_set.py SERVICE='swift-hacluster' KV='cluster_count=4'
+script config=juju_set.py SERVICE='swift-hacluster' KV='cluster_count=4' WAIT='False'
 
 # Add a swift-proxy unit
 script config=add_unit.py UNITS='swift-proxy:1'
