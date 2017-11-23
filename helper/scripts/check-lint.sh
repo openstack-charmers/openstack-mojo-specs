@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Checking specs..."
-for spec in $(find specs/{object_storage,full_stack} -name manifest); do
+for spec in $(find specs/{storage,full_stack} -name manifest); do
     spec_dir=$(dirname $spec)
     MSGS=$(./helper/scripts/mojo-spec-check.py $spec_dir 2>&1)
     if [[ "$MSGS" == *WARNING* ]] || [[ "$MSGS" == *ERROR* ]]; then

@@ -3,6 +3,4 @@ hacluster              cs:~openstack-charmers-next/hacluster
 keystone               cs:~openstack-charmers-next/keystone
 mysql                  cs:~openstack-charmers-next/percona-cluster
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
-swift-storage-z1       cs:~openstack-charmers-next/swift-storage
-swift-storage-z2       cs:~openstack-charmers-next/swift-storage
-swift-storage-z3       cs:~openstack-charmers-next/swift-storage
+swift-storage          cs:~openstack-charmers-next/swift-storage
