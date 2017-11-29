@@ -1,9 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-stable-ha-${MOJO_SERIES}
 
-# Checkout stable
-script config=git_checkout_stable.py
-
 # Use juju deployer to add the relations for the deployment
 deploy config=ha.yaml delay=0 wait=False target=${MOJO_SERIES}-icehouse-ha
 
