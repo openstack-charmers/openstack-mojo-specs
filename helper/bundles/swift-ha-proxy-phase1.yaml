@@ -78,6 +78,12 @@ trusty-liberty:
   overrides:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
+trusty-kilo:
+  inherits: openstack-services
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-kilo
+    source: cloud:trusty-kilo
 trusty-mitaka:
   inherits: openstack-services
   series: trusty
