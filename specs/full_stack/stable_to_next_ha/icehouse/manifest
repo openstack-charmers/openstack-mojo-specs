@@ -1,5 +1,5 @@
 # Collect the charm branches from Launchpad
-collect config=collect-stable-ha-${MOJO_SERIES}
+collect config=collect-stable-ha
 
 # Use juju deployer to add the relations for the deployment
 deploy config=ha.yaml delay=0 wait=False target=${MOJO_SERIES}-icehouse-ha
@@ -26,7 +26,7 @@ verify config=test_obj_store.py
 script config=wipe_charm_dir.py
 
 # Collect the next (devel) charm branches from Launchpad
-collect config=collect-next-ha-${MOJO_SERIES}
+collect config=collect-next-ha
 
 # Run upgrade-charm on all services
 script config=upgrade_all_services.py
