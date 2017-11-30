@@ -511,8 +511,12 @@ def git_checkout_all(branch):
             git_checkout_branch(charm_dir, branch)
 
 
-def upgrade_service(svc, switch=None):
-    charm_dir = os.path.join(get_charm_dir(), svc)
+def upgrade_service(svc, charm_name=None, switch=None):
+    if charm_name and os.path.exists(os.path.join(get_charm_dir(),
+                                                  charm_name)):
+         charm_dir = os.path.join(get_charm_dir(), charm_name)
+    else:
+         charm_dir = os.path.join(get_charm_dir(), svc)
     logging.info('Upgrading ' + svc)
     cmd = [kiki.cmd(), 'upgrade-charm']
     # Switch and path are now mutually exclusive
@@ -531,13 +535,15 @@ def upgrade_all_services(juju_status=None, switch=None):
                    'keystone']
     for svc in base_charms:
         if svc in juju_status[kiki.applications()]:
-            upgrade_service(svc, switch=switch)
+            charm_name = juju_status['applications'][svc]['charm-name']
+            upgrade_service(svc, charm_name=charm_name, switch=switch)
             time.sleep(30)
     time.sleep(60)
     # Upgrade the rest
     for svc in juju_status[kiki.applications()]:
         if svc not in base_charms:
-            upgrade_service(svc, switch=switch)
+            charm_name = juju_status['applications'][svc]['charm-name']
+            upgrade_service(svc, charm_name=charm_name, switch=switch)
             time.sleep(30)
 
 
