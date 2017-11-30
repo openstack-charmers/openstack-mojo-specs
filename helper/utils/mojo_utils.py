@@ -514,9 +514,9 @@ def git_checkout_all(branch):
 def upgrade_service(svc, charm_name=None, switch=None):
     if charm_name and os.path.exists(os.path.join(get_charm_dir(),
                                                   charm_name)):
-         charm_dir = os.path.join(get_charm_dir(), charm_name)
+        charm_dir = os.path.join(get_charm_dir(), charm_name)
     else:
-         charm_dir = os.path.join(get_charm_dir(), svc)
+        charm_dir = os.path.join(get_charm_dir(), svc)
     logging.info('Upgrading ' + svc)
     cmd = [kiki.cmd(), 'upgrade-charm']
     # Switch and path are now mutually exclusive
