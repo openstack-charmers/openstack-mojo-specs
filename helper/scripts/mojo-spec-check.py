@@ -30,6 +30,7 @@ OPENSTACK_RELEASES = {
     'newton': ['xenial'],
     'ocata': ['xenial', 'zesty'],
     'pike': ['xenial', 'artful'],
+    'queens': ['xenial', 'bionic'],
 }
 
 
