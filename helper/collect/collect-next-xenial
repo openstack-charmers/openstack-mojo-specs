@@ -15,7 +15,7 @@ neutron-gateway        cs:~openstack-charmers-next/neutron-gateway
 neutron-openvswitch    cs:~openstack-charmers-next/neutron-openvswitch
 nova-cloud-controller  cs:~openstack-charmers-next/nova-cloud-controller
 nova-compute           cs:~openstack-charmers-next/nova-compute
-ntp                    git://git.launchpad.net/~thedac/ntp-charm;revno=zesty
+ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
 rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
 swift-proxy            cs:~openstack-charmers-next/swift-proxy

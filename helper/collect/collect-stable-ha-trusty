@@ -15,7 +15,7 @@ neutron-gateway        git://github.com/openstack/charm-neutron-gateway
 neutron-openvswitch    git://github.com/openstack/charm-neutron-openvswitch
 nova-cloud-controller  git://github.com/openstack/charm-nova-cloud-controller
 nova-compute           git://github.com/openstack/charm-nova-compute
-ntp                    git://git.launchpad.net/~thedac/ntp-charm;revno=zesty
+ntp                    cs:ntp
 openstack-dashboard    git://github.com/openstack/charm-openstack-dashboard
 percona-cluster        git://github.com/openstack/charm-percona-cluster
 rabbitmq-server        git://github.com/openstack/charm-rabbitmq-server
