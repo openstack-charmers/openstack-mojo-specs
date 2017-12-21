@@ -8,6 +8,7 @@ from os_versions import (
 
 import swiftclient
 import glanceclient
+import designateclient
 from keystoneclient.v2_0 import client as keystoneclient_v2
 from keystoneclient.v3 import client as keystoneclient_v3
 from keystoneauth1 import session
@@ -152,7 +153,7 @@ def get_keystone_session(novarc_creds, insecure=True, scope='PROJECT'):
     return session.Session(auth=auth, verify=not insecure)
 
 
-def get_keystone_session_client(session):
+def get_keystone_session_client(session, nova_creds=None):
     return keystoneclient_v3.Client(session=session)
 
 
@@ -198,6 +199,10 @@ def get_glance_client(novarc_creds, insecure=True):
         glance_ep_url = ep.url
     return glanceclient.Client('1', glance_ep_url, token=kc.auth_token,
                                insecure=insecure)
+
+
+def get_designate_session_client(session):
+    return designateclient.v1.Client(session=session)
 
 
 # Glance Helpers
@@ -570,6 +575,16 @@ def update_subnet_dns(neutron_client, subnet, dns_servers):
     logging.info('Updating dns_nameservers (%s) for subnet',
                  dns_servers)
     neutron_client.update_subnet(subnet['id'], msg)
+
+
+def update_network_dns(neutron_client, network, domain_name):
+    msg = {
+        'network': {
+            'dns_domain': domain_name,
+        }
+    }
+    logging.info('Updating dns_domain for network {}'.format(network))
+    neutron_client.update_network(network, msg)
 
 
 def create_provider_router(neutron_client, tenant_id):
