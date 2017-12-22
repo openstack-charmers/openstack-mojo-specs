@@ -2,7 +2,7 @@
 collect config=collect-next-${MOJO_SERIES}
 
 # Use juju deployer with full-next.yaml bundle
-deploy config=full-next.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
+deploy config=full-next.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

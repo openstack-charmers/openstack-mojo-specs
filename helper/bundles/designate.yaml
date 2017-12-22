@@ -176,6 +176,9 @@ openstack-services-trusty-mitaka:
       constraints: mem=1G
     designate-bind:
       charm: cs:~openstack-charmers-next/designate-bind
+    tempest:
+      charm: tempest
+      constraints: mem=1G
   relations:
     - [ aodh, rabbitmq-server ]
     - [ aodh, mysql ]
@@ -186,6 +189,7 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-bind ]
     - [ designate, memcached ]
     - [ designate, neutron-api ]
+    - [ keystone, tempest ]
 openstack-services-xenial:
   inherits: openstack-services-trusty-mitaka
   services:
@@ -260,15 +264,6 @@ trusty-liberty-staging:
   overrides:
     openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
     source: ppa:ubuntu-cloud-archive/liberty-staging
-# liberty
-wily-liberty:
-  inherits: openstack-services
-  series: wily
-wily-liberty-proposed:
-  inherits: wily-liberty
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
 # mitaka
 trusty-mitaka:
   #NOTE(coreycb): Temporarily disable reactive charms until
@@ -316,20 +311,6 @@ xenial-newton-staging:
     source: ppa:ubuntu-cloud-archive/newton-staging
 xenial-newton-branch:
   inherits: xenial-newton
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/newton
-    source: ppa:openstack-ubuntu-testing/newton
-yakkety-newton:
-  inherits: openstack-services-xenial
-  inherits: openstack-services
-  series: yakkety
-yakkety-newton-proposed:
-  inherits: yakkety-newton
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-yakkety-newton-branch:
-  inherits: yakkety-newton
   overrides:
     openstack-origin: ppa:openstack-ubuntu-testing/newton
     source: ppa:openstack-ubuntu-testing/newton
