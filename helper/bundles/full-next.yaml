@@ -51,8 +51,7 @@ base-services:
         instance-mtu: 1300
         bridge-mappings: physnet1:br-ex
     neutron-api:
-      # charm: neutron-api
-      charm: /home/thedac/dev/neutron-api
+      charm: neutron-api
       constraints: mem=1G
       options:
         neutron-security-groups: True
