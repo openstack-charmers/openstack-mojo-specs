@@ -124,21 +124,21 @@ openstack-services:
         corosync_transport: unicast
         cluster_count: 3
     swift-storage-z1:
-      charm: swift-storage-z1
+      charm: swift-storage
       constraints: mem=1G
       options:
         zone: 1
         block-device: vdb
         overwrite: "true"
     swift-storage-z2:
-      charm: swift-storage-z2
+      charm: swift-storage
       constraints: mem=1G
       options:
         zone: 2
         block-device: vdb
         overwrite: "true"
     swift-storage-z3:
-      charm: swift-storage-z3
+      charm: swift-storage
       constraints: mem=1G
       options:
         zone: 3

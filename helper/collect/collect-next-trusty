@@ -19,7 +19,5 @@ ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
 rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
-swift-storage-z1       cs:~openstack-charmers-next/swift-storage
-swift-storage-z2       cs:~openstack-charmers-next/swift-storage
-swift-storage-z3       cs:~openstack-charmers-next/swift-storage
+swift-storage          cs:~openstack-charmers-next/swift-storage
 tempest                cs:~openstack-charmers-next/tempest
