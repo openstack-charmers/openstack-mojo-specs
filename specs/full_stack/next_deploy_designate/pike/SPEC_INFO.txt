@@ -1,2 +1,0 @@
-This spec performs a deploy using the next charms with designate and neutron integrated
-and then runs tests to validate the deployment

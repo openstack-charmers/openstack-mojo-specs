@@ -20,4 +20,6 @@ openstack-dashboard    git://github.com/openstack/charm-openstack-dashboard
 percona-cluster        git://github.com/openstack/charm-percona-cluster
 rabbitmq-server        git://github.com/openstack/charm-rabbitmq-server
 swift-proxy            git://github.com/openstack/charm-swift-proxy
-swift-storage       git://github.com/openstack/charm-swift-storage
+swift-storage-z1       git://github.com/openstack/charm-swift-storage
+swift-storage-z2       git://github.com/openstack/charm-swift-storage
+swift-storage-z3       git://github.com/openstack/charm-swift-storage
