@@ -93,21 +93,21 @@ openstack-services:
     swift-proxy-hacluster:
       charm: hacluster
     swift-storage-z1:
-      charm: swift-storage
+      charm: swift-storage-z1
       constraints: mem=1G
       options:
         zone: 1
         block-device: vdb
         overwrite: "true"
     swift-storage-z2:
-      charm: swift-storage
+      charm: swift-storage-z2
       constraints: mem=1G
       options:
         zone: 2
         block-device: vdb
         overwrite: "true"
     swift-storage-z3:
-      charm: swift-storage
+      charm: swift-storage-z3
       constraints: mem=1G
       options:
         zone: 3

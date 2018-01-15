@@ -19,6 +19,8 @@ ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers/openstack-dashboard
 rabbitmq-server        cs:~openstack-charmers/rabbitmq-server
 swift-proxy            cs:~openstack-charmers/swift-proxy
-swift-storage          cs:~openstack-charmers/swift-storage
+swift-storage-z1       cs:~openstack-charmers/swift-storage
+swift-storage-z2       cs:~openstack-charmers/swift-storage
+swift-storage-z3       cs:~openstack-charmers/swift-storage
 # Tempest charm is basically never stable
 tempest                cs:~openstack-charmers-next/tempest
