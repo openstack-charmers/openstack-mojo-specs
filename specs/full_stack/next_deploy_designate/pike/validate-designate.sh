@@ -1,0 +1,1 @@
+../../../../helper/tests/validate-designate.sh
