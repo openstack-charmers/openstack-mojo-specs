@@ -18,6 +18,9 @@ from keystoneauth1.identity import (
 import mojo_utils
 from novaclient import client as novaclient_client
 from neutronclient.v2_0 import client as neutronclient
+
+import designateclient.v1 as designateclient_v1
+
 import logging
 import re
 import sys
@@ -28,6 +31,7 @@ import time
 import subprocess
 import paramiko
 import StringIO
+import dns.resolver
 
 CHARM_TYPES = {
     'neutron': {
@@ -179,6 +183,12 @@ def get_swift_client(novarc_creds, insecure=True):
 
 def get_swift_session_client(session):
     return swiftclient.client.Connection(session=session)
+
+
+def get_designate_session_client(session, all_tenants=True):
+    return designateclient_v1.Client(
+        session=session,
+        all_tenants=all_tenants)
 
 
 def get_glance_session_client(session):
@@ -961,3 +971,100 @@ def get_lowest_os_version(current_versions):
         if current_versions[svc] < lowest_version:
             lowest_version = current_versions[svc]
     return lowest_version
+
+
+def update_network_dns(neutron_client, network, domain_name):
+    msg = {
+        'network': {
+            'dns_domain': domain_name,
+        }
+    }
+    logging.info('Updating dns_domain for network {}'.format(network))
+    neutron_client.update_network(network, msg)
+
+
+def get_designate_server_id(client, server_name):
+    server_id = None
+    for server in client.servers.list():
+        if server.name == server_name:
+            server_id = server.id
+            break
+    return server_id
+
+
+def get_designate_domain_id(client, domain_name):
+    domain_id = None
+    for domain in client.domains.list():
+        if domain.name == domain_name:
+            domain_id = domain.id
+            break
+    return domain_id
+
+
+def get_designate_record_id(client, domain_id, record_name):
+    record_id = None
+    for record in client.records.list(domain_id):
+        if record.name == record_name:
+            record_id = record.id
+            break
+    return record_id
+
+
+def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
+                            retry_count=1):
+    """Lookup a DNS record against the given dns server address
+
+    @param dns_server_ip: str IP address to run query against
+    @param query_name: str Record to lookup
+    @param expected_ip: str IP address expected to be associated with record.
+    @param retry_count: int Number of times to retry query. Useful if waiting
+                            for record to propagate.
+    @raises AssertionError: if record is not found or expected_ip is set and
+                            does not match the IP associated with the record
+    """
+    my_resolver = dns.resolver.Resolver()
+    my_resolver.nameservers = [dns_server_ip]
+    for i in range(1, retry_count + 1):
+        try:
+            answers = my_resolver.query(query_name)
+        except dns.resolver.NXDOMAIN:
+            logging.info(
+                'Attempt {}/{} to lookup {}@{} failed. Sleeping before '
+                'retrying'.format(i, retry_count, query_name,
+                                  dns_server_ip))
+            time.sleep(5)
+        else:
+            break
+    else:
+        raise dns.resolver.NXDOMAIN
+    assert len(answers) > 0
+    if expected_ip:
+        for rdata in answers:
+            logging.info("Checking address returned by {} is correct".format(
+                dns_server_ip))
+            assert str(rdata) == expected_ip
+
+
+def check_dns_entry_in_bind(ip, record_name, juju_status=None):
+    """Check that record for ip address in bind if a bind
+       server is available.
+
+    @param ip: str IP address to lookup
+    @param record_name: str record name
+    @param juju_status: dict Current juju status
+    """
+    if not juju_status:
+        juju_status = mojo_utils.get_juju_status()
+
+    bind_units = mojo_utils.get_juju_units(
+        service='designate-bind',
+        juju_status=juju_status)
+
+    for unit in bind_units:
+        addr = mojo_utils.get_juju_unit_ip(unit, juju_status=juju_status)
+        logging.info("Checking {} is {} against {} ({})".format(
+            record_name,
+            ip,
+            unit,
+            addr))
+        check_dns_record_exists(addr, record_name, ip, retry_count=2)
