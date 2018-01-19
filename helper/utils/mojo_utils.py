@@ -61,6 +61,13 @@ def get_juju_units(juju_status=None, service=None):
     return units
 
 
+def get_juju_unit_ip(unit, juju_status=None):
+    if not juju_status:
+        juju_status = get_juju_status()
+    svc = unit.split('/')[0]
+    return juju_status['applications'][svc]['units'][unit]['public-address']
+
+
 def get_principle_services(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()

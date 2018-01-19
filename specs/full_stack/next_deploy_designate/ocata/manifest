@@ -16,13 +16,13 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
-# Setup Designate # For linter config=designate_setup.py
-script config=configure-designate.sh
+# Setup Designate
+script config=designate_setup.py
 
 # Create 1 * tiny cirros and 1 * small precise instances on the overcloud
-verify config=simple_os_checks.py MACHINES='trusty:m1.small:1' CLOUDINIT_WAIT="300"
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="300"
 
-# Test PTR record # For linter config=get_floating_ip.py
-verify config=validate-designate.sh
+# Test DNS records
+verify config=validate_designate.py
 
 # Success

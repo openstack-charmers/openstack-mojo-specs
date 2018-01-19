@@ -1,1 +1,0 @@
-../../../../helper/setup/configure-designate.sh

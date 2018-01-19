@@ -10,48 +10,27 @@ from designateclient.v1.records import Record
 from designateclient.v1.servers import Server
 
 
-def get_server_id(client, server_name):
-    server_id = None
-    for server in client.servers.list():
-        if server.name == server_name:
-            server_id = server.id
-            break
-    return server_id
-
-
-def get_domain_id(client, domain_name):
-    domain_id = None
-    for domain in client.domains.list():
-        if domain.name == domain_name:
-            domain_id = domain.id
-            break
-    return domain_id
-
-
-def get_record_id(client, domain_id, record_name):
-    record_id = None
-    for record in client.records.list(domain_id):
-        if record.name == record_name:
-            record_id = record.id
-            break
-    return record_id
-
-
 def main(argv):
     mojo_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--resolver',
                         help='Resolver address. '
                              'Usually designate-bind address.',
-                        required=True)
+                        required=False)
     parser.add_argument('-d', '--domain_name', help='DNS Domain Name. '
                                                     'Must end in a .',
                         default='mojo.serverstack.')
     parser.add_argument('-e', '--email', help='Email address',
                         default='fake@mojo.serverstack')
+    parser.add_argument('-b', '--bind-service', help='Bind Service Name',
+                        default='designate-bind')
 
     options = parser.parse_args()
+    bind_service_name = mojo_utils.parse_mojo_arg(options, 'bind_service')
     resolver = mojo_utils.parse_mojo_arg(options, 'resolver')
+    bind_unit = mojo_utils.get_juju_units(service=bind_service_name)[0]
+    if not resolver:
+        resolver = mojo_utils.get_juju_unit_ip(bind_unit)
     domain_name = mojo_utils.parse_mojo_arg(options, 'domain_name')
     email = mojo_utils.parse_mojo_arg(options, 'email')
     nameserver = 'ns1.{}'.format(domain_name)
@@ -71,7 +50,7 @@ def main(argv):
     neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
     designatec = mojo_os_utils.get_designate_session_client(keystone_session)
 
-    if not get_server_id(designatec, nameserver):
+    if not mojo_os_utils.get_designate_server_id(designatec, nameserver):
         logging.info('Creating server {}'.format(nameserver))
         server = Server(name=nameserver)
         server_id = designatec.servers.create(server)
@@ -79,7 +58,7 @@ def main(argv):
     else:
         logging.info('{} server already exists.'.format(nameserver))
 
-    domain_id = get_domain_id(designatec, domain_name)
+    domain_id = mojo_os_utils.get_designate_domain_id(designatec, domain_name)
     if not domain_id:
         logging.info('Creating domain {}'.format(domain_name))
         domain = Domain(name=domain_name, email=email)
@@ -88,7 +67,8 @@ def main(argv):
     else:
         logging.info('{} domain already exists.'.format(domain_name))
 
-    if not get_record_id(designatec, domain_id, nameserver):
+    if not mojo_os_utils.get_designate_record_id(designatec, domain_id,
+                                                 nameserver):
         logging.info('Creating NS record {}'.format(nameserver))
         ns_record = Record(
             name=nameserver,
