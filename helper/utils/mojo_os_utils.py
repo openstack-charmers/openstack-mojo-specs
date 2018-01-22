@@ -20,6 +20,9 @@ from novaclient import client as novaclient_client
 from neutronclient.v2_0 import client as neutronclient
 
 import designateclient.v1 as designateclient_v1
+import designateclient.v1.domains as des_domains
+import designateclient.v1.records as des_records
+import designateclient.exceptions as des_exceptions
 
 import logging
 import re
@@ -1058,6 +1061,66 @@ def get_designate_dns_records(designate_client, domain_name, ip):
     return [r for r in designate_client.records.list(domain) if r.data == ip]
 
 
+def create_designate_dns_domain(designate_client, domain_name, email,
+                                recreate=True):
+    """Create the given domain in designate
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param domain_name: str Name of domain to lookup
+    @param email: str Email address to associate with domain
+    @param recreate: boolean Whether to delete any matching domains first.
+    """
+    if recreate:
+        delete_designate_dns_domain(designate_client, domain_name)
+        for i in range(1, 10):
+            try:
+                domain = des_domains.Domain(name=domain_name, email=email)
+                dom_obj = designate_client.domains.create(domain)
+            except des_exceptions.Conflict:
+                print("Waiting for delete {}/10".format(i))
+                time.sleep(10)
+            else:
+                break
+        else:
+            raise des_exceptions.Conflict
+    else:
+        domain = des_domains.Domain(name=domain_name, email=email)
+        dom_obj = designate_client.domains.create(domain)
+    return dom_obj
+
+
+def create_designate_dns_record(designate_client, domain_id, name, rtype,
+                                data):
+    """Create the given record in designmate
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param domain_id: str UUID of domain to create record in
+    @param name: str DNS fqdn entry to be created
+    @param rtype: str record type eg A, CNAME etc
+    @param data: str data to be associated with record
+    @returns designateclient.v1.records.Record
+    """
+    record = des_records.Record(name=name, type=rtype, data=data)
+    return designate_client.records.create(domain_id, record)
+
+
+def delete_designate_dns_domain(designate_client, domain_name):
+    """Delete the domains matching the given domain_name
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param domain_name: str Name of domain to lookup
+    @raises AssertionError: if domain deletion fails
+    """
+    dns_zone_id = get_designate_domain_objects(designate_client, domain_name)
+    old_doms = get_designate_domain_objects(designate_client, domain_name)
+    for old_dom in old_doms:
+        logging.info("Deleting old domain {}".format(old_dom.id))
+        designate_client.domains.delete(old_dom.id)
+
+
 def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
                             retry_count=1):
     """Lookup a DNS record against the given dns server address
@@ -1074,8 +1137,10 @@ def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
     my_resolver.nameservers = [dns_server_ip]
     for i in range(1, retry_count + 1):
         try:
+            print(query_name)
             answers = my_resolver.query(query_name)
-        except dns.resolver.NXDOMAIN:
+            print(str(answers[0]))
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoNameservers):
             logging.info(
                 'Attempt {}/{} to lookup {}@{} failed. Sleeping before '
                 'retrying'.format(i, retry_count, query_name,
@@ -1091,6 +1156,22 @@ def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
             logging.info("Checking address returned by {} is correct".format(
                 dns_server_ip))
             assert str(rdata) == expected_ip
+
+
+def check_dns_entry(des_client, ip, domain, record_name, juju_status=None):
+    """Check that record for ip address is in designate and in bind if bind
+       server is available.
+
+    @param ip: str IP address to lookup
+    @param domain: str domain to look for record in
+    @param record_name: str record name
+    @param juju_status: dict Current juju status
+    """
+    if not juju_status:
+        juju_status = mojo_utils.get_juju_status()
+    check_dns_entry_in_designate(des_client, ip, domain,
+                                 record_name=record_name)
+    check_dns_entry_in_bind(ip, record_name, juju_status=juju_status)
 
 
 def check_dns_entry_in_designate(des_client, ip, domain, record_name=None):
