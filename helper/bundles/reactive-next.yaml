@@ -177,6 +177,12 @@ openstack-services-trusty-mitaka:
     designate:
       charm: designate
       constraints: mem=1G
+      options:
+        nova-domain: 'mojo.serverstack.com.'
+        neutron-domain: 'mojo.serverstack.com.'
+        nova-domain-email: 'bob@mojo.serverstack.com'
+        neutron-domain-email: 'bob@mojo.serverstack.com'
+        nameservers: "ns1.mojo.serverstack.com."
     designate-bind:
       charm: designate-bind
     tempest:
@@ -192,6 +198,8 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-bind ]
     - [ designate, memcached ]
     - [ designate, neutron-api ]
+    # designate <-> nova-compute needed for legacy notifications
+    - [ designate, nova-compute ]
     - [ keystone, tempest ]
 openstack-services-xenial:
   inherits: openstack-services-trusty-mitaka
