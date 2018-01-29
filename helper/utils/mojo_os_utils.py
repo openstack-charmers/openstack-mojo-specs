@@ -1014,7 +1014,9 @@ def get_designate_record_id(client, domain_id, record_name):
 
 
 def get_designate_domain_object(designate_client, domain_name):
-    """Get the domain matching the given domain_name
+    """Get the one and only domain matching the given domain_name, if none are
+    found or multiple are found then raise an AssertionError. To access a list
+    matching the domain name use get_designate_domain_objects.
 
     @param designate_client: designateclient.v1.Client Client to query
                                                        designate
@@ -1175,15 +1177,24 @@ def check_dns_entry(des_client, ip, domain, record_name, juju_status=None):
 
 
 def check_dns_entry_in_designate(des_client, ip, domain, record_name=None):
+    """Look for records in designate that match the given ip in the given
+       domain
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param ip: str IP address to lookup in designate
+    @param domain: str Name of domain to lookup
+    @param record_name: str Retrieved record should have this name
+    @raises AssertionError: if no record is found or record_name is set and
+                            does not match the name associated with the record
+    """
     records = get_designate_dns_records(des_client, domain, ip)
     assert records, "Record not found for {} in designate".format(ip)
-    record = records[0]
-    logging.info("Found dns name {} for IP {}".format(record.name,
-                                                      record.data))
+
     if record_name:
-        assert record.name == record_name
-        logging.info("DNS entry name matches expected name {}".format(
-            record_name))
+        recs = [r for r in records if r.name == record_name]
+        assert recs, "No DNS entry name matches expected name {}".format(
+            record_name)
 
 
 def check_dns_entry_in_bind(ip, record_name, juju_status=None):
