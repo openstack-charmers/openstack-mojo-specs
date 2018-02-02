@@ -1139,9 +1139,7 @@ def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
     my_resolver.nameservers = [dns_server_ip]
     for i in range(1, retry_count + 1):
         try:
-            print(query_name)
             answers = my_resolver.query(query_name)
-            print(str(answers[0]))
         except (dns.resolver.NXDOMAIN, dns.resolver.NoNameservers):
             logging.info(
                 'Attempt {}/{} to lookup {}@{} failed. Sleeping before '
