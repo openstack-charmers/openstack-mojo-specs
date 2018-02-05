@@ -7,6 +7,7 @@ ceph-osd               cs:~openstack-charmers-next/ceph-osd
 cinder-ceph            cs:~openstack-charmers-next/cinder-ceph
 cinder                 cs:~openstack-charmers-next/cinder
 glance                 cs:~openstack-charmers-next/glance
+hacluster              cs:~openstack-charmers-next/hacluster
 heat                   cs:~openstack-charmers-next/heat
 keystone               cs:~openstack-charmers-next/keystone
 mongodb                cs:~thedac/mongodb

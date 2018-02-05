@@ -23,6 +23,7 @@ REQUIRED = [
     'MOJO_OS_VIP07',
     'MOJO_OS_VIP08',
     'MOJO_OS_VIP09',
+    'MOJO_OS_VIP10',
 ]
 
 
