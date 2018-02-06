@@ -1,0 +1,16 @@
+# Collect the charm
+collect config=collect-magpie
+
+# Deploy magpie bundle
+deploy config=magpie.yaml delay=0 wait=False
+
+# Wait for deployment to settle
+verify config=check_juju.py
+
+# Upgrade units
+script config=scripts/upgrade_all_units.sh
+
+# Wait for deployment to settle
+verify config=check_juju.py
+
+# Success

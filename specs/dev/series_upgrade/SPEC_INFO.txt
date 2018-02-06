@@ -1,0 +1,1 @@
+Deploys magpie which checks peers are reachable by icmp, and that peer name resolution is sane, forward and reverse.
