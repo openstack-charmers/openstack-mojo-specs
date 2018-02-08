@@ -196,6 +196,9 @@ openstack-services-trusty-mitaka:
     tempest:
       charm: tempest
       constraints: mem=1G
+    memcached:
+      num_units: 1
+      charm: memcached
   relations:
     - [ aodh, rabbitmq-server ]
     - [ aodh, mysql ]
