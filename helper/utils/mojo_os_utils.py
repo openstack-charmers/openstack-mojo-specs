@@ -8,6 +8,7 @@ from os_versions import (
 
 import swiftclient
 import glanceclient
+from aodhclient.v2 import client as aodh_client
 from keystoneclient.v2_0 import client as keystoneclient_v2
 from keystoneclient.v3 import client as keystoneclient_v3
 from keystoneauth1 import session
@@ -148,6 +149,10 @@ def get_neutron_client(novarc_creds, insecure=True):
 
 def get_neutron_session_client(session):
     return neutronclient.Client(session=session)
+
+
+def get_aodh_session_client(session):
+    return aodh_client.Client(session=session)
 
 
 def get_keystone_session(novarc_creds, insecure=True, scope='PROJECT'):
@@ -673,7 +678,7 @@ def wait_for_active(nova_client, vm_name, wait_time):
         if instance.status == 'ACTIVE':
             logging.info('%s is ACTIVE' % (vm_name))
             return True
-        elif instance.status != 'BUILD':
+        elif instance.status not in ('BUILD', 'SHUTOFF'):
             logging.error('instance %s in unknown '
                           'state %s' % (instance.name, instance.status))
             return False
@@ -1218,3 +1223,22 @@ def check_dns_entry_in_bind(ip, record_name, juju_status=None):
             unit,
             addr))
         check_dns_record_exists(addr, record_name, ip, retry_count=2)
+
+
+# Aodh helpers
+def get_alarm(aclient, alarm_name):
+    for alarm in aclient.alarm.list():
+        if alarm['name'] == alarm_name:
+            return alarm
+    return None
+
+
+def delete_alarm(aclient, alarm_name):
+    alarm = get_alarm(aclient, alarm_name)
+    if alarm:
+        aclient.alarm.delete(alarm['alarm_id'])
+
+
+def get_alarm_state(aclient, alarm_id):
+    alarm = aclient.alarm.get(alarm_id)
+    return alarm['state']

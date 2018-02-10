@@ -12,11 +12,13 @@ heat                   cs:~openstack-charmers-next/heat
 keystone               cs:~openstack-charmers-next/keystone
 mongodb                cs:~thedac/mongodb
 mysql                  cs:~openstack-charmers-next/percona-cluster
-neutron-api            cs:~openstack-charmers-next/neutron-api
+#neutron-api            cs:~openstack-charmers-next/neutron-api
+neutron-api            cs:~gnuoy/neutron-api-3;channel=unpublished
 neutron-gateway        cs:~openstack-charmers-next/neutron-gateway
 neutron-openvswitch    cs:~openstack-charmers-next/neutron-openvswitch
 nova-cloud-controller  cs:~openstack-charmers-next/nova-cloud-controller
-nova-compute           cs:~openstack-charmers-next/nova-compute
+#nova-compute           cs:~openstack-charmers-next/nova-compute
+nova-compute           cs:~gnuoy/nova-compute-8;channel=unpublished
 ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
 rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
@@ -26,5 +28,6 @@ tempest                cs:~openstack-charmers-next/tempest
 gnocchi                cs:~openstack-charmers-next/gnocchi
 barbican               cs:~openstack-charmers-next/barbican
 designate-bind         cs:~openstack-charmers-next/designate-bind
-designate              cs:~openstack-charmers-next/designate
+#designate              cs:~openstack-charmers-next/designate
+designate              cs:~gnuoy/designate-18;channel=unpublished
 memcached              cs:memcached

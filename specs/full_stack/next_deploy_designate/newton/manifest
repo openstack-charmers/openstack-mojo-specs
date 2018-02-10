@@ -31,4 +31,7 @@ verify config=validate_designate.py
 # Expand and shrink bind service checking DNS records persist at each stage
 script config=expand_and_shrink_bind.py
 
+# Test AODH Alarms
+verify config=validate_aodh.py
+
 # Success
