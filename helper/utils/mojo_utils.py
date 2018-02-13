@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import six
 import logging
 import os
 import shutil
@@ -456,8 +456,8 @@ def get_mojo_file(filename):
     files.append(os.path.join(os.path.dirname(__file__), filename))
     # Up one directory from called file
     files.append(os.path.join(
-                     os.path.dirname(os.path.dirname(__file__)),
-                     filename))
+        os.path.dirname(os.path.dirname(__file__)),
+        filename))
 
     for file_path in files:
         if os.path.isfile(file_path):
@@ -552,6 +552,156 @@ def upgrade_all_services(juju_status=None, switch=None):
             charm_name = juju_status['applications'][svc]['charm-name']
             upgrade_service(svc, charm_name=charm_name, switch=switch)
             time.sleep(30)
+
+
+def do_release_upgrade(unit):
+    """Runs do-release-upgrade noninteractive"""
+    logging.info('Upgrading ' + unit)
+    subprocess.call([kiki.cmd(), 'run', '--unit', unit, 'status-set',
+                     'maintenance', 'Doing release upgrade'])
+    cmd = [kiki.cmd(), 'ssh', unit, 'sudo',
+        'do-release-upgrade', '-f', 'DistUpgradeViewNonInteractive']
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as e:
+        logging.warn("Failed do-release-upgrade for {}".format(name))
+        logging.warn(e)
+        return False
+    finally:
+        subprocess.call([kiki.cmd(), 'run', '--unit', unit, 'status-set',
+        'active'])
+    return True
+
+
+def reboot(unit):
+    """Reboot machine"""
+    cmd = [kiki.cmd(), 'ssh', unit, 'sudo', 'reboot', '&&', 'exit']
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as e:
+        logging.info(e)
+        pass
+
+
+def upgrade_unit(app_name, unit, machine, machine_num):
+    """Run the upgrade process for a single machine"""
+    cmd = [kiki.cmd(), 'run', '--unit', unit, 'status-set',
+           'maintenance', 'Upgrading series']
+    subprocess.call(cmd)
+    if not do_release_upgrade(unit):
+        return False
+    if machine["series"] == "trusty":
+        upstart_to_systemd(machine_num)
+    cmd = [kiki.cmd(), 'run', '--unit', unit, 'status-set',
+           'active']
+    subprocess.call(cmd)
+    print("Rebooting")
+    reboot(unit)
+    cmd = [kiki.cmd(), "ssh", unit, "exit"]
+    while(True):
+        try:
+            subprocess.check_call(cmd)
+            break
+        except subprocess.CalledProcessError:
+            print("Waiting 2 more seconds")
+            sleep(2)
+    # time.sleep(5)
+    cmd = [kiki.cmd(), 'ssh', unit, 'lsb_release', '-c', '-s']
+    codename = subprocess.check_output(cmd)
+    if six.PY3:
+        codename = codename.decode('utf-8')
+    codename = codename.strip()
+    print("Telling juju that {} series is {}".format(unit, codename))
+    cmd = [kiki.cmd(), 'update-series', str(machine_num), codename]
+    subprocess.call(cmd)
+    cmd = [kiki.cmd(), 'update-series', app_name, codename]
+    subprocess.call(cmd)
+    print("Resolving hook errors on {}".format(unit))
+    cmd = [kiki.cmd(), 'resolved', unit]
+    try:
+        subprocess.call(cmd)
+    except subprocess.CalledProcessError:
+        pass
+    return True
+
+
+SYSTEMD_JUJU_SCRIPT = """#!/usr/bin/env bash
+
+# Set up logging.
+touch '/var/log/juju/machine-{machine_id}.log'
+chown syslog:syslog '/var/log/juju/machine-{machine_id}.log'
+chmod 0600 '/var/log/juju/machine-{machine_id}.log'
+exec >> '/var/log/juju/machine-{machine_id}.log'
+exec 2>&1
+
+# Run the script.
+'/var/lib/juju/tools/machine-{machine_id}/jujud' machine --data-dir '/var/lib/juju' --machine-id {machine_id} --debug
+"""
+
+SYSTEMD_JUJU_INIT_FILE = """[Unit]
+Description=juju agent for machine-{machine_id}
+After=syslog.target
+After=network.target
+After=systemd-user-sessions.service
+
+[Service]
+Environment=""
+LimitNOFILE=20000
+ExecStart=/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh
+Restart=on-failure
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+def upstart_to_systemd(machine_number):
+    """Upgrade upstart scripts to Systemd after upgrade from Trusty"""
+    base_command = [kiki.cmd(), 'run', '--machine', str(machine_number), '--']
+    commands = [
+        base_command + [
+            "sudo", "mkdir", "-p",
+            "/var/lib/juju/init/jujud-machine-{}".format(machine_number)],
+        base_command + [
+            'echo', SYSTEMD_JUJU_SCRIPT.format(
+            machine_id=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh'.format(machine_id=machine_number)],
+        base_command + [
+            'echo', SYSTEMD_JUJU_INIT_FILE.format(
+            machine_id=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{machine_id}/jujud-machine-{machine_id}.service'.format(machine_id=machine_number)],
+        base_command + [
+            'sudo', 'chmod', '755', '/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh'.format(machine_id=machine_number)],
+        base_command + [
+            'sudo', 'ln', '-s', '/var/lib/juju/init/jujud-machine-{machine_id}/jujud-machine-{machine_id}.service'.format(machine_id=machine_number), '/etc/systemd/system/'],
+        base_command + [
+            'sudo', 'ln', '-s', '/var/lib/juju/init/jujud-machine-{machine_id}/jujud-machine-{machine_id}.service'.format(
+                machine_id=machine_number), '/etc/systemd/system/multi-user.target.wants/jujud-machine-{machine_id}.service'.format(machine_id=machine_number)
+        ]
+    ]
+    for cmd in commands:
+        try:
+            subprocess.check_call(cmd)
+        except subprocess.CalledProcessError as e:
+            logging.warn(e)
+            return False
+
+# This stuff works, but we seem to be running into a Juju bug around
+# starting the unit agents: https://bugs.launchpad.net/juju/+bug/1749201
+def upgrade_all_units(juju_status=None):
+    if not juju_status:
+        juju_status = get_juju_status()
+    # Upgrade the rest
+    # print("Juju status: {}".format(juju_status))
+    for (app_name, details) in juju_status['applications'].items():
+        # print("name: {}".format(name))
+        # print("details: {}".format(details))
+        # print("Units: {}".format(details["units"]))
+        for name, unit_details in details['units'].items():
+            # print("About to upgrade {}".format(unit))
+            print("Details for {}: {}".format(name, unit_details))
+            machine_id = unit_details["machine"]
+            if not upgrade_unit(app_name, name, juju_status["machines"][machine_id], machine_id):
+                logging.warn("No series upgrade found for {}".format(name))
+            # time.sleep(30)
 
 
 def parse_mojo_arg(options, mojoarg, multiargs=False):
