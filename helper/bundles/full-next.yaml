@@ -339,8 +339,8 @@ artful-pike:
 xenial-queens-proposed:
   inherits: xenial-pike
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-proposed/queens
+    openstack-origin: ppa:ubuntu-cloud-archive/queens-proposed
+    source: ppa:ubuntu-cloud-archive/queens-proposed
 bionic-queens-proposed:
   inherits: xenial-pike
   overrides:
