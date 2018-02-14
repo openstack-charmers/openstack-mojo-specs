@@ -2,7 +2,7 @@
 collect config=collect-stable-${MOJO_SERIES}
 
 # Use juju deployer with ksv3_full.yaml bundle
-deploy config=ksv3-full.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=ksv3-full.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
