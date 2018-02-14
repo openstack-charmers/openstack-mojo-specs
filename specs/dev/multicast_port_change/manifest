@@ -1,7 +1,7 @@
 collect config=collect-next-ha
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=haphase1.yaml delay=0
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=haphase1.yaml delay=0
 verify config=check_juju.py
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=haphase2.yaml delay=0
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=haphase2.yaml delay=0
 verify config=check_juju.py
 script config=network_setup.py
 script config=image_setup.py

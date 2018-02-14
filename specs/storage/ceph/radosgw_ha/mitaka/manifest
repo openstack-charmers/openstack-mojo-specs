@@ -2,7 +2,7 @@
 collect config=collect-next-cephradosgw-ha
 
 # Use juju deployer with cephradosgw-ha.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=cephradosgw-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=cephradosgw-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

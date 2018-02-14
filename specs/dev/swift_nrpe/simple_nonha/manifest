@@ -1,5 +1,5 @@
 collect config=collect-swift-proxy
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=swift-proxy.yaml delay=0 target=trusty-icehouse
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=swift-proxy.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
 script config=image_setup.py
 script config=keystone_setup.py

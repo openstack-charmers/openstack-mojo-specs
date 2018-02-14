@@ -1,13 +1,13 @@
 # Collect the charm branches from Launchpad 
 collect config=collect-next-swift-proxy
 
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=swift-ha-proxy-phase1.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=swift-ha-proxy-phase1.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
 
 # Add service relations
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=swift-ha-proxy-phase1.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=swift-ha-proxy-phase1.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

@@ -2,7 +2,7 @@
 collect config=collect-next-${MOJO_SERIES}
 
 # Use juju deployer with full.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-kilo
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-kilo
 
 # Create sdn on overcloud
 script config=network_setup.py

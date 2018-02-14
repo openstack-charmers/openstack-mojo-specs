@@ -5,7 +5,7 @@ collect config=collect-next-${MOJO_SERIES}
 script config=sync_charmhelpers.py
 
 # Use juju deployer with full.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-3600} config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
+deploy MOJO_DEPLOY_TIMEOUT:-5400 config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
