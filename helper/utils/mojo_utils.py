@@ -595,7 +595,7 @@ def upgrade_unit(app_name, unit, machine, machine_num):
     cmd = [kiki.cmd(), 'run', '--unit', unit, 'status-set',
            'active']
     subprocess.call(cmd)
-    print("Rebooting")
+    logging.debug("Rebooting")
     reboot(unit)
     cmd = [kiki.cmd(), "ssh", unit, "exit"]
     while(True):
@@ -603,26 +603,24 @@ def upgrade_unit(app_name, unit, machine, machine_num):
             subprocess.check_call(cmd)
             break
         except subprocess.CalledProcessError:
-            print("Waiting 2 more seconds")
+            logging.debug("Waiting 2 more seconds")
             sleep(2)
-    # time.sleep(5)
-    cmd = [kiki.cmd(), 'ssh', unit, 'lsb_release', '-c', '-s']
+    update_machine_series(app_name, machine_num)
+    return True
+
+
+def update_machine_series(app_name, machine_num):
+    cmd = [kiki.cmd(), 'ssh', machine_num, 'lsb_release', '-c', '-s']
     codename = subprocess.check_output(cmd)
     if six.PY3:
         codename = codename.decode('utf-8')
     codename = codename.strip()
-    print("Telling juju that {} series is {}".format(unit, codename))
+    logging.debug("Telling juju that {} series is {}".format(
+        machine_num, codename))
     cmd = [kiki.cmd(), 'update-series', str(machine_num), codename]
     subprocess.call(cmd)
     cmd = [kiki.cmd(), 'update-series', app_name, codename]
     subprocess.call(cmd)
-    print("Resolving hook errors on {}".format(unit))
-    cmd = [kiki.cmd(), 'resolved', unit]
-    try:
-        subprocess.call(cmd)
-    except subprocess.CalledProcessError:
-        pass
-    return True
 
 
 SYSTEMD_JUJU_SCRIPT = """#!/usr/bin/env bash
