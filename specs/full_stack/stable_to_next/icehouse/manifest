@@ -2,7 +2,7 @@
 collect config=collect-stable-${MOJO_SERIES}
 
 # Deploy bundle
-deploy config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-icehouse
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-icehouse
 
 # Wait for hooks to settle
 verify config=check_juju.py

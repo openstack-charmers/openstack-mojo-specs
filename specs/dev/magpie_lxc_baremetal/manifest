@@ -5,7 +5,7 @@ collect config=collect-magpie
 script config=scripts/bundle_constrainer_inject_tags.sh lxc=False BUNDLE_FILE=magpie-lxc.yaml
 
 # Deploy magpie bundle
-deploy config=magpie-lxc.yaml delay=0 wait=False
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=magpie-lxc.yaml delay=0 wait=False
 
 # Wait for deployment to settle
 verify config=check_juju.py

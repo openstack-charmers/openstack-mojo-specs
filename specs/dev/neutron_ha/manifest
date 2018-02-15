@@ -1,5 +1,5 @@
 collect config=collect-next
-deploy config=neutronha.yaml delay=0 target=trusty-icehouse
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=neutronha.yaml delay=0 target=trusty-icehouse
 verify config=check_juju.py
 # Horrible sleep as Openstack setup seems to continue with Neutron HA after hooks have finished
 sleep config=180
