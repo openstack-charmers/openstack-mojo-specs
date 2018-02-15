@@ -2,7 +2,7 @@
 collect config=collect-next
 
 # Deploy legacy mode
-deploy MOJO_DEPLOY_TIMEOUT:-5400 config=next-no-n-api.yaml delay=0 target=trusty-icehouse
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=next-no-n-api.yaml delay=0 target=trusty-icehouse
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

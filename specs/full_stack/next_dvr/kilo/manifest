@@ -2,7 +2,7 @@
 collect config=collect-next
 
 # Use juju deployer with full.yaml bundle
-deploy MOJO_DEPLOY_TIMEOUT:-5400 config=full-dvr-next.yaml delay=0 target=${MOJO_SERIES}-kilo
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-dvr-next.yaml delay=0 target=${MOJO_SERIES}-kilo
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

@@ -2,7 +2,7 @@
 collect config=collect-stable-ha
 
 # Deploy bundle
-deploy MOJO_DEPLOY_TIMEOUT:-5400 config=ha.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka-ha
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=ha.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka-ha
 
 # Wait for hooks to settle
 #verify config=check_juju.py

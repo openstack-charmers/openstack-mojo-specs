@@ -8,7 +8,7 @@ script config=scripts/fsid_uuid_insert.sh lxc=False
 script config=scripts/bundle_constrainer_inject_tags.sh lxc=False
 
 # Use juju deployer with baremetal7.yaml bundle
-deploy MOJO_DEPLOY_TIMEOUT:-5400 config=baremetal7.yaml delay=0 timeout=4500 wait=False target=${MOJO_SERIES}-ocata
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=baremetal7.yaml delay=0 timeout=4500 wait=False target=${MOJO_SERIES}-ocata
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -22,7 +22,7 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
-# Create and check instances on the deploy MOJO_DEPLOY_TIMEOUT:-5400ed cloud
+# Create and check instances on the deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400}ed cloud
 verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1' CLOUDINIT_WAIT="300"
 
 # Success

@@ -2,7 +2,7 @@
 collect config=collect-ceph-default
 
 # Use juju deployer with ceph-base.yaml bundle
-deploy MOJO_DEPLOY_TIMEOUT:-5400 config=ceph-base.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=ceph-base.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
