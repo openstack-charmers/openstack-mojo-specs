@@ -2,7 +2,7 @@
 collect config=collect-ovs
 
 # Use juju deployer with full.yaml bundle
-deploy config=ovs-odl.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty-beryllium
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=ovs-odl.yaml delay=0 wait=False target=${MOJO_SERIES}-liberty-beryllium
 
 # Create sdn on overcloud
 script config=network_setup.py

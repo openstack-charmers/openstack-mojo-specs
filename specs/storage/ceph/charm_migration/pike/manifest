@@ -2,7 +2,7 @@
 collect config=collect-ceph-default
 
 # Use juju deployer with charm-ceph.yaml bundle
-deploy config=charm-ceph.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=charm-ceph.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -11,7 +11,7 @@ verify config=check_juju.py
 verify config=test_ceph_store.py APPLICATION=ceph UNITS="0 1"
 
 # Use juju deployer with ceph-charm-migration.yaml bundle
-deploy config=ceph-charm-migration.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=ceph-charm-migration.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
