@@ -302,3 +302,16 @@ artful-pike-ha:
   series: artful
   overrides:
     ha-bindiface: ens2
+# queens
+xenial-queens-proposed:
+  inherits: xenial-pike-ha
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens/proposed
+bionic-queens-proposed:
+  inherits: xenial-pike-ha
+  series: bionic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed
