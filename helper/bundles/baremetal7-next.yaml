@@ -400,7 +400,7 @@ xenial-pike-staging:
 artful-pike:
   inherits: openstack-icehouse
   series: artful
-xenial-queens-proposed:
+xenial-queens:
   inherits: xenial-pike
   overrides:
     openstack-origin: cloud:xenial-queens/proposed

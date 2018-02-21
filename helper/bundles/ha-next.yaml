@@ -303,7 +303,7 @@ artful-pike-ha:
   overrides:
     ha-bindiface: ens2
 # queens
-xenial-queens-proposed:
+xenial-queens:
   inherits: xenial-pike-ha
   series: xenial
   overrides:

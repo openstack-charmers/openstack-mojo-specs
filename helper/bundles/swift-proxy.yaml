@@ -113,7 +113,7 @@ artful-pike:
   inherits: openstack-services
   series: artful
 # queens
-xenial-queens-proposed:
+xenial-queens:
   inherits: xenial-pike
   overrides:
     openstack-origin: cloud:xenial-queens/proposed

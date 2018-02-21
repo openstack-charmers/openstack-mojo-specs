@@ -350,7 +350,7 @@ artful-pike-proposed:
   overrides:
     source: proposed
     openstack-origin: distro-proposed
-xenial-queens-proposed:
+xenial-queens:
   inherits: xenial-pike
   overrides:
     openstack-origin: cloud:xenial-queens/proposed

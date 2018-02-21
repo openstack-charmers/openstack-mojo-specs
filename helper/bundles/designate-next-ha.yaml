@@ -407,7 +407,7 @@ artful-pike-branch:
   overrides:
     openstack-origin: ppa:openstack-ubuntu-testing/pike
     source: ppa:openstack-ubuntu-testing/pike
-xenial-queens-proposed:
+xenial-queens:
   inherits: xenial-pike
   overrides:
     openstack-origin: cloud:xenial-queens/proposed

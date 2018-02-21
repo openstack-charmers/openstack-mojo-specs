@@ -282,7 +282,7 @@ zesty-pike:
     openstack-origin: cloud:zesty-pike
     source: cloud:zesty-pike
 # queens
-xenial-queens-proposed:
+xenial-queens:
   inherits: xenial-pike
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
