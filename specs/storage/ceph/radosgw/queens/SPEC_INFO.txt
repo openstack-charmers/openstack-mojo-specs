@@ -1,0 +1,3 @@
+This spec deploys a ceph cluster fronted by a single ceph rados gateway node.
+The cluster is then tested with mulitple object store gets and retrivals.
+Glance integeration is also tested.
