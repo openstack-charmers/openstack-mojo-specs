@@ -309,7 +309,7 @@ xenial-queens:
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
-bionic-queens-proposed:
+bionic-queens:
   inherits: xenial-pike-ha
   series: bionic
   overrides:

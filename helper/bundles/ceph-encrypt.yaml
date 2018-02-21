@@ -73,7 +73,7 @@ xenial-queens:
   inherits: base
   series: xenial
   overrides:
-    source: cloud:xenial-queens
+    source: cloud:xenial-queens/proposed
 bionic-queens:
   inherits: base
   series: bionic
