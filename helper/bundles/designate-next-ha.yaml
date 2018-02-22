@@ -257,7 +257,7 @@ trusty-mitaka-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
     source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: openstack-services-xenial
+  inherits: openstack-services-xenial-mitaka
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
