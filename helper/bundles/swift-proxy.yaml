@@ -120,6 +120,7 @@ xenial-queens:
     source: cloud:xenial-queens/proposed
 bionic-queens:
   inherits: xenial-pike
+  series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
