@@ -22,8 +22,8 @@ script config=keystone_setup.py
 # Setup Designate
 script config=designate_setup.py
 
-# Create 1 * tiny cirros and 1 * small precise instances on the overcloud
-verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="300"
+# Launch instances on the overcloud
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 
 # Test DNS records
 verify config=validate_designate.py

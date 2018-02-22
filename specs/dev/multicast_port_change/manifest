@@ -6,13 +6,13 @@ verify config=check_juju.py
 script config=network_setup.py
 script config=image_setup.py
 script config=keystone_setup.py
-verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 script config=wipe_charm_dir.py
 collect config=collect-mps
 script config=upgrade_services.py SERVICES="glance cinder keystone"
 verify config=check_juju.py
 sleep config=180
-verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 verify config=check_guest_connectivity.py
 script config=image_setup.py
 script config=keystone_setup.py

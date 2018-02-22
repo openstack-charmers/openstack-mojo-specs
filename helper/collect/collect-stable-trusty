@@ -8,7 +8,7 @@ cinder                 cs:~openstack-charmers/cinder
 glance                 cs:~openstack-charmers/glance
 heat                   cs:~openstack-charmers/heat
 keystone               cs:~openstack-charmers/keystone
-mongodb                git://git.launchpad.net/~thedac/mongodb-charm;revno=zesty
+mongodb                cs:~thedac/mongodb
 mysql                  cs:~openstack-charmers/percona-cluster
 neutron-api            cs:~openstack-charmers/neutron-api
 neutron-gateway        cs:~openstack-charmers/neutron-gateway
