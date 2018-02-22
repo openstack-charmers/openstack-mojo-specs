@@ -2,7 +2,7 @@
 collect config=collect-next-ha
 
 # Use juju deployer with full.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-vrrpha.yaml delay=0 target=${MOJO_SERIES}-queens-proposed
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-vrrpha.yaml delay=0 target=${MOJO_SERIES}-queens
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
