@@ -1,3 +1,5 @@
+# NOTE(beisner): I moved this out of the main directory as this bundle file is not referenced by any specs.
+#
 # vim: set ts=2 et:
 # deployer bundle for development ('next') charms
 # UOSCI relies on this for OS-on-OS deployment testing

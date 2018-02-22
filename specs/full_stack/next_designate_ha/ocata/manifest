@@ -4,7 +4,7 @@ script config=preflight.py
 # Collect the charm branches from Launchpad
 collect config=collect-next-reactive-${MOJO_SERIES}
 
-# Use juju deployer with reactive-next.yaml bundle
+# Use juju deployer with designate-next-ha.yaml bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
 
 # Check juju statuses are green and that hooks have finished
