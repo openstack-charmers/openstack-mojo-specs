@@ -25,6 +25,7 @@ swift-storage          cs:~openstack-charmers-next/swift-storage
 tempest                cs:~openstack-charmers-next/tempest
 gnocchi                cs:~openstack-charmers-next/gnocchi
 barbican               cs:~openstack-charmers-next/barbican
-designate-bind         cs:~openstack-charmers-next/designate-bind
+# designate-bind         cs:~openstack-charmers-next/designate-bind  # https://bugs.launchpad.net/charm-designate/+bug/1751338
+designate-bind         cs:~1chb1n/designate-bind-0
 designate              cs:~openstack-charmers-next/designate
 memcached              cs:memcached
