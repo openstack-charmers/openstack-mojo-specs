@@ -103,10 +103,10 @@ artful-pike:
   series: artful
 # queens
 xenial-queens:
-  inherits: base
+  inherits: openstack-services
   series: xenial
   overrides:
     source: cloud:xenial-queens/proposed
 bionic-queens:
-  inherits: base
+  inherits: openstack-services
   series: bionic
