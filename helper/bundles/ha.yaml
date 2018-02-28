@@ -144,24 +144,8 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-    ceilometer:
-      charm: ceilometer
-      constraints: mem=1G
-      num_units: 3
-      options:
-        vip: "{{ MOJO_OS_VIP08 }}"
-    ceilometer-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    ceilometer-agent:
-      charm: ceilometer-agent
     heat:
       charm: heat
-    mongodb:
-      charm: mongodb
-      constraints: mem=1G
     neutron-api:
       charm: neutron-api
       constraints: mem=1G
@@ -205,12 +189,6 @@ openstack-services:
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    - - ceilometer
-      - keystone:identity-service
-    - [ ceilometer, rabbitmq-server ]
-    - [ ceilometer, mongodb ]
-    - [ ceilometer-agent, nova-compute ]
-    - [ ceilometer-agent, ceilometer ]
     - [ heat, mysql ]
     - [ heat, keystone ]
     - [ heat, rabbitmq-server ]
@@ -220,7 +198,6 @@ openstack-services:
     - [ cinder, cinder-hacluster ]
     - [ glance, glance-hacluster ]
     - [ openstack-dashboard, dashboard-hacluster ]
-    - [ ceilometer, ceilometer-hacluster ]
     - [ swift-proxy, swift-hacluster ]
     - [ "neutron-gateway:amqp", rabbitmq-server ]
     - [ neutron-api, mysql ]
@@ -232,37 +209,104 @@ openstack-services:
     - [ neutron-openvswitch, nova-compute ]
     - [ neutron-openvswitch, rabbitmq-server ]
     - [ neutron-api, neutron-hacluster ]
+ceilometer-mongodb:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+      num_units: 3
+      options:
+        vip: "{{ MOJO_OS_VIP08 }}"
+    ceilometer-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    ceilometer-agent:
+      charm: ceilometer-agent
+    mongodb:
+      charm: mongodb
+      constraints: mem=1G
+  relations:
+    - - ceilometer
+      - keystone:identity-service
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ ceilometer, rabbitmq-server ]
+    - [ ceilometer, mongodb ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - [ ceilometer, ceilometer-hacluster ]
+ceilometer-gnocchi:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+      num_units: 3
+      options:
+        vip: "{{ MOJO_OS_VIP08 }}"
+    ceilometer-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    ceilometer-agent:
+      charm: ceilometer-agent
+    gnocchi:
+      charm: gnocchi
+    memcached:
+      charm: memcached
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ ceilometer, rabbitmq-server ]
+    - [ ceilometer, gnocchi ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - - ceph
+      - gnocchi
+    - - gnocchi
+      - memcached
+    - - gnocchi
+      - ceilometer
+    - - gnocchi
+      - keystone
+    - - gnocchi
+      - mysql
+    - [ ceilometer, ceilometer-hacluster ]
 # icehouse
 trusty-icehouse-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
 # kilo
 trusty-kilo-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
     source: cloud:trusty-kilo
 trusty-liberty-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
 trusty-mitaka-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka
 trusty-mitaka-proposed:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
 xenial-mitaka-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   services:
     mysql:
@@ -274,28 +318,28 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
 # ocata
 xenial-ocata-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
 zesty-ocata-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: zesty
 # pike
 xenial-pike-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike-ha:
-  inherits: openstack-services
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: artful

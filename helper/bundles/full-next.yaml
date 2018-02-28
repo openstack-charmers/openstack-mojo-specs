@@ -85,14 +85,6 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-    ceilometer:
-      charm: ceilometer
-      constraints: mem=1G
-    ceilometer-agent:
-      charm: ceilometer-agent
-    mongodb:
-      charm: mongodb
-      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -120,11 +112,55 @@ openstack-services:
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    - [ "ceilometer:identity-service", keystone ]
+ceilometer-mongodb:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    mongodb:
+      charm: mongodb
+      constraints: mem=1G
+  relations:
+    - - ceilometer
+      - keystone:identity-service
+    - - ceilometer
+      - keystone:identity-notifications
     - [ ceilometer, rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+ceilometer-gnocchi:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    gnocchi:
+      charm: gnocchi
+    memcached:
+      charm: memcached
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ ceilometer, rabbitmq-server ]
+    - [ ceilometer, gnocchi ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - - ceph
+      - gnocchi
+    - - gnocchi
+      - memcached
+    - - gnocchi
+      - ceilometer
+    - - gnocchi
+      - keystone
+    - - gnocchi
+      - mysql
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
@@ -175,7 +211,7 @@ openstack-icehouse-msg-split:
   - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
 # icehouse
 precise-icehouse:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: precise
   overrides:
     openstack-origin: cloud:precise-icehouse
@@ -196,10 +232,10 @@ precise-icehouse-trunk:
     openstack-origin: ppa:openstack-ubuntu-testing/icehouse
     source: ppa:openstack-ubuntu-testing/icehouse
 trusty-icehouse:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: trusty
 trusty-icehouse-msg-split:
-  inherits: openstack-icehouse-msg-split
+  inherits: [ openstack-icehouse-msg-split, ceilometer-mongodb ]
   series: trusty
 trusty-icehouse-proposed:
   inherits: trusty-icehouse
@@ -214,7 +250,7 @@ trusty-icehouse-trunk:
     offline-compression: "no"
 # kilo
 trusty-kilo:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-kilo
@@ -231,7 +267,7 @@ trusty-kilo-staging:
     source: ppa:ubuntu-cloud-archive/kilo-staging
 # liberty
 trusty-liberty:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-liberty
@@ -248,7 +284,7 @@ trusty-liberty-staging:
     source: ppa:ubuntu-cloud-archive/liberty-staging
 # mitaka
 trusty-mitaka:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka
@@ -264,7 +300,7 @@ trusty-mitaka-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
     source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
@@ -273,7 +309,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
@@ -289,7 +325,7 @@ xenial-newton-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/newton-staging
     source: ppa:ubuntu-cloud-archive/newton-staging
 yakkety-newton:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: yakkety
 yakkety-newton-proposed:
   inherits: yakkety-newton
@@ -298,7 +334,7 @@ yakkety-newton-proposed:
     openstack-origin: distro-proposed
 # ocata
 xenial-ocata:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
@@ -314,11 +350,11 @@ xenial-ocata-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
     source: ppa:ubuntu-cloud-archive/ocata-staging
 zesty-ocata:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: zesty
 # pike
 xenial-pike:
-  inherits: openstack-icehouse
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
