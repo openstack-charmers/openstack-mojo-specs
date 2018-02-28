@@ -25,9 +25,11 @@ def get_cirros_server(cloud_auth, image_password):
             raise Exception('Cirros guest inaccessable')
     else:
         nova_client = mojo_os_utils.get_nova_client(cloud_auth)
+        neutron_client = mojo_os_utils.get_neutron_client(cloud_auth)
         logging.info('Creating new cirros guest')
         mojo_os_utils.boot_and_test(
             nova_client,
+            neutron_client,
             image_name='cirros',
             flavor_name='m1.small',
             number=1,
