@@ -9,6 +9,7 @@ import yaml
 import utils.juju_wait as juju_wait
 from collections import Counter
 
+import mojo_os_utils
 import kiki
 
 
@@ -407,7 +408,15 @@ def get_overcloud_auth(juju_status=None):
         port = 5000
     address = get_auth_url()
 
-    if juju_get('keystone', 'preferred-api-version') in [2, None]:
+    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
+
+    api_version = juju_get('keystone', 'preferred-api-version')
+    if os_version >= 'queens':
+        api_version = 3
+    elif api_version is None:
+        api_version = 2
+
+    if api_version == 2:
         # V2 Explicitly, or None when charm does not possess the config key
         logging.info('Using keystone API V2 for overcloud auth')
         auth_settings = {
@@ -418,7 +427,7 @@ def get_overcloud_auth(juju_status=None):
             'OS_REGION_NAME': 'RegionOne',
             'API_VERSION': 2,
         }
-    elif juju_get('keystone', 'preferred-api-version') >= 3:
+    else:
         # V3 or later
         logging.info('Using keystone API V3 (or later) for overcloud auth')
         auth_settings = {
