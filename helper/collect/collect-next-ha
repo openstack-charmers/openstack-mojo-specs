@@ -22,3 +22,5 @@ swift-proxy            cs:~openstack-charmers-next/swift-proxy
 swift-storage-z1       cs:~openstack-charmers-next/swift-storage
 swift-storage-z2       cs:~openstack-charmers-next/swift-storage
 swift-storage-z3       cs:~openstack-charmers-next/swift-storage
+gnocchi                cs:~openstack-charmers-next/gnocchi
+memcached              cs:memcached
