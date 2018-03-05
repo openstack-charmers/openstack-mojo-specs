@@ -291,13 +291,13 @@ trusty-liberty-ha:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
 trusty-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka
 trusty-mitaka-proposed:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed

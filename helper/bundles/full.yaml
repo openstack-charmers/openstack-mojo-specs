@@ -291,7 +291,7 @@ trusty-liberty-staging:
     source: ppa:ubuntu-cloud-archive/liberty-staging
 # mitaka
 trusty-mitaka:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka
