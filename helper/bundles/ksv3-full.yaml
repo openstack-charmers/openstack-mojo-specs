@@ -341,7 +341,7 @@ xenial-newton-staging:
     source: ppa:ubuntu-cloud-archive/newton-staging
 # ocata
 xenial-ocata:
-  inherits: [ openstack-icehouse-msg-split, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse-msg-split, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
@@ -357,7 +357,7 @@ xenial-ocata-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
     source: ppa:ubuntu-cloud-archive/ocata-staging
 zesty-ocata:
-  inherits: [ openstack-icehouse-msg-split, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse-msg-split, ceilometer-mongodb ]
   series: zesty
 zesty-ocata-proposed:
   inherits: zesty-ocata

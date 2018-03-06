@@ -333,21 +333,21 @@ xenial-newton-staging:
     source: ppa:ubuntu-cloud-archive/newton-staging
 # ocata
 xenial-ocata:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
 zesty-ocata:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: zesty
 # pike
 xenial-pike:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: artful

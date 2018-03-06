@@ -325,21 +325,21 @@ xenial-newton-ha:
     source: cloud:xenial-newton
 # ocata
 xenial-ocata-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
 zesty-ocata-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
 # pike
 xenial-pike-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: artful

@@ -330,7 +330,7 @@ xenial-newton-staging:
     source: ppa:ubuntu-cloud-archive/newton-staging
 # ocata
 xenial-ocata:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
@@ -346,7 +346,7 @@ xenial-ocata-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
     source: ppa:ubuntu-cloud-archive/ocata-staging
 zesty-ocata:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: zesty
 zesty-ocata-proposed:
   inherits: zesty-ocata
@@ -355,7 +355,7 @@ zesty-ocata-proposed:
     openstack-origin: distro-proposed
 # pike
 xenial-pike:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
@@ -371,7 +371,7 @@ xenial-pike-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
     source: ppa:ubuntu-cloud-archive/pike-staging
 artful-pike:
-  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: artful
 artful-pike-proposed:
   inherits: artful-pike
@@ -379,12 +379,14 @@ artful-pike-proposed:
     source: proposed
     openstack-origin: distro-proposed
 xenial-queens:
-  inherits: xenial-pike
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
 bionic-queens:
-  inherits: xenial-pike
+  inherits: xenial-queens
+  series: queens
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
