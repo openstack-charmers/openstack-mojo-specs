@@ -10,7 +10,7 @@ openstack-services:
       num_units: 3
       constraints: mem=1G
       options:
-        monitor-count: 3
+        expected-osd-count: 3
     ceph-osd:
       charm: ceph-osd
       num_units: 3
@@ -35,7 +35,7 @@ openstack-services:
     - [ ceph-radosgw, keystone ]
     - [ glance, keystone ]
     - [ glance, mysql ]
-    - [ glance, cep-monh ]
+    - [ glance, cep-mon ]
     - [ ceph-radosgw, ceph-mon ]
     - [ ceph-mon, ceph-osd ]
 precise-icehouse:
