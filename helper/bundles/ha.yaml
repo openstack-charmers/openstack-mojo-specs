@@ -306,7 +306,7 @@ trusty-mitaka-proposed:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
 xenial-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   services:
     mysql:
@@ -318,7 +318,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton

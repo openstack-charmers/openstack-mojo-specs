@@ -303,7 +303,7 @@ trusty-mitaka-proposed:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
 xenial-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     ha-bindiface: ens2
@@ -314,7 +314,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
     ha-bindiface: ens2
 xenial-newton-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     ha-bindiface: ens2
