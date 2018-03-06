@@ -20,7 +20,8 @@ import mojo_utils
 from novaclient import client as novaclient_client
 from neutronclient.v2_0 import client as neutronclient
 
-import designateclient.v1 as designateclient_v1
+import designateclient
+import designateclient.client as designate_client
 import designateclient.v1.domains as des_domains
 import designateclient.v1.records as des_records
 import designateclient.exceptions as des_exceptions
@@ -193,10 +194,19 @@ def get_swift_session_client(session):
     return swiftclient.client.Connection(session=session)
 
 
-def get_designate_session_client(session, all_tenants=True):
-    return designateclient_v1.Client(
-        session=session,
-        all_tenants=all_tenants)
+def get_designate_session_client(session, all_tenants=True,
+                                 client_version=None):
+    client_version = client_version or '2'
+    if client_version == '1':
+        client = designate_client.Client(
+            version=client_version,
+            session=session,
+            all_tenants=all_tenants)
+    else:
+        client = designate_client.Client(
+            version=client_version,
+            session=session)
+    return client
 
 
 def get_glance_session_client(session):
@@ -1018,7 +1028,7 @@ def get_designate_record_id(client, domain_id, record_name):
     return record_id
 
 
-def get_designate_domain_object(designate_client, domain_name):
+def get_designate_domain_object_v1(designate_client, domain_name):
     """Get the one and only domain matching the given domain_name, if none are
     found or multiple are found then raise an AssertionError. To access a list
     matching the domain name use get_designate_domain_objects.
@@ -1030,16 +1040,37 @@ def get_designate_domain_object(designate_client, domain_name):
     @raises AssertionError: if domain_name not found or multiple domains with
                             the same name.
     """
-    dns_zone_id = get_designate_domain_objects(designate_client,
-                                               domain_name=domain_name)
+    dns_zone_id = get_designate_domain_objects_v1(designate_client,
+                                                  domain_name=domain_name)
     assert len(dns_zone_id) == 1, "Found {} domains for {}".format(
         len(dns_zone_id),
         domain_name)
     return dns_zone_id[0]
 
 
-def get_designate_domain_objects(designate_client, domain_name=None,
-                                 domain_id=None):
+def get_designate_domain_object_v2(designate_client, domain_name):
+    """Get the one and only domain matching the given domain_name, if none are
+    found or multiple are found then raise an AssertionError. To access a list
+    matching the domain name use get_designate_domain_objects.
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param domain_name: str Name of domain to lookup
+    @returns designateclient.v1.domains.Domain
+    @raises AssertionError: if domain_name not found or multiple domains with
+                            the same name.
+    """
+    dns_zone_id = get_designate_zone_objects_v2(designate_client,
+                                                domain_name=domain_name)
+    msg "Found {} domains for {}".format(
+        len(dns_zone_id),
+        domain_name)
+    assert len(dns_zone_id) == 1, msg
+    return dns_zone_id[0]
+
+
+def get_designate_domain_objects_v1(designate_client, domain_name=None,
+                                    domain_id=None):
     """Get all domains matching a given domain_name or domain_id
 
     @param designate_client: designateclient.v1.Client Client to query
@@ -1054,7 +1085,24 @@ def get_designate_domain_objects(designate_client, domain_name=None,
     return a
 
 
-def get_designate_dns_records(designate_client, domain_name, ip):
+def get_designate_zone_objects_v2(designate_client, domain_name=None,
+                                  domain_id=None):
+    """Get all domains matching a given domain_name or domain_id
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param domain_name: str Name of domain to lookup
+    @param domain_id: str UUID of domain to lookup
+    @returns [] List of designateclient.v1.domains.Domain objects matching
+                domain_name or domain_id
+    """
+    all_zones = designate_client.zones.list()
+    a = [z for z in all_zones
+         if z['name'] == domain_name or z['id'] == domain_id]
+    return a
+
+
+def get_designate_dns_records_v1(designate_client, domain_name, ip):
     """Look for records in designate that match the given ip
 
     @param designate_client: designateclient.v1.Client Client to query
@@ -1063,9 +1111,39 @@ def get_designate_dns_records(designate_client, domain_name, ip):
     @returns [] List of designateclient.v1.records.Record objects with
                 a matching IP address
     """
-    dns_zone = get_designate_domain_object(designate_client, domain_name)
+    dns_zone = get_designate_domain_object_v1(designate_client, domain_name)
     domain = designate_client.domains.get(dns_zone.id)
     return [r for r in designate_client.records.list(domain) if r.data == ip]
+
+
+def get_designate_dns_records_v2(designate_client, domain_name, ip):
+    """Look for records in designate that match the given ip
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param domain_name: str Name of domain to lookup
+    @returns [] List of designateclient.v1.records.Record objects with
+                a matching IP address
+    """
+    dns_zone = get_designate_domain_object_v2(designate_client, domain_name)
+    return [r for r in designate_client.recordsets.list(dns_zone['id'])
+            if r['records'] == ip]
+
+
+def get_designate_zone(designate_client, zone_name):
+    zone = None
+    zones = [z for z in designate_client.zones.list()
+             if z['name'] == zone_name]
+    assert len(zones) <= 1, "Multiple matching zones found"
+    if zones:
+        zone = zones[0]
+    return zone
+
+
+def create_designate_zone(designate_client, domain_name, email):
+    return designate_client.zones.create(
+        name=domain_name,
+        email=email)
 
 
 def create_designate_dns_domain(designate_client, domain_name, email,
@@ -1163,7 +1241,8 @@ def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
             assert str(rdata) == expected_ip
 
 
-def check_dns_entry(des_client, ip, domain, record_name, juju_status=None):
+def check_dns_entry(des_client, ip, domain, record_name, juju_status=None,
+                    designate_api='2'):
     """Check that record for ip address is in designate and in bind if bind
        server is available.
 
@@ -1174,12 +1253,16 @@ def check_dns_entry(des_client, ip, domain, record_name, juju_status=None):
     """
     if not juju_status:
         juju_status = mojo_utils.get_juju_status()
-    check_dns_entry_in_designate(des_client, ip, domain,
-                                 record_name=record_name)
+    if designate_api == '1':
+        check_dns_entry_in_designate_v1(des_client, ip, domain,
+                                        record_name=record_name)
+    else:
+        check_dns_entry_in_designate_v2(des_client, [ip], domain,
+                                        record_name=record_name)
     check_dns_entry_in_bind(ip, record_name, juju_status=juju_status)
 
 
-def check_dns_entry_in_designate(des_client, ip, domain, record_name=None):
+def check_dns_entry_in_designate_v1(des_client, ip, domain, record_name=None):
     """Look for records in designate that match the given ip in the given
        domain
 
@@ -1191,11 +1274,32 @@ def check_dns_entry_in_designate(des_client, ip, domain, record_name=None):
     @raises AssertionError: if no record is found or record_name is set and
                             does not match the name associated with the record
     """
-    records = get_designate_dns_records(des_client, domain, ip)
+    records = get_designate_dns_records_v1(des_client, domain, ip)
     assert records, "Record not found for {} in designate".format(ip)
 
     if record_name:
         recs = [r for r in records if r.name == record_name]
+        assert recs, "No DNS entry name matches expected name {}".format(
+            record_name)
+
+
+def check_dns_entry_in_designate_v2(des_client, ip, domain, record_name=None):
+    """Look for records in designate that match the given ip in the given
+       domain
+
+    @param designate_client: designateclient.v1.Client Client to query
+                                                       designate
+    @param ip: str IP address to lookup in designate
+    @param domain: str Name of domain to lookup
+    @param record_name: str Retrieved record should have this name
+    @raises AssertionError: if no record is found or record_name is set and
+                            does not match the name associated with the record
+    """
+    records = get_designate_dns_records_v2(des_client, domain, ip)
+    assert records, "Record not found for {} in designate".format(ip)
+
+    if record_name:
+        recs = [r for r in records if r['name'] == record_name]
         assert recs, "No DNS entry name matches expected name {}".format(
             record_name)
 
@@ -1223,6 +1327,34 @@ def check_dns_entry_in_bind(ip, record_name, juju_status=None):
             unit,
             addr))
         check_dns_record_exists(addr, record_name, ip, retry_count=2)
+
+
+def create_or_return_zone(client, name, email):
+    try:
+        zone = client.zones.create(
+            name=name,
+            email=email)
+    except designateclient.exceptions.Conflict:
+        logging.info('{} zone already exists.'.format(name))
+        zones = [z for z in client.zones.list() if z['name'] == name]
+        assert len(zones) == 1, "Wrong number of zones found {}".format(zones)
+        zone = zones[0]
+    return zone
+
+
+def create_or_return_recordset(client, zone_id, sub_domain, record_type, data):
+    try:
+        rs = client.recordsets.create(
+            zone_id,
+            sub_domain,
+            record_type,
+            data)
+    except designateclient.exceptions.Conflict:
+        logging.info('{} record already exists.'.format(data))
+        for r in client.recordsets.list(zone_id):
+            if r['name'].split('.')[0] == sub_domain:
+                rs = r
+    return rs
 
 
 # Aodh helpers

@@ -5,6 +5,7 @@ import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 
+import designateclient
 from designateclient.v1.domains import Domain
 from designateclient.v1.records import Record
 from designateclient.v1.servers import Server
@@ -48,36 +49,55 @@ def main(argv):
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope=scope)
     neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
-    designatec = mojo_os_utils.get_designate_session_client(keystone_session)
 
-    if not mojo_os_utils.get_designate_server_id(designatec, nameserver):
-        logging.info('Creating server {}'.format(nameserver))
-        server = Server(name=nameserver)
-        server_id = designatec.servers.create(server)
-        assert(server_id is not None)
+    if os_version >= 'queens':
+        designatec = mojo_os_utils.get_designate_session_client(
+            keystone_session,
+            client_version='2')
+        zone = mojo_os_utils.create_or_return_zone(
+            designatec,
+            domain_name,
+            email)
+        rs = mojo_os_utils.create_or_return_recordset(
+            designatec,
+            zone['id'],
+            'www',
+            'A',
+            [resolver])
     else:
-        logging.info('{} server already exists.'.format(nameserver))
+        designatec = mojo_os_utils.get_designate_session_client(
+            keystone_session,
+            client_version='1')
+        if not mojo_os_utils.get_designate_server_id(designatec, nameserver):
+            logging.info('Creating server {}'.format(nameserver))
+            server = Server(name=nameserver)
+            server_id = designatec.servers.create(server)
+            assert(server_id is not None)
+        else:
+            logging.info('{} server already exists.'.format(nameserver))
 
-    domain_id = mojo_os_utils.get_designate_domain_id(designatec, domain_name)
-    if not domain_id:
-        logging.info('Creating domain {}'.format(domain_name))
-        domain = Domain(name=domain_name, email=email)
-        domain_id = designatec.domains.create(domain)
-        assert(domain_id is not None)
-    else:
-        logging.info('{} domain already exists.'.format(domain_name))
+        domain_id = mojo_os_utils.get_designate_domain_id(
+            designatec,
+            domain_name)
+        if not domain_id:
+            logging.info('Creating domain {}'.format(domain_name))
+            domain = Domain(name=domain_name, email=email)
+            domain_id = designatec.domains.create(domain)
+            assert(domain_id is not None)
+        else:
+            logging.info('{} domain already exists.'.format(domain_name))
 
-    if not mojo_os_utils.get_designate_record_id(designatec, domain_id,
-                                                 nameserver):
-        logging.info('Creating NS record {}'.format(nameserver))
-        ns_record = Record(
-            name=nameserver,
-            type="A",
-            data=resolver)
-        record_id = designatec.records.create(domain_id, ns_record)
-        assert(record_id is not None)
-    else:
-        logging.info('{} record already exists.'.format(nameserver))
+        if not mojo_os_utils.get_designate_record_id(designatec, domain_id,
+                                                     nameserver):
+            logging.info('Creating NS record {}'.format(nameserver))
+            ns_record = Record(
+                name=nameserver,
+                type="A",
+                data=resolver)
+            record_id = designatec.records.create(domain_id, ns_record)
+            assert(record_id is not None)
+        else:
+            logging.info('{} record already exists.'.format(nameserver))
 
     logging.info('Update network to use domain {}'.format(domain_name))
     net_uuid = mojo_os_utils.get_net_uuid(neutronc, 'private')

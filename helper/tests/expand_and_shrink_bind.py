@@ -18,25 +18,42 @@ def main(argv):
     keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
                                                           scope='PROJECT')
     client = mojo_os_utils.get_designate_session_client(keystone_session)
+    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
 
-    # Create test domain and record in test domain
-    domain = mojo_os_utils.create_designate_dns_domain(
-        client,
-        TEST_DOMAIN,
-        TEST_DOMAIN_EMAIL)
-    record = mojo_os_utils.create_designate_dns_record(
-        client,
-        domain.id,
-        TEST_WWW_RECORD,
-        "A",
-        TEST_RECORD[TEST_WWW_RECORD])
+    if os_version >= 'queens':
+        designate_api_version = 2
+        zone = mojo_os_utils.create_or_return_zone(
+            client,
+            TEST_DOMAIN,
+            TEST_DOMAIN_EMAIL)
+        rs = mojo_os_utils.create_or_return_recordset(
+            client,
+            zone['id'],
+            'www',
+            'A',
+            [TEST_RECORD[TEST_WWW_RECORD]])
+    else:
+        designate_api_version = 1
+
+        # Create test domain and record in test domain
+        domain = mojo_os_utils.create_designate_dns_domain(
+            client,
+            TEST_DOMAIN,
+            TEST_DOMAIN_EMAIL)
+        record = mojo_os_utils.create_designate_dns_record(
+            client,
+            domain.id,
+            TEST_WWW_RECORD,
+            "A",
+            TEST_RECORD[TEST_WWW_RECORD])
 
     # Test record is in bind and designate
     mojo_os_utils.check_dns_entry(
         client,
         TEST_RECORD[TEST_WWW_RECORD],
         TEST_DOMAIN,
-        record_name=TEST_WWW_RECORD)
+        record_name=TEST_WWW_RECORD,
+        designate_api=designate_api_version)
 
     mojo_utils.add_unit('designate-bind')
 
@@ -44,7 +61,8 @@ def main(argv):
         client,
         TEST_RECORD[TEST_WWW_RECORD],
         TEST_DOMAIN,
-        record_name=TEST_WWW_RECORD)
+        record_name=TEST_WWW_RECORD,
+        designate_api=designate_api_version)
 
     mojo_utils.delete_oldest('designate-bind')
 
@@ -52,7 +70,8 @@ def main(argv):
         client,
         TEST_RECORD[TEST_WWW_RECORD],
         TEST_DOMAIN,
-        record_name=TEST_WWW_RECORD)
+        record_name=TEST_WWW_RECORD,
+        designate_api=designate_api_version)
 
 
 if __name__ == "__main__":

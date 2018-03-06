@@ -239,6 +239,16 @@ openstack-services-xenial-ocata:
     - [ gnocchi, ceilometer ]
     - [ gnocchi, keystone ]
     - [ cinder-ceph, nova-compute ]
+openstack-services-xenial-queens:
+  inherits: openstack-services-xenial-ocata
+  overrides:
+    nova-domain: ''
+    neutron-domain: ''
+    nova-domain-email: ''
+    neutron-domain-email: ''
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
 # mitaka
 trusty-mitaka:
   inherits: openstack-services-trusty-mitaka
@@ -357,12 +367,14 @@ artful-pike-branch:
     openstack-origin: ppa:openstack-ubuntu-testing/pike
     source: ppa:openstack-ubuntu-testing/pike
 xenial-queens:
-  inherits: xenial-pike
+  inherits: openstack-services-xenial-queens
+  series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
 bionic-queens:
-  inherits: xenial-pike
+  inherits: openstack-services-xenial-queens
+  series: xenial
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
