@@ -6,17 +6,17 @@ openstack-services:
       constraints: mem=1G
       options:
         dataset-size: 50%
-    ceph:
-      charm: ceph
+    ceph-osd:
       num_units: 3
       constraints: mem=1G
       options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
         ephemeral-unmount: /mnt
+        osd-devices: /dev/vdb
+    ceph-mon:
+      num_units: 3
+      constraints: mem=1G
+      options:
+        expected-osd-count: 3
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -33,8 +33,9 @@ openstack-services:
   relations:
     - [ keystone, mysql ]
     - [ ceph-radosgw, keystone ]
-    - [ ceph-radosgw, ceph ]
+    - [ ceph-radosgw, ceph-mon ]
     - [ ceph-radosgw, cephrgw-hacluster ]
+    - [ ceph-mon, ceph-osd ]
 precise-icehouse:
   inherits: openstack-services
   series: precise
