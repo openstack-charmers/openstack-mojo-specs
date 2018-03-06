@@ -1062,7 +1062,7 @@ def get_designate_domain_object_v2(designate_client, domain_name):
     """
     dns_zone_id = get_designate_zone_objects_v2(designate_client,
                                                 domain_name=domain_name)
-    msg "Found {} domains for {}".format(
+    msg = "Found {} domains for {}".format(
         len(dns_zone_id),
         domain_name)
     assert len(dns_zone_id) == 1, msg
