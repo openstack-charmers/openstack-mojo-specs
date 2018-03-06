@@ -35,7 +35,7 @@ openstack-services:
     - [ ceph-radosgw, keystone ]
     - [ glance, keystone ]
     - [ glance, mysql ]
-    - [ glance, cep-mon ]
+    - [ glance, ceph-mon ]
     - [ ceph-radosgw, ceph-mon ]
     - [ ceph-mon, ceph-osd ]
 precise-icehouse:
