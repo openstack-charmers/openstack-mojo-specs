@@ -13,17 +13,17 @@ FLAVORS = {
     'm1.small': {
         'flavorid': 2,
         'ram': 2048,
-        'disk': 20,
+        'disk': 10,
         'vcpus': 1},
     'm1.medium': {
         'flavorid': 3,
         'ram': 4096,
-        'disk': 40,
+        'disk': 20,
         'vcpus': 2},
     'm1.large': {
         'flavorid': 4,
         'ram': 8192,
-        'disk': 40,
+        'disk': 20,
         'vcpus': 4},
 }
 
