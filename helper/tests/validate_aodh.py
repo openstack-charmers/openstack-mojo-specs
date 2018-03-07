@@ -47,12 +47,10 @@ def main(argv):
                 alarm_info['alarm_id'])
             if alarm_state == 'alarm':
                 logging.info('Alarm triggered')
-                server.start()
                 break
             else:
                 time.sleep(5)
         else:
-            server.start()
             raise Exception("Alarm failed to trigger")
 
 

@@ -1222,7 +1222,7 @@ def check_dns_entry_in_bind(ip, record_name, juju_status=None):
             ip,
             unit,
             addr))
-        check_dns_record_exists(addr, record_name, ip, retry_count=2)
+        check_dns_record_exists(addr, record_name, ip, retry_count=6)
 
 
 # Aodh helpers
