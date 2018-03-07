@@ -343,11 +343,11 @@ zesty-ocata:
   series: zesty
 # pike
 xenial-pike:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb, ceilometer-gnocchi ]
   series: artful

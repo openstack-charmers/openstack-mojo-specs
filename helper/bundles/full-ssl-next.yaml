@@ -355,7 +355,7 @@ zesty-ocata-proposed:
     openstack-origin: distro-proposed
 # pike
 xenial-pike:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
@@ -371,7 +371,7 @@ xenial-pike-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
     source: ppa:ubuntu-cloud-archive/pike-staging
 artful-pike:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb, ceilometer-gnocchi ]
   series: artful
 artful-pike-proposed:
   inherits: artful-pike
