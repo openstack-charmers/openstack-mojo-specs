@@ -17,6 +17,6 @@ script config=image_setup.py
 script config=keystone_setup.py
 
 # Launch instances on the overcloud
-verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:1' CLOUDINIT_WAIT="600"
 
 # Success

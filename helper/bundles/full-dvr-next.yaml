@@ -9,17 +9,17 @@ openstack-services:
     rabbitmq-server:
       charm: rabbitmq-server
       constraints: mem=1G
-    ceph:
-      charm: ceph
+    ceph-osd:
       num_units: 3
       constraints: mem=1G
       options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
         ephemeral-unmount: /mnt
+        osd-devices: /dev/vdb
+    ceph-mon:
+      num_units: 3
+      constraints: mem=1G
+      options:
+        expected-osd-count: 3
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -90,16 +90,17 @@ openstack-services:
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
-    - [ nova-compute, ceph ]
+    - [ nova-compute, ceph-mon ]
+    - [ ceph-mon, ceph-osd ]
     - [ glance, mysql ]
     - [ glance, keystone ]
-    - [ glance, ceph ]
+    - [ glance, ceph-mon ]
     - [ glance, "cinder:image-service" ]
     - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph ]
+    - [ cinder, ceph-mon ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-storage-z1 ]
@@ -289,6 +290,7 @@ xenial-queens:
     source: cloud:xenial-queens/proposed
 bionic-queens:
   inherits: xenial-pike
+  series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
