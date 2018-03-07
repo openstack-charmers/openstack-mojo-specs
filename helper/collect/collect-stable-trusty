@@ -1,7 +1,7 @@
 aodh                   cs:~openstack-charmers/aodh  
 ceilometer-agent       cs:~openstack-charmers/ceilometer-agent
 ceilometer             cs:~openstack-charmers/ceilometer
-ceph                   cs:~openstack-charmers/ceph
+ceph-mon               cs:~openstack-charmers/ceph-mon
 ceph-osd               cs:~openstack-charmers/ceph-osd
 cinder-ceph            cs:~openstack-charmers/cinder-ceph
 cinder                 cs:~openstack-charmers/cinder
