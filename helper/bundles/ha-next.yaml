@@ -291,19 +291,19 @@ trusty-liberty-ha:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
 trusty-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka
 trusty-mitaka-proposed:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
 xenial-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     ha-bindiface: ens2
@@ -314,7 +314,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
     ha-bindiface: ens2
 xenial-newton-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     ha-bindiface: ens2
@@ -322,39 +322,39 @@ xenial-newton-ha:
     source: cloud:xenial-newton
 # ocata
 xenial-ocata-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
 zesty-ocata-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
   overrides:
     ha-bindiface: ens2
 # pike
 xenial-pike-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb, ceilometer-gnocchi ]
   series: xenial
   overrides:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb, ceilometer-gnocchi ]
   series: artful
   overrides:
     ha-bindiface: ens2
 # queens
-xenial-queens:
-  inherits: xenial-pike-ha
+xenial-queens-ha:
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
-bionic-queens:
-  inherits: xenial-pike-ha
+bionic-queens-ha:
+  inherits: xenial-queens-ha
   series: bionic
   overrides:
     openstack-origin: distro-proposed

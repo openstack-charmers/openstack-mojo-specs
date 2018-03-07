@@ -294,19 +294,19 @@ trusty-liberty-ha:
     openstack-origin: cloud:trusty-liberty
     source: cloud:trusty-liberty
 trusty-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka
 trusty-mitaka-proposed:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
 xenial-mitaka-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   services:
     mysql:
@@ -318,28 +318,28 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
 # ocata
 xenial-ocata-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
 zesty-ocata-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
 # pike
 xenial-pike-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike-ha:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb, ceilometer-gnocchi ]
   series: artful
