@@ -22,17 +22,19 @@ openstack-services:
       charm: rabbitmq-server
       constraints: mem=1G
       num_units: 3
-    ceph:
-      charm: ceph
+    ceph-mon:
+      charm: ceph-mon
       num_units: 3
-      constraints: mem=1G
       options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
+        expected-osd-count: 3
+    ceph-osd:
+      charm: ceph-osd
+      constraints: mem=1G
+      num_units: 3
+      options:
         ephemeral-unmount: /mnt
+        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
+        osd-reformat: 'yes'
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -172,17 +174,18 @@ openstack-services:
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
-    - [ nova-compute, ceph ]
+    - [ nova-compute, ceph-mon ]
     - [ glance, mysql ]
     - [ glance, keystone ]
-    - [ glance, ceph ]
+    - [ glance, ceph-mon ]
+    - [ ceph-mon, ceph-osd ]
     - [ glance, "cinder:image-service" ]
     - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
     - [ cinder, cinder-ceph ]
-    - [ cinder-ceph, ceph ]
+    - [ cinder-ceph, ceph-mon ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
