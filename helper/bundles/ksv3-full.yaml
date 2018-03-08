@@ -146,7 +146,7 @@ ceilometer-mongodb:
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-ceilometer-gnocchi:
+charm-ceilometer-gnocchi:
   services:
     ceilometer:
       charm: ceilometer
@@ -159,14 +159,12 @@ ceilometer-gnocchi:
       charm: memcached
   relations:
     - - ceilometer
-      - keystone:identity-credentials
-    - - ceilometer
       - keystone:identity-notifications
     - [ ceilometer, rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-    - - ceph
+    - - ceph-mon
       - gnocchi
     - - gnocchi
       - memcached
@@ -176,6 +174,11 @@ ceilometer-gnocchi:
       - keystone
     - - gnocchi
       - mysql
+ceilometer-gnocchi:
+  inherits: [ charm-ceilometer-gnocchi]
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
 openstack-singlerabbit:
   inherits: openstack-services
   relations:

@@ -265,7 +265,7 @@ ceilometer-gnocchi:
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-    - - ceph
+    - - ceph-mon
       - gnocchi
     - - gnocchi
       - memcached
