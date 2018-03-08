@@ -237,7 +237,7 @@ ceilometer-mongodb:
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
     - [ ceilometer, ceilometer-hacluster ]
-ceilometer-gnocchi:
+charm-ceilometer-gnocchi:
   services:
     ceilometer:
       charm: ceilometer
@@ -258,8 +258,6 @@ ceilometer-gnocchi:
       charm: memcached
   relations:
     - - ceilometer
-      - keystone:identity-credentials
-    - - ceilometer
       - keystone:identity-notifications
     - [ ceilometer, rabbitmq-server ]
     - [ ceilometer, gnocchi ]
@@ -276,6 +274,11 @@ ceilometer-gnocchi:
     - - gnocchi
       - mysql
     - [ ceilometer, ceilometer-hacluster ]
+ceilometer-gnocchi:
+  inherits: charm-ceilometer-gnocchi
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
 # icehouse
 trusty-icehouse-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
@@ -338,14 +341,14 @@ zesty-ocata-ha:
     ha-bindiface: ens2
 # pike
 xenial-pike-ha:
-  inherits: [ openstack-services, ceilometer-mongodb, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: xenial
   overrides:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
 artful-pike-ha:
-  inherits: [ openstack-services, ceilometer-mongodb, ceilometer-gnocchi ]
+  inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
   overrides:
     ha-bindiface: ens2
