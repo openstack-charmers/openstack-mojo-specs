@@ -38,7 +38,7 @@ def main(argv):
 
                 target_project = overcloud_novarc.get(
                     'OS_TENANT_NAME',
-                    overcloud_novarc['OS_PROJECT_NAME'])
+                    overcloud_novarc.get('OS_PROJECT_NAME'))
                 for project in keystone_client.projects.list():
                     if project.name == target_project:
                         record_ctxt['project_id'] = project.id
