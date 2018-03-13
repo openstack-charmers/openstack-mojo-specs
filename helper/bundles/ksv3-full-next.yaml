@@ -1,4 +1,4 @@
-# vim: set ts=2 et:
+``# vim: set ts=2 et:
 # deployer bundle for development ('next') charms
 # UOSCI relies on this for OS-on-OS deployment testing
 openstack-services:
@@ -372,7 +372,7 @@ zesty-ocata-proposed:
     openstack-origin: distro-proposed
 # pike
 xenial-pike:
-  inherits: [ openstack-icehouse, ceilometer-mongodb,charm- ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-mongodb,charm-ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
