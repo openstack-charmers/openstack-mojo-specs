@@ -11,17 +11,19 @@ openstack-services:
       constraints: mem=1G
       options:
         ssl: "only"
-    ceph:
-      charm: ceph
+    ceph-mon:
+      charm: ceph-mon
       num_units: 3
-      constraints: mem=1G
       options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
+        expected-osd-count: 3
+    ceph-osd:
+      charm: ceph-osd
+      constraints: mem=1G
+      num_units: 3
+      options:
         ephemeral-unmount: /mnt
+        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
+        osd-reformat: 'yes'
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -100,16 +102,17 @@ openstack-services:
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
-    - [ nova-compute, ceph ]
+    - [ nova-compute, ceph-mon ]
     - [ glance, mysql ]
     - [ glance, keystone ]
-    - [ glance, ceph ]
+    - [ glance, ceph-mon ]
+    - [ ceph-mon, ceph-osd ]
     - [ glance, "cinder:image-service" ]
     - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph ]
+    - [ cinder, ceph-mon ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
@@ -135,7 +138,7 @@ ceilometer-mongodb:
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-ceilometer-gnocchi:
+charm-ceilometer-gnocchi:
   services:
     ceilometer:
       charm: ceilometer
@@ -148,14 +151,12 @@ ceilometer-gnocchi:
       charm: memcached
   relations:
     - - ceilometer
-      - keystone:identity-credentials
-    - - ceilometer
       - keystone:identity-notifications
     - [ ceilometer, rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-    - - ceph
+    - - ceph-mon
       - gnocchi
     - - gnocchi
       - memcached
@@ -165,6 +166,11 @@ ceilometer-gnocchi:
       - keystone
     - - gnocchi
       - mysql
+ceilometer-gnocchi:
+  inherits: [ charm-ceilometer-gnocchi]
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
