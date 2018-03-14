@@ -564,7 +564,7 @@ def do_release_upgrade(unit):
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
-        logging.warn("Failed do-release-upgrade for {}".format(name))
+        logging.warn("Failed do-release-upgrade for {}".format(unit))
         logging.warn(e)
         return False
     finally:
@@ -583,7 +583,7 @@ def reboot(unit):
         pass
 
 
-def upgrade_unit(app_name, unit, machine, machine_num):
+def upgrade_machine(app_name, unit, machine, machine_num):
     """Run the upgrade process for a single machine"""
     cmd = [kiki.cmd(), 'run', '--unit', unit, 'status-set',
            'maintenance', 'Upgrading series']
@@ -604,7 +604,7 @@ def upgrade_unit(app_name, unit, machine, machine_num):
             break
         except subprocess.CalledProcessError:
             logging.debug("Waiting 2 more seconds")
-            sleep(2)
+            time.sleep(2)
     update_machine_series(app_name, machine_num)
     return True
 
@@ -623,7 +623,7 @@ def update_machine_series(app_name, machine_num):
     subprocess.call(cmd)
 
 
-SYSTEMD_JUJU_SCRIPT = """#!/usr/bin/env bash
+SYSTEMD_JUJU_MACHINE_AGENT_SCRIPT = """#!/usr/bin/env bash
 
 # Set up logging.
 touch '/var/log/juju/machine-{machine_id}.log'
@@ -636,16 +636,45 @@ exec 2>&1
 '/var/lib/juju/tools/machine-{machine_id}/jujud' machine --data-dir '/var/lib/juju' --machine-id {machine_id} --debug
 """
 
-SYSTEMD_JUJU_INIT_FILE = """[Unit]
-Description=juju agent for machine-{machine_id}
+SYSTEMD_JUJU_UNIT_AGENT_SCRIPT = """#!/usr/bin/env bash
+
+# Set up logging.
+touch '/var/log/juju/unit-{application_name}-{application_number}.log'
+chown syslog:syslog '/var/log/juju/unit-{application_name}-{application_number}.log'
+chmod 0600 '/var/log/juju/unit-{application_name}-{application_number}.log'
+exec >> '/var/log/juju/unit-{application_name}-{application_number}.log'
+exec 2>&1
+
+# Run the script.
+'/var/lib/juju/tools/unit-{application_name}-{application_number}/jujud' unit --data-dir '/var/lib/juju' --unit-name {application} --debug
+"""
+
+SYSTEMD_JUJU_MACHINE_INIT_FILE = """[Unit]
+Description=juju agent for machine-{name}
 After=syslog.target
 After=network.target
 After=systemd-user-sessions.service
 
 [Service]
-Environment=""
 LimitNOFILE=20000
-ExecStart=/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh
+ExecStart=/var/lib/juju/init/jujud-machine-{name}/exec-start.sh
+Restart=on-failure
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+"""
+
+
+SYSTEMD_JUJU_UNIT_INIT_FILE = """[Unit]
+Description=juju unit agent for unit-{application_name}-{application_number}
+After=syslog.target
+After=network.target
+After=systemd-user-sessions.service
+
+[Service]
+Environment="JUJU_CONTAINER_TYPE="
+ExecStart=/var/lib/juju/init/jujud-unit-{application_name}-{application_number}/exec-start.sh
 Restart=on-failure
 TimeoutSec=300
 
@@ -661,11 +690,11 @@ def upstart_to_systemd(machine_number):
             "sudo", "mkdir", "-p",
             "/var/lib/juju/init/jujud-machine-{}".format(machine_number)],
         base_command + [
-            'echo', SYSTEMD_JUJU_SCRIPT.format(
+            'echo', SYSTEMD_JUJU_MACHINE_AGENT_SCRIPT.format(
             machine_id=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh'.format(machine_id=machine_number)],
         base_command + [
-            'echo', SYSTEMD_JUJU_INIT_FILE.format(
-            machine_id=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{machine_id}/jujud-machine-{machine_id}.service'.format(machine_id=machine_number)],
+            'echo', SYSTEMD_JUJU_MACHINE_INIT_FILE.format(
+            name=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{name}/jujud-machine-{name}.service'.format(name=machine_number)],
         base_command + [
             'sudo', 'chmod', '755', '/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh'.format(machine_id=machine_number)],
         base_command + [
@@ -675,12 +704,46 @@ def upstart_to_systemd(machine_number):
                 machine_id=machine_number), '/etc/systemd/system/multi-user.target.wants/jujud-machine-{machine_id}.service'.format(machine_id=machine_number)
         ]
     ]
+    commands += units_upstart_to_systemd_commands(machine_number)
     for cmd in commands:
         try:
             subprocess.check_call(cmd)
         except subprocess.CalledProcessError as e:
             logging.warn(e)
             return False
+
+
+def units_upstart_to_systemd_commands(machine_number):
+    """Upgrade a specific application unit from Upstart to Systemd"""
+    units = get_juju_status(unit=str(machine_number))["applications"]
+    base_command = [kiki.cmd(), 'run', '--machine', str(machine_number), '--']
+    commands = []
+    for (name, app_unit) in units.iteritems():
+        for (unit_name, unit) in app_unit["units"].iteritems():
+            print("Updating {} [{}]".format(name, unit_name))
+            app_number = unit_name.split("/")[-1]
+            systemd_file_name = "jujud-unit-{app_name}-{app_number}.service".format(app_name=name, app_number=app_number)
+            systemd_file_path = '/var/lib/juju/init/jujud-unit-{app_name}-{app_number}/{file_name}'.format(app_name=name, app_number=app_number, file_name=systemd_file_name)
+            commands += [
+                base_command + [
+                    "sudo", "mkdir", "-p",
+                    "/var/lib/juju/init/jujud-unit-{}-{}".format(name, app_number)],
+                base_command + [
+                    'echo', SYSTEMD_JUJU_UNIT_AGENT_SCRIPT.format(
+                    application=unit_name, application_name=name, application_number=app_number),
+                    '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-unit-{app_name}-{app_number}/exec-start.sh'.format(app_name=name, app_number=app_number)],
+                base_command + [
+                    'echo', SYSTEMD_JUJU_UNIT_INIT_FILE.format(
+                        application_name=name, application_number=app_number), '|', 'sudo', 'tee', systemd_file_path],
+                base_command + [
+                    'sudo', 'chmod', '755', '/var/lib/juju/init/jujud-unit-{app_name}-{app_number}/exec-start.sh'.format(app_name=name, app_number=app_number)],
+                base_command + [
+                    'sudo', 'ln', '-s', systemd_file_path, '/etc/systemd/system/'],
+                base_command + [
+                    'sudo', 'ln', '-s', systemd_file_path, '/etc/systemd/system/multi-user.target.wants/{file_name}'.format(machine_id=machine_number, file_name=systemd_file_name)
+                ]
+            ]
+    return commands
 
 # This stuff works, but we seem to be running into a Juju bug around
 # starting the unit agents: https://bugs.launchpad.net/juju/+bug/1749201
@@ -689,6 +752,7 @@ def upgrade_all_units(juju_status=None):
         juju_status = get_juju_status()
     # Upgrade the rest
     # print("Juju status: {}".format(juju_status))
+    upgraded_machines = []
     for (app_name, details) in juju_status['applications'].items():
         # print("name: {}".format(name))
         # print("details: {}".format(details))
@@ -697,8 +761,11 @@ def upgrade_all_units(juju_status=None):
             # print("About to upgrade {}".format(unit))
             print("Details for {}: {}".format(name, unit_details))
             machine_id = unit_details["machine"]
-            if not upgrade_unit(app_name, name, juju_status["machines"][machine_id], machine_id):
+            if machine_id in upgraded_machines:
+                continue
+            if not upgrade_machine(app_name, name, juju_status["machines"][machine_id], machine_id):
                 logging.warn("No series upgrade found for {}".format(name))
+            upgraded_machines.append(machine_id)
             # time.sleep(30)
 
 
