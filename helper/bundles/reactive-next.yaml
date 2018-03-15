@@ -218,6 +218,14 @@ openstack-services-xenial-ocata:
       charm: gnocchi
     memcached:
       charm: cs:memcached
+    neutron-dynamic-routing:
+      charm: neutron-dynamic-routing
+      options:
+        asn: 12345
+    quagga:
+      charm: quagga
+      options:
+        asn: 10000
   relations:
     - [ gnocchi, ceph-mon ]
     - [ gnocchi, mysql ]
@@ -226,6 +234,8 @@ openstack-services-xenial-ocata:
     - [ gnocchi, ceilometer ]
     - [ gnocchi, keystone ]
     - [ cinder-ceph, nova-compute ]
+    - [ neutron-dynamic-routing, rabbitmq-server ]
+    - [ neutron-dynamic-routing, quagga ]
 # icehouse
 trusty-icehouse:
   inherits: openstack-services

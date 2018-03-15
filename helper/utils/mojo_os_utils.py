@@ -518,7 +518,8 @@ def create_external_network(neutron_client, project_id, dvr_mode,
 
 
 def create_project_subnet(neutron_client, project_id, network, cidr, dhcp=True,
-                          subnet_name='private_subnet', domain=None):
+                          subnet_name='private_subnet', domain=None,
+                          subnetpool=None, ip_version=4, prefix_len=24):
     # Create subnet
     subnets = neutron_client.list_subnets(name=subnet_name)
     if len(subnets['subnets']) == 0:
@@ -528,11 +529,18 @@ def create_project_subnet(neutron_client, project_id, network, cidr, dhcp=True,
                 'name': subnet_name,
                 'network_id': network['id'],
                 'enable_dhcp': dhcp,
-                'cidr': cidr,
-                'ip_version': 4,
+                'ip_version': ip_version,
                 'tenant_id': project_id
             }
         }
+        print "SNP:", subnetpool
+        if subnetpool:
+            subnet_msg['subnet']['subnetpool_id'] = subnetpool['id']
+            subnet_msg['subnet']['prefixlen'] = prefix_len
+        else:
+            print "adding cidr"
+            subnet_msg['subnet']['cidr'] = cidr
+        print subnet_msg
         subnet = neutron_client.create_subnet(subnet_msg)['subnet']
     else:
         logging.warning('Subnet %s already exists.', subnet_name)
@@ -633,6 +641,54 @@ def plug_subnet_into_router(neutron_client, router, network, subnet):
                                                 {'subnet_id': subnet['id']})
         else:
             logging.warning('Router already connected to subnet')
+
+
+def create_address_scope(neutron_client, project_id, name, ip_version=4):
+    """Create address scope
+
+    :param ip_version: integer 4 or 6
+    :param name: strint name for the address scope
+    """
+    address_scopes = neutron_client.list_address_scopes(name=name)
+    if len(address_scopes['address_scopes']) == 0:
+        logging.info('Creating {} address scope'.format(name))
+        address_scope_info = {
+            'address_scope': {
+                'name': name,
+                'shared': True,
+                'ip_version': ip_version,
+                'tenant_id': project_id,
+            }
+        }
+        address_scope = neutron_client.create_address_scope(address_scope_info)['address_scope']
+        logging.info('New address scope created: %s', (address_scope['id']))
+    else:
+        logging.warning('Address scope {} already exists.'.format(name))
+        address_scope = address_scopes['address_scopes'][0]
+    return address_scope
+
+
+def create_subnetpool(neutron_client, project_id, name, subnetpool_prefix,
+                      address_scope, shared=True, domain=None):
+    subnetpools = neutron_client.list_subnetpools(name=name)
+    if len(subnetpools['subnetpools']) == 0:
+        logging.info('Creating subnetpool: %s',
+                     name)
+        subnetpool_msg = {
+            'subnetpool': {
+                'name': name,
+                'shared': shared,
+                'tenant_id': project_id,
+                'prefixes': [subnetpool_prefix],
+                'address_scope_id': address_scope['id'],
+            }
+        }
+        subnetpool = neutron_client.create_subnetpool(subnetpool_msg)['subnetpool']
+    else:
+        logging.warning('Network %s already exists.', name)
+        subnetpool = subnetpools['subnetpools'][0]
+    print "SUBNETPOOL:", subnetpool
+    return subnetpool
 
 
 # Nova Helpers
