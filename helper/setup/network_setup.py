@@ -25,6 +25,10 @@ def setup_sdn(net_topology, net_info):
         'admin',
         api_version=overcloud_novarc['API_VERSION']
     )
+    # Network Setup
+    subnetpools = False
+    if net_info.get('subnetpool_prefix'):
+        subnetpools = True
     # Create the external network
     ext_network = mojo_os_utils.create_external_network(
         neutronc,
@@ -40,12 +44,28 @@ def setup_sdn(net_topology, net_info):
         net_info['start_floating_ip'],
         net_info['end_floating_ip'],
         net_info['external_subnet_name'])
+    # Should this be --enable_snat = False
     provider_router = (
         mojo_os_utils.create_provider_router(neutronc, project_id))
     mojo_os_utils.plug_extnet_into_router(
         neutronc,
         provider_router,
         ext_network)
+    #XXXX
+    ip_version = net_info.get('ip_version') or 4
+    subnetpool = None
+    if subnetpools:
+        address_scope = mojo_os_utils.create_address_scope(
+            neutronc,
+            project_id,
+            net_info.get('address_scope'),
+            ip_version=ip_version)
+        subnetpool = mojo_os_utils.create_subnetpool(
+            neutronc,
+            project_id,
+            net_info.get('subnetpool_name'),
+            net_info.get('subnetpool_prefix'),
+            address_scope)
     project_network = mojo_os_utils.create_project_network(
         neutronc,
         project_id,
@@ -55,7 +75,9 @@ def setup_sdn(net_topology, net_info):
         neutronc,
         project_id,
         project_network,
-        net_info['private_net_cidr'])
+        net_info.get('private_net_cidr'),
+        subnetpool=subnetpool,
+        ip_version=ip_version)
     mojo_os_utils.update_subnet_dns(
         neutronc,
         project_subnet,
@@ -65,6 +87,8 @@ def setup_sdn(net_topology, net_info):
         net_info['router_name'],
         project_network,
         project_subnet)
+    if subnetpools:
+        speaker = mojo_os_utils.create_bgp_speaker(neutronc, local_as=12345)
 
 
 def main(argv):
