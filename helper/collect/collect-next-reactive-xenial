@@ -27,5 +27,6 @@ barbican               cs:~openstack-charmers-next/barbican
 designate-bind         cs:~openstack-charmers-next/designate-bind
 designate              cs:~openstack-charmers-next/designate
 memcached              cs:memcached
-neutron-dynamic-routing /home/ubuntu/dev/dynamic/neutron-dynamic-routing
-quagga                 /home/ubuntu/dev/dynamic/quagga/
+quagga                 cs:~openstack-charmers-next/quagga
+# Temporarily use ~thedac namespace while in development
+neutron-dynamic-routing  cs:~thedac/neutron-dynamic-routing

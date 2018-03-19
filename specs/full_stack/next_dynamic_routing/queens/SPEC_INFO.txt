@@ -1,0 +1,2 @@
+This spec performs a deploy using the next charms with dynamic routing
+and then runs tests to validate the deployment

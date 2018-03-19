@@ -51,7 +51,6 @@ def setup_sdn(net_topology, net_info):
         neutronc,
         provider_router,
         ext_network)
-    #XXXX
     ip_version = net_info.get('ip_version') or 4
     subnetpool = None
     if subnetpools:
@@ -87,8 +86,6 @@ def setup_sdn(net_topology, net_info):
         net_info['router_name'],
         project_network,
         project_subnet)
-    if subnetpools:
-        speaker = mojo_os_utils.create_bgp_speaker(neutronc, local_as=12345)
 
 
 def main(argv):

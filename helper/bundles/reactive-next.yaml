@@ -1,8 +1,4 @@
-# NOTE(beisner): I moved this out of the main directory as this bundle file is not referenced by any specs.
-#
 # vim: set ts=2 et:
-# deployer bundle for development ('next') charms
-# UOSCI relies on this for OS-on-OS deployment testing
 base-services:
   services:
     rabbitmq-server:
@@ -103,16 +99,8 @@ base-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-    ceilometer:
-      charm: ceilometer
-      constraints: mem=1G
-    ceilometer-agent:
-      charm: ceilometer-agent
     heat:
       charm: heat
-    mongodb:
-      charm: mongodb
-      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -141,12 +129,6 @@ base-services:
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    - - ceilometer
-      - keystone:identity-service
-    - [ ceilometer, rabbitmq-server ]
-    - [ ceilometer, mongodb ]
-    - [ ceilometer-agent, nova-compute ]
-    - [ ceilometer-agent, ceilometer ]
     - [ heat, mysql ]
     - [ heat, keystone ]
     - [ heat, rabbitmq-server ]
@@ -161,6 +143,58 @@ base-services:
     - [ neutron-openvswitch, rabbitmq-server ]
     - [ ceph-osd, ceph-mon ]
     - [ ntp, ceph-osd ]
+ceilometer-mongodb:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    mongodb:
+      charm: mongodb
+      constraints: mem=1G
+  relations:
+    - - ceilometer
+      - keystone:identity-service
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ ceilometer, rabbitmq-server ]
+    - [ ceilometer, mongodb ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+charm-ceilometer-gnocchi:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    gnocchi:
+      charm: gnocchi
+    memcached:
+      charm: memcached
+  relations:
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ ceilometer, rabbitmq-server ]
+    - [ ceilometer, gnocchi ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - - ceph-mon
+      - gnocchi
+    - - gnocchi
+      - memcached
+    - - gnocchi
+      - ceilometer
+    - - gnocchi
+      - keystone
+    - - gnocchi
+      - mysql
+ceilometer-gnocchi:
+  inherits: [ charm-ceilometer-gnocchi]
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
 openstack-services:
   inherits: base-services
   services:
@@ -170,11 +204,14 @@ openstack-services:
       options:
         root-password: ChangeMe123
         sst-password: ChangeMe123
-openstack-services-trusty-mitaka:
+reactive-services:
   inherits: openstack-services
   services:
     aodh:
       charm: aodh
+      constraints: mem=1G
+    barbican:
+      charm: barbican
       constraints: mem=1G
     designate:
       charm: designate
@@ -203,23 +240,12 @@ openstack-services-trusty-mitaka:
     # designate <-> nova-compute needed for legacy notifications
     - [ designate, nova-compute ]
     - [ keystone, tempest ]
-openstack-services-xenial:
-  inherits: openstack-services-trusty-mitaka
-  services:
-    barbican:
-      charm: barbican
-      constraints: mem=1G
-  relations:
     - [ barbican, rabbitmq-server ]
     - [ barbican, mysql ]
     - [ barbican, keystone ]
-openstack-services-xenial-ocata:
-  inherits: openstack-services-xenial
+dynamic-routing-services:
+  inherits: reactive-services
   services:
-    gnocchi:
-      charm: gnocchi
-    memcached:
-      charm: cs:memcached
     neutron-dynamic-routing:
       charm: neutron-dynamic-routing
       options:
@@ -229,86 +255,10 @@ openstack-services-xenial-ocata:
       options:
         asn: 10000
   relations:
-    - [ gnocchi, ceph-mon ]
-    - [ gnocchi, mysql ]
-    - [ gnocchi, rabbitmq-server ]
-    - [ gnocchi, memcached ]
-    - [ gnocchi, ceilometer ]
-    - [ gnocchi, keystone ]
-    - [ cinder-ceph, nova-compute ]
     - [ neutron-dynamic-routing, rabbitmq-server ]
     - [ neutron-dynamic-routing, quagga ]
-# icehouse
-trusty-icehouse:
-  inherits: openstack-services
-  series: trusty
-trusty-icehouse-proposed:
-  inherits: trusty-icehouse
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-trusty-icehouse-trunk:
-  inherits: trusty-icehouse
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
-    source: ppa:openstack-ubuntu-testing/icehouse
-    offline-compression: "no"
-# kilo
-trusty-kilo:
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-kilo
-    source: cloud:trusty-kilo
-trusty-kilo-proposed:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-kilo/proposed
-trusty-kilo-staging:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
-    source: ppa:ubuntu-cloud-archive/kilo-staging
-# liberty
-trusty-liberty:
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-liberty
-    source: cloud:trusty-liberty
-trusty-liberty-proposed:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: cloud:trusty-liberty/proposed
-    source: cloud:trusty-liberty/proposed
-trusty-liberty-staging:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
-    source: ppa:ubuntu-cloud-archive/liberty-staging
-# mitaka
-trusty-mitaka:
-  #NOTE(coreycb): Temporarily disable reactive charms until
-  #               https://bugs.launchpad.net/bugs/1643027 is resolved.
-  #inherits: openstack-services-trusty-mitaka
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-mitaka
-    source: cloud:trusty-mitaka
-trusty-mitaka-proposed:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: cloud:trusty-mitaka/proposed
-    source: cloud:trusty-mitaka/proposed
-trusty-mitaka-staging:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
-    source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: openstack-services-xenial
+  inherits: [ reactive-services, ceilometer-mongodb ]
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
@@ -317,7 +267,8 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton:
-  inherits: openstack-services-xenial
+  inherits: reactive-services
+  inherits: [ reactive-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
@@ -339,7 +290,7 @@ xenial-newton-branch:
     source: ppa:openstack-ubuntu-testing/newton
 # ocata
 xenial-ocata:
-  inherits: openstack-services-xenial-ocata
+  inherits: [ reactive-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-ocata
@@ -360,7 +311,7 @@ xenial-ocata-branch:
     openstack-origin: ppa:openstack-ubuntu-testing/ocata
     source: ppa:openstack-ubuntu-testing/ocata
 zesty-ocata:
-  inherits: openstack-services-xenial-ocata
+  inherits: [ reactive-services, ceilometer-mongodb ]
   series: zesty
 zesty-ocata-proposed:
   inherits: zesty-ocata
@@ -374,7 +325,7 @@ zesty-ocata-branch:
     source: ppa:openstack-ubuntu-testing/ocata
 # pike
 xenial-pike:
-  inherits: openstack-services-xenial-ocata
+  inherits: [ reactive-services, ceilometer-gnocchi, dynamic-routing-services ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-pike
@@ -395,7 +346,7 @@ xenial-pike-branch:
     openstack-origin: ppa:openstack-ubuntu-testing/pike
     source: ppa:openstack-ubuntu-testing/pike
 artful-pike:
-  inherits: openstack-services-xenial-ocata
+  inherits: [ reactive-services, ceilometer-gnocchi, dynamic-routing-services ]
   series: artful
 artful-pike-proposed:
   inherits: artful-pike
@@ -407,3 +358,15 @@ artful-pike-branch:
   overrides:
     openstack-origin: ppa:openstack-ubuntu-testing/pike
     source: ppa:openstack-ubuntu-testing/pike
+xenial-queens:
+  inherits: [ reactive-services, ceilometer-gnocchi, dynamic-routing-services ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens/proposed
+bionic-queens:
+  inherits: [ reactive-services, ceilometer-gnocchi, dynamic-routing-services ]
+  series: bionic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed
