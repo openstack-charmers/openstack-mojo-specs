@@ -554,13 +554,15 @@ def upgrade_all_services(juju_status=None, switch=None):
             time.sleep(30)
 
 
+# Begin upgrade code
+
 def do_release_upgrade(unit):
     """Runs do-release-upgrade noninteractive"""
     logging.info('Upgrading ' + unit)
     subprocess.call([kiki.cmd(), 'run', '--unit', unit, 'status-set',
                      'maintenance', 'Doing release upgrade'])
     cmd = [kiki.cmd(), 'ssh', unit, 'sudo',
-        'do-release-upgrade', '-f', 'DistUpgradeViewNonInteractive']
+           'do-release-upgrade', '-f', 'DistUpgradeViewNonInteractive']
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
@@ -569,13 +571,13 @@ def do_release_upgrade(unit):
         return False
     finally:
         subprocess.call([kiki.cmd(), 'run', '--unit', unit, 'status-set',
-        'active'])
+                         'active'])
     return True
 
 
 def reboot(unit):
     """Reboot machine"""
-    cmd = [kiki.cmd(), 'ssh', unit, 'sudo', 'reboot', '&&', 'exit']
+    cmd = [kiki.cmd(), 'run', '--unit', unit, 'sudo', 'reboot', '&&', 'exit']
     try:
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
@@ -610,7 +612,8 @@ def upgrade_machine(app_name, unit, machine, machine_num):
 
 
 def update_machine_series(app_name, machine_num):
-    cmd = [kiki.cmd(), 'ssh', machine_num, 'lsb_release', '-c', '-s']
+    cmd = [kiki.cmd(), 'run', '--machine',
+           machine_num, 'lsb_release', '-c', '-s']
     codename = subprocess.check_output(cmd)
     if six.PY3:
         codename = codename.decode('utf-8')
@@ -634,7 +637,7 @@ exec 2>&1
 
 # Run the script.
 '/var/lib/juju/tools/machine-{machine_id}/jujud' machine --data-dir '/var/lib/juju' --machine-id {machine_id} --debug
-"""
+"""  # nopep8
 
 SYSTEMD_JUJU_UNIT_AGENT_SCRIPT = """#!/usr/bin/env bash
 
@@ -647,7 +650,7 @@ exec 2>&1
 
 # Run the script.
 '/var/lib/juju/tools/unit-{application_name}-{application_number}/jujud' unit --data-dir '/var/lib/juju' --unit-name {application} --debug
-"""
+"""  # nopep8
 
 SYSTEMD_JUJU_MACHINE_INIT_FILE = """[Unit]
 Description=juju agent for machine-{name}
@@ -663,7 +666,7 @@ TimeoutSec=300
 
 [Install]
 WantedBy=multi-user.target
-"""
+"""  # nopep8
 
 
 SYSTEMD_JUJU_UNIT_INIT_FILE = """[Unit]
@@ -682,6 +685,7 @@ TimeoutSec=300
 WantedBy=multi-user.target
 """
 
+
 def upstart_to_systemd(machine_number):
     """Upgrade upstart scripts to Systemd after upgrade from Trusty"""
     base_command = [kiki.cmd(), 'run', '--machine', str(machine_number), '--']
@@ -691,17 +695,36 @@ def upstart_to_systemd(machine_number):
             "/var/lib/juju/init/jujud-machine-{}".format(machine_number)],
         base_command + [
             'echo', SYSTEMD_JUJU_MACHINE_AGENT_SCRIPT.format(
-            machine_id=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh'.format(machine_id=machine_number)],
+                machine_id=machine_number),
+            '|', 'sudo', 'tee',
+            ('/var/lib/juju/init/jujud-machine-{machine_id}'
+             '/exec-start.sh').format(
+                machine_id=machine_number)],
         base_command + [
             'echo', SYSTEMD_JUJU_MACHINE_INIT_FILE.format(
-            name=machine_number), '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-machine-{name}/jujud-machine-{name}.service'.format(name=machine_number)],
+                name=machine_number), '|', 'sudo', 'tee',
+            ('/var/lib/juju/init/jujud-machine-{name}'
+             '/jujud-machine-{name}.service').format(
+                name=machine_number)],
         base_command + [
-            'sudo', 'chmod', '755', '/var/lib/juju/init/jujud-machine-{machine_id}/exec-start.sh'.format(machine_id=machine_number)],
+            'sudo', 'chmod', '755',
+            ('/var/lib/juju/init/jujud-machine-{machine_id}/'
+             'exec-start.sh').format(machine_id=machine_number)],
         base_command + [
-            'sudo', 'ln', '-s', '/var/lib/juju/init/jujud-machine-{machine_id}/jujud-machine-{machine_id}.service'.format(machine_id=machine_number), '/etc/systemd/system/'],
+            'sudo', 'ln', '-s',
+            ('/var/lib/juju/init/jujud-machine-{machine_id}/'
+             'jujud-machine-{machine_id}.service').format(
+                 machine_id=machine_number
+              ), '/etc/systemd/system/'],
         base_command + [
-            'sudo', 'ln', '-s', '/var/lib/juju/init/jujud-machine-{machine_id}/jujud-machine-{machine_id}.service'.format(
-                machine_id=machine_number), '/etc/systemd/system/multi-user.target.wants/jujud-machine-{machine_id}.service'.format(machine_id=machine_number)
+            'sudo', 'ln', '-s',
+            ('/var/lib/juju/init/jujud-machine-{machine_id}/'
+             'jujud-machine-{machine_id}.service').format(
+                machine_id=machine_number),
+            ('/etc/systemd/system/multi-user.target.wants/'
+                'jujud-machine-{machine_id}.service').format(
+                    machine_id=machine_number
+                )
         ]
     ]
     commands += units_upstart_to_systemd_commands(machine_number)
@@ -720,53 +743,73 @@ def units_upstart_to_systemd_commands(machine_number):
     commands = []
     for (name, app_unit) in units.iteritems():
         for (unit_name, unit) in app_unit["units"].iteritems():
-            print("Updating {} [{}]".format(name, unit_name))
+            logging.debug("Updating {} [{}]".format(name, unit_name))
             app_number = unit_name.split("/")[-1]
-            systemd_file_name = "jujud-unit-{app_name}-{app_number}.service".format(app_name=name, app_number=app_number)
-            systemd_file_path = '/var/lib/juju/init/jujud-unit-{app_name}-{app_number}/{file_name}'.format(app_name=name, app_number=app_number, file_name=systemd_file_name)
+            systemd_file_name = ("jujud-unit-{app_name}"
+                                 "-{app_number}.service").format(
+                                     app_name=name, app_number=app_number)
+            systemd_file_path = ('/var/lib/juju/init/jujud-unit-{app_name}'
+                                 '-{app_number}/{file_name}').format(
+                                     app_name=name,
+                                     app_number=app_number,
+                                     file_name=systemd_file_name)
             commands += [
                 base_command + [
                     "sudo", "mkdir", "-p",
-                    "/var/lib/juju/init/jujud-unit-{}-{}".format(name, app_number)],
+                    "/var/lib/juju/init/jujud-unit-{}-{}".format(
+                        name, app_number)],
                 base_command + [
                     'echo', SYSTEMD_JUJU_UNIT_AGENT_SCRIPT.format(
-                    application=unit_name, application_name=name, application_number=app_number),
-                    '|', 'sudo', 'tee', '/var/lib/juju/init/jujud-unit-{app_name}-{app_number}/exec-start.sh'.format(app_name=name, app_number=app_number)],
+                        application=unit_name,
+                        application_name=name,
+                        application_number=app_number),
+                    '|', 'sudo', 'tee',
+                    ('/var/lib/juju/init/jujud-unit-{app_name}-'
+                     '{app_number}/exec-start.sh').format(
+                         app_name=name, app_number=app_number)],
                 base_command + [
                     'echo', SYSTEMD_JUJU_UNIT_INIT_FILE.format(
-                        application_name=name, application_number=app_number), '|', 'sudo', 'tee', systemd_file_path],
+                        application_name=name, application_number=app_number),
+                    '|', 'sudo', 'tee', systemd_file_path],
                 base_command + [
-                    'sudo', 'chmod', '755', '/var/lib/juju/init/jujud-unit-{app_name}-{app_number}/exec-start.sh'.format(app_name=name, app_number=app_number)],
+                    'sudo', 'chmod', '755',
+                    ('/var/lib/juju/init/jujud-unit-{app_name}-'
+                     '{app_number}/exec-start.sh').format(
+                         app_name=name, app_number=app_number)],
                 base_command + [
-                    'sudo', 'ln', '-s', systemd_file_path, '/etc/systemd/system/'],
+                    'sudo', 'ln', '-s', systemd_file_path,
+                    '/etc/systemd/system/'],
                 base_command + [
-                    'sudo', 'ln', '-s', systemd_file_path, '/etc/systemd/system/multi-user.target.wants/{file_name}'.format(machine_id=machine_number, file_name=systemd_file_name)
+                    'sudo', 'ln', '-s', systemd_file_path,
+                    ('/etc/systemd/system/multi-user.target.wants/'
+                     '{file_name}').format(
+                         machine_id=machine_number,
+                         file_name=systemd_file_name)
                 ]
             ]
     return commands
 
-# This stuff works, but we seem to be running into a Juju bug around
-# starting the unit agents: https://bugs.launchpad.net/juju/+bug/1749201
+
 def upgrade_all_units(juju_status=None):
     if not juju_status:
         juju_status = get_juju_status()
     # Upgrade the rest
-    # print("Juju status: {}".format(juju_status))
     upgraded_machines = []
     for (app_name, details) in juju_status['applications'].items():
-        # print("name: {}".format(name))
-        # print("details: {}".format(details))
-        # print("Units: {}".format(details["units"]))
         for name, unit_details in details['units'].items():
-            # print("About to upgrade {}".format(unit))
-            print("Details for {}: {}".format(name, unit_details))
+            logging.debug("Details for {}: {}".format(name, unit_details))
             machine_id = unit_details["machine"]
             if machine_id in upgraded_machines:
                 continue
-            if not upgrade_machine(app_name, name, juju_status["machines"][machine_id], machine_id):
+            if not upgrade_machine(
+                app_name,
+                name,
+                juju_status["machines"][machine_id],
+                machine_id
+            ):
                 logging.warn("No series upgrade found for {}".format(name))
             upgraded_machines.append(machine_id)
-            # time.sleep(30)
+# End upgrade code
 
 
 def parse_mojo_arg(options, mojoarg, multiargs=False):
