@@ -25,8 +25,8 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
-# Create 1 * tiny cirros and 1 * small precise instances on the overcloud
-verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:3' CLOUDINIT_WAIT="300"
+# Launch instances on the overcloud
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py

@@ -197,7 +197,7 @@ def wait_cmd(args=sys.argv[1:]):
     # XXX Delta from upstream: default = 2700
     parser.add_argument('-t', '--max_wait', dest='max_wait',
                         help='Maximum time to wait for readiness (seconds)',
-                        action='store', default=2700)
+                        action='store', default=5400)
     parser.add_argument('--version', default=False, action='store_true')
     args = parser.parse_args(args)
 

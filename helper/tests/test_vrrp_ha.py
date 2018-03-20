@@ -6,17 +6,16 @@ import utils.mojo_os_utils as mojo_os_utils
 import logging
 
 
-def lookup_cirros_server(cloud_auth):
-    cirros_images = get_cirros_images(cloud_auth)
-    nova_client = mojo_os_utils.get_nova_client(cloud_auth)
-    for server in nova_client.servers.list():
+def lookup_cirros_server(clients):
+    cirros_images = get_cirros_images(clients)
+    for server in clients['nova'].servers.list():
         if server.image['id'] in cirros_images:
             return server
 
 
-def get_cirros_server(cloud_auth, image_password):
+def get_cirros_server(clients, image_password):
     logging.info('Looking for existing cirros server')
-    cirros_server = lookup_cirros_server(cloud_auth)
+    cirros_server = lookup_cirros_server(clients)
     if cirros_server:
         ip = get_server_floating_ip(cirros_server)
         logging.info('Checking connectivity to cirros guest')
@@ -24,25 +23,24 @@ def get_cirros_server(cloud_auth, image_password):
                                       password=image_password):
             raise Exception('Cirros guest inaccessable')
     else:
-        nova_client = mojo_os_utils.get_nova_client(cloud_auth)
         logging.info('Creating new cirros guest')
         mojo_os_utils.boot_and_test(
-            nova_client,
+            clients['nova'],
+            clients['neutron'],
             image_name='cirros',
             flavor_name='m1.small',
             number=1,
             privkey=None,
         )
-        cirros_server = lookup_cirros_server(cloud_auth)
+        cirros_server = lookup_cirros_server(clients)
         ip = get_server_floating_ip(cirros_server)
     return cirros_server, ip
 
 
-def get_cirros_images(cloud_auth):
+def get_cirros_images(clients):
     logging.info('Getting list of cirros images')
-    glance_client = mojo_os_utils.get_glance_client(cloud_auth)
     cirros_images = []
-    for image in glance_client.images.list():
+    for image in clients['glance'].images.list():
         if 'cirros' in image.name:
             cirros_images.append(image.id)
     return cirros_images
@@ -84,16 +82,35 @@ def get_server_floating_ip(server):
 def main(argv):
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
+    # Keystone policy.json shipped the charm with liberty requires a domain
+    # scoped token. Bug #1649106
+    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
+    if os_version == 'liberty':
+        scope = 'DOMAIN'
+    else:
+        scope = 'PROJECT'
     undercloud_novarc = mojo_utils.get_undercloud_auth()
-    under_novac = mojo_os_utils.get_nova_client(undercloud_novarc)
-    over_neutronc = mojo_os_utils.get_neutron_client(overcloud_novarc)
+    keystone_session_uc = mojo_os_utils.get_keystone_session(undercloud_novarc,
+                                                             scope=scope)
+    under_novac = mojo_os_utils.get_nova_session_client(keystone_session_uc)
+
+    overcloud_novarc = mojo_utils.get_overcloud_auth()
+    keystone_session_oc = mojo_os_utils.get_keystone_session(overcloud_novarc,
+                                                             scope=scope)
+    clients = {'neutron': mojo_os_utils.get_neutron_session_client(
+                   keystone_session_oc),
+               'nova': mojo_os_utils.get_nova_session_client(
+                   keystone_session_oc),
+               'glance': mojo_os_utils.get_glance_session_client(
+                   keystone_session_oc),
+               }
     image_config = mojo_utils.get_mojo_config('images.yaml')
     image_password = image_config['cirros']['password']
     # Look for existing Cirros guest
-    server, ip = get_cirros_server(overcloud_novarc, image_password)
-    router = over_neutronc.list_routers(name='provider-router')['routers'][0]
-    l3_agents = over_neutronc.list_l3_agent_hosting_routers(
+    server, ip = get_cirros_server(clients, image_password)
+    router = (clients['neutron']
+              .list_routers(name='provider-router')['routers'][0])
+    l3_agents = clients['neutron'].list_l3_agent_hosting_routers(
         router=router['id'])['agents']
     logging.info('Checking there are multiple L3 agents running tenant router')
     if len(l3_agents) != 2:
@@ -121,7 +138,8 @@ def main(argv):
         if not check_server_state(under_novac, 'ACTIVE',
                                   server_name=gateway_hostname):
             raise Exception('Server failed to reach SHUTOFF state')
-        if not check_neutron_agent_states(over_neutronc, gateway_hostname):
+        if not check_neutron_agent_states(clients['neutron'],
+                                          gateway_hostname):
             raise Exception('Server agents failed to reach active state')
 
 

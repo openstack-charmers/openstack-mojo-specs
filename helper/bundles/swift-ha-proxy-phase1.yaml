@@ -121,3 +121,13 @@ zesty-ocata:
   series: zesty
   overrides:
     ha-bindiface: ens2
+xenial-queens:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens/proposed
+bionic-queens:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

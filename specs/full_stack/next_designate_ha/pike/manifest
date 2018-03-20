@@ -1,0 +1,37 @@
+# Validate env variables
+script config=preflight.py
+
+# Collect the charm branches from Launchpad
+collect config=collect-next-reactive-${MOJO_SERIES}
+
+# Use juju deployer with designate-next-ha.yaml bundle
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Create sdn on overcloud
+script config=network_setup.py
+
+# Setup glance images
+script config=image_setup.py
+
+# Setup keystone users
+script config=keystone_setup.py
+
+# Setup Designate
+script config=designate_setup.py
+
+# Launch instances on the overcloud
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
+
+# Test DNS records
+verify config=validate_designate.py
+
+# Expand and shrink bind service checking DNS records persist at each stage
+script config=expand_and_shrink_bind.py
+
+# Test AODH Alarms
+verify config=validate_aodh.py
+
+# Success

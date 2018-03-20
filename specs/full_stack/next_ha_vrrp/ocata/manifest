@@ -16,8 +16,8 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
-# Create 1 * tiny cirros and 1 * small precise instances on the overcloud
-verify config=simple_os_checks.py MACHINES='cirros:m1.small:1' CLOUDINIT_WAIT="300"
+# Launch instances on the overcloud
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 
 # Test guest connectivity after stopping and starting gateway
 verify config=test_vrrp_ha.py

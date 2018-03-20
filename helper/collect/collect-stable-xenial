@@ -1,14 +1,14 @@
 aodh                   cs:~openstack-charmers/aodh  
 ceilometer-agent       cs:~openstack-charmers/ceilometer-agent
 ceilometer             cs:~openstack-charmers/ceilometer
-ceph                   cs:~openstack-charmers/ceph
+ceph-mon               cs:~openstack-charmers/ceph-mon
 ceph-osd               cs:~openstack-charmers/ceph-osd
 cinder-ceph            cs:~openstack-charmers/cinder-ceph
 cinder                 cs:~openstack-charmers/cinder
 glance                 cs:~openstack-charmers/glance
 heat                   cs:~openstack-charmers/heat
 keystone               cs:~openstack-charmers/keystone
-mongodb                git://git.launchpad.net/~thedac/mongodb-charm;revno=zesty
+mongodb                cs:~thedac/mongodb
 mysql                  cs:~openstack-charmers/percona-cluster
 neutron-api            cs:~openstack-charmers/neutron-api
 neutron-gateway        cs:~openstack-charmers/neutron-gateway
@@ -22,5 +22,7 @@ swift-proxy            cs:~openstack-charmers/swift-proxy
 swift-storage-z1       cs:~openstack-charmers/swift-storage
 swift-storage-z2       cs:~openstack-charmers/swift-storage
 swift-storage-z3       cs:~openstack-charmers/swift-storage
+gnocchi                cs:~openstack-charmers/gnocchi
+memcached              cs:memcached
 # Tempest charm is basically never stable
 tempest                cs:~openstack-charmers-next/tempest

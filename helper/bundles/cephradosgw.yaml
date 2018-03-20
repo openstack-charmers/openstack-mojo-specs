@@ -6,17 +6,11 @@ openstack-services:
       constraints: mem=1G
       options:
         dataset-size: 50%
-    ceph:
-      charm: ceph
+    ceph-mon:
       num_units: 3
       constraints: mem=1G
       options:
-        monitor-count: 3
-        fsid: 6547bd3e-1397-11e2-82e5-53567c8d32dc
-        monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
-        osd-devices: /dev/vdb
-        osd-reformat: "yes"
-        ephemeral-unmount: /mnt
+        expected-osd-count: 3
     ceph-osd:
       charm: ceph-osd
       num_units: 3
@@ -41,9 +35,9 @@ openstack-services:
     - [ ceph-radosgw, keystone ]
     - [ glance, keystone ]
     - [ glance, mysql ]
-    - [ glance, ceph ]
-    - [ ceph-radosgw, ceph ]
-    - [ ceph, ceph-osd ]
+    - [ glance, ceph-mon ]
+    - [ ceph-radosgw, ceph-mon ]
+    - [ ceph-mon, ceph-osd ]
 precise-icehouse:
   inherits: openstack-services
   series: precise
@@ -101,4 +95,12 @@ xenial-pike:
 artful-pike:
   inherits: openstack-services
   series: artful
-
+# queens
+xenial-queens:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    source: cloud:xenial-queens/proposed
+bionic-queens:
+  inherits: openstack-services
+  series: bionic

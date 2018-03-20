@@ -1,14 +1,14 @@
 aodh                   cs:~openstack-charmers-next/aodh
 ceilometer-agent       cs:~openstack-charmers-next/ceilometer-agent
 ceilometer             cs:~openstack-charmers-next/ceilometer
-ceph                   cs:~openstack-charmers-next/ceph
+ceph-mon               cs:~openstack-charmers-next/ceph-mon
 ceph-osd               cs:~openstack-charmers-next/ceph-osd
 cinder-ceph            cs:~openstack-charmers-next/cinder-ceph
 cinder                 cs:~openstack-charmers-next/cinder
 glance                 cs:~openstack-charmers-next/glance
 heat                   cs:~openstack-charmers-next/heat
 keystone               cs:~openstack-charmers-next/keystone
-mongodb                git://git.launchpad.net/~thedac/mongodb-charm;revno=zesty
+mongodb                cs:~thedac/mongodb
 mysql                  cs:~openstack-charmers-next/percona-cluster
 neutron-api            cs:~openstack-charmers-next/neutron-api
 neutron-gateway        cs:~openstack-charmers-next/neutron-gateway
@@ -23,3 +23,5 @@ swift-storage-z1       cs:~openstack-charmers-next/swift-storage
 swift-storage-z2       cs:~openstack-charmers-next/swift-storage
 swift-storage-z3       cs:~openstack-charmers-next/swift-storage
 tempest                cs:~openstack-charmers-next/tempest
+gnocchi                cs:~openstack-charmers-next/gnocchi
+memcached              cs:memcached

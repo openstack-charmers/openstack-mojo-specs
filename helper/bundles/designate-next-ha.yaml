@@ -1,8 +1,18 @@
-# vim: set ts=2 et:
-# deployer bundle for development ('next') charms
-# UOSCI relies on this for OS-on-OS deployment testing
+# Currently this is a "Designate HA" bundle, but it is the beginning of the Kitchen Sink.
+#
+# TODO:
+#         - Add SSL everywhere
+#         - Add HA everywhere
+#         - Add KSV3 everywhere
+#
+# Targeted only for the more modern sets of charms, thus the corresponding release
+# combos are limited to Trusty-Mitaka and later.  Releases earlier than Trusty-Mitaka
+# will be tested via legacy bundles as separate scenarios.
 base-services:
   services:
+    mysql:
+      charm: mysql
+      constraints: mem=4G
     rabbitmq-server:
       charm: rabbitmq-server
       constraints: mem=1G
@@ -159,17 +169,8 @@ base-services:
     - [ neutron-openvswitch, rabbitmq-server ]
     - [ ceph-osd, ceph-mon ]
     - [ ntp, ceph-osd ]
-openstack-services:
-  inherits: base-services
-  services:
-    mysql:
-      charm: mysql
-      constraints: mem=4G
-      options:
-        root-password: ChangeMe123
-        sst-password: ChangeMe123
 openstack-services-trusty-mitaka:
-  inherits: openstack-services
+  inherits: base-services
   services:
     aodh:
       charm: aodh
@@ -213,7 +214,7 @@ openstack-services-trusty-mitaka:
     # designate <-> nova-compute needed for legacy notifications
     - [ designate, nova-compute ]
     - [ keystone, tempest ]
-openstack-services-xenial:
+openstack-services-xenial-mitaka:
   inherits: openstack-services-trusty-mitaka
   services:
     barbican:
@@ -224,7 +225,7 @@ openstack-services-xenial:
     - [ barbican, mysql ]
     - [ barbican, keystone ]
 openstack-services-xenial-ocata:
-  inherits: openstack-services-xenial
+  inherits: openstack-services-xenial-mitaka
   services:
     gnocchi:
       charm: gnocchi
@@ -238,61 +239,19 @@ openstack-services-xenial-ocata:
     - [ gnocchi, ceilometer ]
     - [ gnocchi, keystone ]
     - [ cinder-ceph, nova-compute ]
-# icehouse
-trusty-icehouse:
-  inherits: openstack-services
-  series: trusty
-trusty-icehouse-proposed:
-  inherits: trusty-icehouse
+openstack-services-xenial-queens:
+  inherits: openstack-services-xenial-ocata
   overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-trusty-icehouse-trunk:
-  inherits: trusty-icehouse
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
-    source: ppa:openstack-ubuntu-testing/icehouse
-    offline-compression: "no"
-# kilo
-trusty-kilo:
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-kilo
-    source: cloud:trusty-kilo
-trusty-kilo-proposed:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-kilo/proposed
-trusty-kilo-staging:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
-    source: ppa:ubuntu-cloud-archive/kilo-staging
-# liberty
-trusty-liberty:
-  inherits: openstack-services
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-liberty
-    source: cloud:trusty-liberty
-trusty-liberty-proposed:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: cloud:trusty-liberty/proposed
-    source: cloud:trusty-liberty/proposed
-trusty-liberty-staging:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
-    source: ppa:ubuntu-cloud-archive/liberty-staging
+    nova-domain: ''
+    neutron-domain: ''
+    nova-domain-email: ''
+    neutron-domain-email: ''
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
 # mitaka
 trusty-mitaka:
-  #NOTE(coreycb): Temporarily disable reactive charms until
-  #               https://bugs.launchpad.net/bugs/1643027 is resolved.
-  #inherits: openstack-services-trusty-mitaka
-  inherits: openstack-services
+  inherits: openstack-services-trusty-mitaka
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka
@@ -308,7 +267,7 @@ trusty-mitaka-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
     source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: openstack-services-xenial
+  inherits: openstack-services-xenial-mitaka
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
@@ -317,7 +276,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton:
-  inherits: openstack-services-xenial
+  inherits: openstack-services-xenial-mitaka
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
@@ -407,3 +366,15 @@ artful-pike-branch:
   overrides:
     openstack-origin: ppa:openstack-ubuntu-testing/pike
     source: ppa:openstack-ubuntu-testing/pike
+xenial-queens:
+  inherits: openstack-services-xenial-queens
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens/proposed
+bionic-queens:
+  inherits: openstack-services-xenial-queens
+  series: xenial
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

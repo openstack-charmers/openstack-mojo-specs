@@ -112,3 +112,15 @@ xenial-pike:
 artful-pike:
   inherits: openstack-services
   series: artful
+# queens
+xenial-queens:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens/proposed
+bionic-queens:
+  inherits: xenial-pike
+  series: bionic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

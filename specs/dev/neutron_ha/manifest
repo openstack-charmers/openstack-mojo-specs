@@ -6,7 +6,7 @@ sleep config=180
 script config=network_setup.py
 script config=image_setup.py
 script config=keystone_setup.py
-verify config=simple_os_checks.py MACHINES='cirros:m1.tiny:1 precise:m1.small:1' CLOUDINIT_WAIT="300"
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 script config=delete_router_home.py ROUTER="provider-router"
 verify config=check_guest_connectivity.py
 

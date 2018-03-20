@@ -147,17 +147,17 @@ openstack-services:
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
-    - [ nova-compute, ceph ]
+    - [ nova-compute, ceph-mon]
     - [ glance, mysql ]
     - [ glance, keystone ]
-    - [ glance, ceph ]
+    - [ glance, ceph-mon]
     - [ glance, "cinder:image-service" ]
     - [ cinder, mysql ]
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
     - [ cinder, cinder-ceph ]
-    - [ cinder-ceph, ceph ]
+    - [ cinder-ceph, ceph-mon]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ openstack-dashboard, keystone ]
     - [ swift-proxy, keystone ]
@@ -380,4 +380,33 @@ zesty-ocata-proposed:
   overrides:
     source: proposed
     openstack-origin: distro-proposed
-
+# pike
+xenial-pike:
+  inherits: openstack-icehouse
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+xenial-pike-proposed:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-pike/proposed
+    source: cloud:xenial-proposed/pike
+xenial-pike-staging:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
+    source: ppa:ubuntu-cloud-archive/pike-staging
+artful-pike:
+  inherits: openstack-icehouse
+  series: artful
+xenial-queens:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens/proposed
+bionic-queens:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed
