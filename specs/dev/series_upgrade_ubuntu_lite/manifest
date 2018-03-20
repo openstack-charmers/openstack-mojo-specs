@@ -1,0 +1,16 @@
+# Collect the charm
+collect config=collect-ubuntu-lite
+
+# Deploy ubuntu-lite bundle
+deploy config=ubuntu-lite.yaml delay=0 wait=False
+
+# Wait for deployment to settle
+verify config=check_juju.py
+
+# Upgrade units
+script config=scripts/upgrade_all_units.py
+
+# Wait for deployment to settle
+verify config=check_juju.py
+
+# Success

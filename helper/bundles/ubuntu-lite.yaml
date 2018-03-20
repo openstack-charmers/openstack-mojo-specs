@@ -1,0 +1,5 @@
+series: "{{ series }}"
+services:
+  ubuntu-lite:
+    charm: ubuntu-lite
+    num_units: 3
