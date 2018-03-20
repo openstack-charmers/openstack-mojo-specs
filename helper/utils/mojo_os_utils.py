@@ -19,6 +19,8 @@ from keystoneauth1.identity import (
 import mojo_utils
 from novaclient import client as novaclient_client
 from neutronclient.v2_0 import client as neutronclient
+from neutronclient.common import exceptions as neutronexceptions
+
 
 import designateclient
 import designateclient.client as designate_client
@@ -533,7 +535,8 @@ def create_external_network(neutron_client, project_id, dvr_mode,
 
 
 def create_project_subnet(neutron_client, project_id, network, cidr, dhcp=True,
-                          subnet_name='private_subnet', domain=None):
+                          subnet_name='private_subnet', domain=None,
+                          subnetpool=None, ip_version=4, prefix_len=24):
     # Create subnet
     subnets = neutron_client.list_subnets(name=subnet_name)
     if len(subnets['subnets']) == 0:
@@ -543,11 +546,15 @@ def create_project_subnet(neutron_client, project_id, network, cidr, dhcp=True,
                 'name': subnet_name,
                 'network_id': network['id'],
                 'enable_dhcp': dhcp,
-                'cidr': cidr,
-                'ip_version': 4,
+                'ip_version': ip_version,
                 'tenant_id': project_id
             }
         }
+        if subnetpool:
+            subnet_msg['subnet']['subnetpool_id'] = subnetpool['id']
+            subnet_msg['subnet']['prefixlen'] = prefix_len
+        else:
+            subnet_msg['subnet']['cidr'] = cidr
         subnet = neutron_client.create_subnet(subnet_msg)['subnet']
     else:
         logging.warning('Subnet %s already exists.', subnet_name)
@@ -648,6 +655,155 @@ def plug_subnet_into_router(neutron_client, router, network, subnet):
                                                 {'subnet_id': subnet['id']})
         else:
             logging.warning('Router already connected to subnet')
+
+
+def create_address_scope(neutron_client, project_id, name, ip_version=4):
+    """Create address scope
+
+    :param ip_version: integer 4 or 6
+    :param name: strint name for the address scope
+    """
+    address_scopes = neutron_client.list_address_scopes(name=name)
+    if len(address_scopes['address_scopes']) == 0:
+        logging.info('Creating {} address scope'.format(name))
+        address_scope_info = {
+            'address_scope': {
+                'name': name,
+                'shared': True,
+                'ip_version': ip_version,
+                'tenant_id': project_id,
+            }
+        }
+        address_scope = neutron_client.create_address_scope(
+                address_scope_info)['address_scope']
+        logging.info('New address scope created: %s', (address_scope['id']))
+    else:
+        logging.warning('Address scope {} already exists.'.format(name))
+        address_scope = address_scopes['address_scopes'][0]
+    return address_scope
+
+
+def create_subnetpool(neutron_client, project_id, name, subnetpool_prefix,
+                      address_scope, shared=True, domain=None):
+    subnetpools = neutron_client.list_subnetpools(name=name)
+    if len(subnetpools['subnetpools']) == 0:
+        logging.info('Creating subnetpool: %s',
+                     name)
+        subnetpool_msg = {
+            'subnetpool': {
+                'name': name,
+                'shared': shared,
+                'tenant_id': project_id,
+                'prefixes': [subnetpool_prefix],
+                'address_scope_id': address_scope['id'],
+            }
+        }
+        subnetpool = neutron_client.create_subnetpool(
+                subnetpool_msg)['subnetpool']
+    else:
+        logging.warning('Network %s already exists.', name)
+        subnetpool = subnetpools['subnetpools'][0]
+    return subnetpool
+
+
+def create_bgp_speaker(neutron_client, local_as=12345, ip_version=4,
+                       name='bgp-speaker'):
+    """Create BGP Speaker
+
+    @param neutron_client: Instance of neutronclient.v2.Client
+    @param local_as: int Local Autonomous System Number
+    @returns dict BGP Speaker object
+    """
+    bgp_speakers = neutron_client.list_bgp_speakers(name=name)
+    if len(bgp_speakers['bgp_speakers']) == 0:
+        logging.info('Creating BGP Speaker')
+        bgp_speaker_msg = {
+            'bgp_speaker': {
+                'name': name,
+                'local_as': local_as,
+                'ip_version': ip_version,
+            }
+        }
+        bgp_speaker = neutron_client.create_bgp_speaker(
+                bgp_speaker_msg)['bgp_speaker']
+    else:
+        logging.warning('BGP Speaker %s already exists.', name)
+        bgp_speaker = bgp_speakers['bgp_speakers'][0]
+    return bgp_speaker
+
+
+def add_network_to_bgp_speaker(neutron_client, bgp_speaker, network_name):
+    """Advertise network on BGP Speaker
+
+    @param neutron_client: Instance of neutronclient.v2.Client
+    @param bgp_speaker: dict BGP Speaker object
+    @param network_name: str Name of network to advertise
+    @returns None
+    """
+    network_id = get_net_uuid(neutron_client, network_name)
+    # There is no direct way to determine which networks have already
+    # been advertised. For example list_route_advertised_from_bgp_speaker shows
+    # ext_net as FIP /32s.
+    # Handle the expected exception if the route is already advertised
+    try:
+        logging.info('Advertising {} network on BGP Speaker {}'
+                     .format(network_name, bgp_speaker['name']))
+        neutron_client.add_network_to_bgp_speaker(bgp_speaker['id'],
+                                                  {'network_id': network_id})
+    except neutronexceptions.InternalServerError:
+        logging.warning('{} network already advertised.'.format(network_name))
+
+
+def create_bgp_peer(neutron_client, peer_application_name='quagga',
+                    remote_as=10000, auth_type='none'):
+    """Create BGP Peer
+
+    @param neutron_client: Instance of neutronclient.v2.Client
+    @param peer_application_name: str Name of juju application to find peer IP
+                                  Default: 'quagga'
+    @param remote_as: int Remote Autonomous System Number
+    @param auth_type: str BGP authentication type.
+                      Default: 'none'
+    @returns dict BGP Peer object
+    """
+    peer_unit = mojo_utils.get_juju_units(service=peer_application_name)[0]
+    peer_ip = mojo_utils.get_juju_unit_ip(peer_unit)
+    bgp_peers = neutron_client.list_bgp_peers(name=peer_application_name)
+    if len(bgp_peers['bgp_peers']) == 0:
+        logging.info('Creating BGP Peer')
+        bgp_peer_msg = {
+            'bgp_peer': {
+                'name': peer_application_name,
+                'peer_ip': peer_ip,
+                'remote_as': remote_as,
+                'auth_type': auth_type,
+            }
+        }
+        bgp_peer = neutron_client.create_bgp_peer(bgp_peer_msg)['bgp_peer']
+    else:
+        logging.warning('BGP Peer %s already exists.', peer_ip)
+        bgp_peer = bgp_peers['bgp_peers'][0]
+    return bgp_peer
+
+
+def add_peer_to_bgp_speaker(neutron_client, bgp_speaker, bgp_peer):
+    """Setup BGP peering relationship with BGP Peer and BGP Speaker
+
+    @param neutron_client: Instance of neutronclient.v2.Client
+    @param bgp_speaker: dict BGP Speaker object
+    @param bgp_peer: dict BGP Peer object
+    @returns None
+    """
+    # Handle the expected exception if the peer is already on the
+    # speaker
+    try:
+        logging.info('Adding peer {} on BGP Speaker {}'
+                     .format(bgp_peer['name'], bgp_speaker['name']))
+        neutron_client.add_peer_to_bgp_speaker(bgp_speaker['id'],
+                                               {'bgp_peer_id': bgp_peer['id']})
+    except neutronexceptions.Conflict:
+        logging.warning('{} peer already on BGP speaker.'
+                        .format(bgp_peer['name']))
 
 
 # Nova Helpers
