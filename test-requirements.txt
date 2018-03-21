@@ -1,0 +1,3 @@
+pyyaml
+pep8
+#flake8  # Need to switch to this for better coverage
