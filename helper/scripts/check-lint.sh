@@ -15,7 +15,7 @@ for spec in $(find specs/{storage,full_stack} -name manifest); do
 done
 
 # Keep bundle names consistent
-bundle_names="$(ls -1 ./helper/bundles/*_* 2> /dev/null)"
+bundle_names="$(ls -1 ./helper/bundles/*_* 2> /dev/null ||:)"
 if [[ -n "$bundle_names" ]]; then
   echo -e "(!)\tFor consistency, bundle file names should not use underscores (hyphens are ok)."
   failed=1
@@ -25,7 +25,7 @@ else
 fi
 
 # Keep spec dir names consistent
-spec_dir_names="$(find ./specs -type d | grep -)"
+spec_dir_names="$(find ./specs -type d | grep - ||:)"
 if [[ -n "$spec_dir_names" ]]; then
   echo -e "(!)\tFor consistency, spec dir names should not use hyphens (underscores are ok)."
   failed=1
