@@ -1,4 +1,5 @@
 ceph-mon               cs:~openstack-charmers-next/ceph-mon
+ceph-osd               cs:~openstack-charmers-next/ceph-osd
 ceph-radosgw           cs:~openstack-charmers-next/ceph-radosgw
 hacluster              cs:~openstack-charmers-next/hacluster
 keystone               cs:~openstack-charmers-next/keystone
