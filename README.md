@@ -4,8 +4,8 @@ General
 These are the Mojo specs for running deployments of Openstack. For more
 information on installing and running Mojo see lp:mojo
 
-Directoy Layouts
-================
+Directory Layouts
+=================
 
 Top Level
 ---------
