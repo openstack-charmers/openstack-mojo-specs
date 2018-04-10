@@ -100,10 +100,10 @@ artful-pike:
     ha-bindiface: ens2
 # queens
 xenial-queens:
-  inherits: base
+  inherits: openstack-services
   series: xenial
   overrides:
     source: cloud:xenial-queens/proposed
 bionic-queens:
-  inherits: base
+  inherits: openstack-services
   series: bionic
