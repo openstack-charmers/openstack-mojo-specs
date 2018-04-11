@@ -15,7 +15,7 @@ base:
       options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: 'yes'
+        osd-reformat: True
         fsid: 5a791d94-980b-11e4-b6f6-3c970e8b1cf7
         monitor-secret: AQAi5a9UeJXUExAA+By9u+GPhl8/XiUQ4nwI3A==
     ceph-osd:
@@ -27,7 +27,7 @@ base:
       options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: 'yes'
+        osd-reformat: True
     ntp:
       annotations:
         gui-x: '1000'

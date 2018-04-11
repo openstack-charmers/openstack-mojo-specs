@@ -32,7 +32,7 @@ openstack-services:
         fsid: 11111111-2222-3333-4444-555555555555
         monitor-secret: AQCXrnZQwI7KGBAAiPofmKEXKxu5bUzoYLVkbQ==
         osd-devices: /dev/vdb /dev/sdb
-        osd-reformat: "yes"
+        osd-reformat: True
       to:
         - "nova-compute=0"
         - "nova-compute=1"
@@ -41,7 +41,7 @@ openstack-services:
       charm: ceph-osd
       options:
         osd-devices: /dev/vdb /dev/sdb
-        osd-reformat: "yes"
+        osd-reformat: True
       to:
         - "0"
     swift-proxy:
