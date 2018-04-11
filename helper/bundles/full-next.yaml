@@ -368,7 +368,7 @@ xenial-pike-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
     source: ppa:ubuntu-cloud-archive/pike-staging
 artful-pike:
-  inherits: xenial-pike
+  inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
 xenial-queens:
   inherits: [ openstack-icehouse, ceilometer-gnocchi ]
