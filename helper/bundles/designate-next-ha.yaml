@@ -374,7 +374,7 @@ xenial-queens:
     source: cloud:xenial-queens/proposed
 bionic-queens:
   inherits: openstack-services-xenial-queens
-  series: xenial
+  series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
