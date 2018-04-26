@@ -3,10 +3,12 @@
 import utils.mojo_utils as mojo_utils
 import sys
 
+from zaza.utilities import _local_utils
+
 
 def remote_runs(units):
     for unit in units:
-        if not mojo_utils.remote_shell_check(unit):
+        if not _local_utils.remote_run(unit, remote_cmd='uname -a'):
             raise Exception('Juju run failed on ' + unit)
 
 

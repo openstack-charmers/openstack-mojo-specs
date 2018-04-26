@@ -1,27 +1,11 @@
 #!/usr/bin/env python
 
-from os_versions import (
-    OPENSTACK_CODENAMES,
-    SWIFT_CODENAMES,
-    PACKAGE_CODENAMES,
-)
-
 import swiftclient
 import glanceclient
 from aodhclient.v2 import client as aodh_client
-from keystoneclient.v2_0 import client as keystoneclient_v2
-from keystoneclient.v3 import client as keystoneclient_v3
-from keystoneauth1 import session
-from keystoneauth1.identity import (
-    v3,
-    v2,
-)
-import mojo_utils
-from novaclient import client as novaclient_client
-from novaclient import exceptions as novaclient_exceptions
-from neutronclient.v2_0 import client as neutronclient
-from neutronclient.common import exceptions as neutronexceptions
 
+import mojo_utils
+from novaclient import exceptions as novaclient_exceptions
 
 import designateclient
 import designateclient.client as designate_client
@@ -31,98 +15,36 @@ import designateclient.exceptions as des_exceptions
 
 import logging
 import re
-import sys
 import tempfile
-import urllib
 import os
+import six
+import sys
 import time
 import subprocess
 import paramiko
-import StringIO
 import dns.resolver
 
-CHARM_TYPES = {
-    'neutron': {
-        'pkg': 'neutron-common',
-        'origin_setting': 'openstack-origin'
-    },
-    'nova': {
-        'pkg': 'nova-common',
-        'origin_setting': 'openstack-origin'
-    },
-    'glance': {
-        'pkg': 'glance-common',
-        'origin_setting': 'openstack-origin'
-    },
-    'cinder': {
-        'pkg': 'cinder-common',
-        'origin_setting': 'openstack-origin'
-    },
-    'keystone': {
-        'pkg': 'keystone',
-        'origin_setting': 'openstack-origin'
-    },
-    'openstack-dashboard': {
-        'pkg': 'openstack-dashboard',
-        'origin_setting': 'openstack-origin'
-    },
-    'ceilometer': {
-        'pkg': 'ceilometer-common',
-        'origin_setting': 'openstack-origin'
-    },
-}
-UPGRADE_SERVICES = [
-    {'name': 'keystone', 'type': CHARM_TYPES['keystone']},
-    {'name': 'nova-cloud-controller', 'type': CHARM_TYPES['nova']},
-    {'name': 'nova-compute', 'type': CHARM_TYPES['nova']},
-    {'name': 'neutron-api', 'type': CHARM_TYPES['neutron']},
-    {'name': 'neutron-gateway', 'type': CHARM_TYPES['neutron']},
-    {'name': 'glance', 'type': CHARM_TYPES['glance']},
-    {'name': 'cinder', 'type': CHARM_TYPES['cinder']},
-    {'name': 'openstack-dashboard',
-     'type': CHARM_TYPES['openstack-dashboard']},
-    {'name': 'ceilometer', 'type': CHARM_TYPES['ceilometer']},
-]
+from zaza.utilities.os_versions import (
+    OPENSTACK_CODENAMES,
+)
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
+
+if six.PY3:
+    from urllib.request import urlretrieve
+    from io import StringIO
+else:
+    from urllib import urlretrieve
+    from StringIO import StringIO
+
+
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+import mojo_utils  # noqa
 
 
 # Openstack Client helpers
-def get_nova_creds(cloud_creds):
-    auth = get_ks_creds(cloud_creds)
-    if cloud_creds.get('OS_PROJECT_ID'):
-        auth['project_id'] = cloud_creds.get('OS_PROJECT_ID')
-    return auth
-
-
-def get_ks_creds(cloud_creds, scope='PROJECT'):
-    if cloud_creds.get('API_VERSION', 2) == 2:
-        auth = {
-            'username': cloud_creds['OS_USERNAME'],
-            'password': cloud_creds['OS_PASSWORD'],
-            'auth_url': cloud_creds['OS_AUTH_URL'],
-            'tenant_name': (cloud_creds.get('OS_PROJECT_NAME') or
-                            cloud_creds['OS_TENANT_NAME']),
-        }
-    else:
-        if scope == 'DOMAIN':
-            auth = {
-                'username': cloud_creds['OS_USERNAME'],
-                'password': cloud_creds['OS_PASSWORD'],
-                'auth_url': cloud_creds['OS_AUTH_URL'],
-                'user_domain_name': cloud_creds['OS_USER_DOMAIN_NAME'],
-                'domain_name': cloud_creds['OS_DOMAIN_NAME'],
-            }
-        else:
-            auth = {
-                'username': cloud_creds['OS_USERNAME'],
-                'password': cloud_creds['OS_PASSWORD'],
-                'auth_url': cloud_creds['OS_AUTH_URL'],
-                'user_domain_name': cloud_creds['OS_USER_DOMAIN_NAME'],
-                'project_domain_name': cloud_creds['OS_PROJECT_DOMAIN_NAME'],
-                'project_name': cloud_creds['OS_PROJECT_NAME'],
-            }
-    return auth
-
-
 def get_swift_creds(cloud_creds):
     auth = {
         'user': cloud_creds['OS_USERNAME'],
@@ -134,57 +56,8 @@ def get_swift_creds(cloud_creds):
     return auth
 
 
-def get_nova_client(novarc_creds, insecure=True):
-    nova_creds = get_nova_creds(novarc_creds)
-    nova_creds['insecure'] = insecure
-    nova_creds['version'] = 2
-    return novaclient_client.Client(**nova_creds)
-
-
-def get_nova_session_client(session):
-    return novaclient_client.Client(2, session=session)
-
-
-def get_neutron_client(novarc_creds, insecure=True):
-    neutron_creds = get_ks_creds(novarc_creds)
-    neutron_creds['insecure'] = insecure
-    return neutronclient.Client(**neutron_creds)
-
-
-def get_neutron_session_client(session):
-    return neutronclient.Client(session=session)
-
-
 def get_aodh_session_client(session):
     return aodh_client.Client(session=session)
-
-
-def get_keystone_session(novarc_creds, insecure=True, scope='PROJECT'):
-    keystone_creds = get_ks_creds(novarc_creds, scope=scope)
-    if novarc_creds.get('API_VERSION', 2) == 2:
-        auth = v2.Password(**keystone_creds)
-    else:
-        auth = v3.Password(**keystone_creds)
-    return session.Session(auth=auth, verify=not insecure)
-
-
-def get_keystone_session_client(session):
-    return keystoneclient_v3.Client(session=session)
-
-
-def get_keystone_client(novarc_creds, insecure=True):
-    keystone_creds = get_ks_creds(novarc_creds)
-    if novarc_creds.get('API_VERSION', 2) == 2:
-        auth = v2.Password(**keystone_creds)
-        sess = session.Session(auth=auth, verify=True)
-        client = keystoneclient_v2.Client(session=sess)
-    else:
-        auth = v3.Password(**keystone_creds)
-        sess = get_keystone_session(novarc_creds, insecure)
-        client = keystoneclient_v3.Client(session=sess)
-    # This populates the client.service_catalog
-    client.auth_ref = auth.get_access(sess)
-    return client
 
 
 def get_swift_client(novarc_creds, insecure=True):
@@ -216,21 +89,6 @@ def get_glance_session_client(session):
     return glanceclient.Client('1', session=session)
 
 
-def get_glance_client(novarc_creds, insecure=True):
-    if novarc_creds.get('API_VERSION', 2) == 2:
-        kc = get_keystone_client(novarc_creds)
-        glance_ep_url = kc.service_catalog.url_for(service_type='image',
-                                                   interface='publicURL')
-    else:
-        keystone_creds = get_ks_creds(novarc_creds, scope='PROJECT')
-        kc = keystoneclient_v3.Client(**keystone_creds)
-        glance_svc_id = kc.services.find(name='glance').id
-        ep = kc.endpoints.find(service_id=glance_svc_id, interface='public')
-        glance_ep_url = ep.url
-    return glanceclient.Client('1', glance_ep_url, token=kc.auth_token,
-                               insecure=insecure)
-
-
 # Glance Helpers
 def download_image(image, image_glance_name=None):
     logging.info('Downloading ' + image)
@@ -238,14 +96,14 @@ def download_image(image, image_glance_name=None):
     if not image_glance_name:
         image_glance_name = image.split('/')[-1]
     local_file = os.path.join(tmp_dir, image_glance_name)
-    urllib.urlretrieve(image, local_file)
+    urlretrieve(image, local_file)
     return local_file
 
 
 def upload_image(gclient, ifile, image_name, public, disk_format,
                  container_format):
     logging.info('Uploading %s to glance ' % (image_name))
-    with open(ifile) as fimage:
+    with open(ifile, 'rb') as fimage:
         gclient.images.create(
             name=image_name,
             is_public=public,
@@ -307,7 +165,8 @@ def user_create_v2(kclient, users):
                             'exists' % (user['username']))
         else:
             logging.info('Creating user %s' % (user['username']))
-            project_id = get_project_id(kclient, user['project'])
+            project_id = openstack_utils.get_project_id(
+                kclient, user['project'])
             kclient.users.create(name=user['username'],
                                  password=user['password'],
                                  email=user['email'],
@@ -324,8 +183,8 @@ def user_create_v3(kclient, users):
         else:
             if user['scope'] == 'project':
                 logging.info('Creating user %s' % (user['username']))
-                project_id = get_project_id(kclient, project,
-                                            api_version=3)
+                project_id = openstack_utils.get_project_id(
+                    kclient, project, api_version=3)
                 kclient.users.create(name=user['username'],
                                      password=user['password'],
                                      email=user['email'],
@@ -342,7 +201,8 @@ def get_roles_for_user(kclient, user_id, tenant_id):
 
 def add_users_to_roles(kclient, users):
     for user_details in users:
-        tenant_id = get_project_id(kclient, user_details['project'])
+        tenant_id = openstack_utils.get_project_id(
+            kclient, user_details['project'])
         for role_name in user_details['roles']:
             role = kclient.roles.find(name=role_name)
             user = kclient.users.find(name=user_details['username'])
@@ -356,455 +216,6 @@ def add_users_to_roles(kclient, users):
                                      tenant_id))
                 kclient.roles.add_user_role(user_details['username'], role,
                                             tenant_id)
-
-
-def get_project_id(ks_client, project_name, api_version=2, domain_name=None):
-    domain_id = None
-    if domain_name:
-        domain_id = ks_client.domains.list(name=domain_name)[0].id
-    all_projects = ks_client.projects.list(domain=domain_id)
-    for t in all_projects:
-        if t._info['name'] == project_name:
-            return t._info['id']
-    return None
-
-
-# Neutron Helpers
-def get_gateway_uuids():
-    gateway_config = mojo_utils.get_juju_status('neutron-gateway')
-    uuids = []
-    for machine in gateway_config['machines']:
-        uuids.append(gateway_config['machines'][machine]['instance-id'])
-    return uuids
-
-
-def get_ovs_uuids():
-    gateway_config = mojo_utils.get_juju_status('neutron-openvswitch')
-    uuids = []
-    for machine in gateway_config['machines']:
-        uuids.append(gateway_config['machines'][machine]['instance-id'])
-    return uuids
-
-
-BRIDGE_MAPPINGS = 'bridge-mappings'
-NEW_STYLE_NETWORKING = 'physnet1:br-ex'
-
-
-def deprecated_external_networking(dvr_mode=False):
-    '''Determine whether deprecated external network mode is in use'''
-    bridge_mappings = None
-    if dvr_mode:
-        bridge_mappings = mojo_utils.juju_get('neutron-openvswitch',
-                                              BRIDGE_MAPPINGS)
-    else:
-        bridge_mappings = mojo_utils.juju_get('neutron-gateway',
-                                              BRIDGE_MAPPINGS)
-
-    if bridge_mappings == NEW_STYLE_NETWORKING:
-        return False
-    return True
-
-
-def get_net_uuid(neutron_client, net_name):
-    network = neutron_client.list_networks(name=net_name)['networks'][0]
-    return network['id']
-
-
-def get_admin_net(neutron_client):
-    for net in neutron_client.list_networks()['networks']:
-        if net['name'].endswith('_admin_net'):
-            return net
-
-
-def configure_gateway_ext_port(novaclient, neutronclient,
-                               dvr_mode=None, net_id=None):
-    if dvr_mode:
-        uuids = get_ovs_uuids()
-    else:
-        uuids = get_gateway_uuids()
-
-    deprecated_extnet_mode = deprecated_external_networking(dvr_mode)
-
-    config_key = 'data-port'
-    if deprecated_extnet_mode:
-        config_key = 'ext-port'
-
-    if not net_id:
-        net_id = get_admin_net(neutronclient)['id']
-
-    for uuid in uuids:
-        server = novaclient.servers.get(uuid)
-        ext_port_name = "{}_ext-port".format(server.name)
-        for port in neutronclient.list_ports(device_id=server.id)['ports']:
-            if port['name'] == ext_port_name:
-                logging.warning('Neutron Gateway already has additional port')
-                break
-        else:
-            logging.info('Attaching additional port to instance, '
-                         'connected to net id: {}'.format(net_id))
-            body_value = {
-                "port": {
-                    "admin_state_up": True,
-                    "name": ext_port_name,
-                    "network_id": net_id,
-                    "port_security_enabled": False,
-                }
-            }
-            port = neutronclient.create_port(body=body_value)
-            server.interface_attach(port_id=port['port']['id'],
-                                    net_id=None, fixed_ip=None)
-    ext_br_macs = []
-    for port in neutronclient.list_ports(network_id=net_id)['ports']:
-        if 'ext-port' in port['name']:
-            if deprecated_extnet_mode:
-                ext_br_macs.append(port['mac_address'])
-            else:
-                ext_br_macs.append('br-ex:{}'.format(port['mac_address']))
-    ext_br_macs.sort()
-    ext_br_macs_str = ' '.join(ext_br_macs)
-    if dvr_mode:
-        service_name = 'neutron-openvswitch'
-    else:
-        service_name = 'neutron-gateway'
-    # XXX Trying to track down a failure with juju run neutron-gateway/0 in
-    #     the post juju_set check. Try a sleep here to see if some network
-    #     reconfigureing on the gateway is still in progress and that's
-    #     causing the issue
-    if ext_br_macs:
-        logging.info('Setting {} on {} external port to {}'.format(
-            config_key, service_name, ext_br_macs_str))
-        current_data_port = mojo_utils.juju_get(service_name, config_key)
-        if current_data_port == ext_br_macs_str:
-            logging.info('Config already set to value')
-            return
-        mojo_utils.juju_set(
-            service_name,
-            '{}={}'.format(config_key,
-                           ext_br_macs_str),
-            wait=False
-        )
-        time.sleep(240)
-        mojo_utils.juju_wait_finished()
-
-
-def create_project_network(neutron_client, project_id, net_name='private',
-                           shared=False, network_type='gre', domain=None):
-    networks = neutron_client.list_networks(name=net_name)
-    if len(networks['networks']) == 0:
-        logging.info('Creating network: %s',
-                     net_name)
-        network_msg = {
-            'network': {
-                'name': net_name,
-                'shared': shared,
-                'tenant_id': project_id,
-            }
-        }
-        if network_type == 'vxlan':
-            network_msg['network']['provider:segmentation_id'] = 1233
-            network_msg['network']['provider:network_type'] = network_type
-        network = neutron_client.create_network(network_msg)['network']
-    else:
-        logging.warning('Network %s already exists.', net_name)
-        network = networks['networks'][0]
-    return network
-
-
-def create_external_network(neutron_client, project_id, dvr_mode,
-                            net_name='ext_net'):
-    networks = neutron_client.list_networks(name=net_name)
-    if len(networks['networks']) == 0:
-        logging.info('Configuring external network')
-        network_msg = {
-            'name': net_name,
-            'router:external': True,
-            'tenant_id': project_id,
-        }
-        if not deprecated_external_networking(dvr_mode):
-            network_msg['provider:physical_network'] = 'physnet1'
-            network_msg['provider:network_type'] = 'flat'
-
-        logging.info('Creating new external network definition: %s',
-                     net_name)
-        network = neutron_client.create_network(
-            {'network': network_msg})['network']
-        logging.info('New external network created: %s', network['id'])
-    else:
-        logging.warning('Network %s already exists.', net_name)
-        network = networks['networks'][0]
-    return network
-
-
-def create_project_subnet(neutron_client, project_id, network, cidr, dhcp=True,
-                          subnet_name='private_subnet', domain=None,
-                          subnetpool=None, ip_version=4, prefix_len=24):
-    # Create subnet
-    subnets = neutron_client.list_subnets(name=subnet_name)
-    if len(subnets['subnets']) == 0:
-        logging.info('Creating subnet')
-        subnet_msg = {
-            'subnet': {
-                'name': subnet_name,
-                'network_id': network['id'],
-                'enable_dhcp': dhcp,
-                'ip_version': ip_version,
-                'tenant_id': project_id
-            }
-        }
-        if subnetpool:
-            subnet_msg['subnet']['subnetpool_id'] = subnetpool['id']
-            subnet_msg['subnet']['prefixlen'] = prefix_len
-        else:
-            subnet_msg['subnet']['cidr'] = cidr
-        subnet = neutron_client.create_subnet(subnet_msg)['subnet']
-    else:
-        logging.warning('Subnet %s already exists.', subnet_name)
-        subnet = subnets['subnets'][0]
-    return subnet
-
-
-def create_external_subnet(neutron_client, tenant_id, network,
-                           default_gateway=None, cidr=None,
-                           start_floating_ip=None, end_floating_ip=None,
-                           subnet_name='ext_net_subnet'):
-    subnets = neutron_client.list_subnets(name=subnet_name)
-    if len(subnets['subnets']) == 0:
-        subnet_msg = {
-            'name': subnet_name,
-            'network_id': network['id'],
-            'enable_dhcp': False,
-            'ip_version': 4,
-            'tenant_id': tenant_id
-        }
-
-        if default_gateway:
-            subnet_msg['gateway_ip'] = default_gateway
-        if cidr:
-            subnet_msg['cidr'] = cidr
-        if (start_floating_ip and end_floating_ip):
-            allocation_pool = {
-                'start': start_floating_ip,
-                'end': end_floating_ip,
-            }
-            subnet_msg['allocation_pools'] = [allocation_pool]
-
-        logging.info('Creating new subnet')
-        subnet = neutron_client.create_subnet({'subnet': subnet_msg})['subnet']
-        logging.info('New subnet created: %s', subnet['id'])
-    else:
-        logging.warning('Subnet %s already exists.', subnet_name)
-        subnet = subnets['subnets'][0]
-    return subnet
-
-
-def update_subnet_dns(neutron_client, subnet, dns_servers):
-    msg = {
-        'subnet': {
-            'dns_nameservers': dns_servers.split(',')
-        }
-    }
-    logging.info('Updating dns_nameservers (%s) for subnet',
-                 dns_servers)
-    neutron_client.update_subnet(subnet['id'], msg)
-
-
-def create_provider_router(neutron_client, tenant_id):
-    routers = neutron_client.list_routers(name='provider-router')
-    if len(routers['routers']) == 0:
-        logging.info('Creating provider router for external network access')
-        router_info = {
-            'router': {
-                'name': 'provider-router',
-                'tenant_id': tenant_id
-            }
-        }
-        router = neutron_client.create_router(router_info)['router']
-        logging.info('New router created: %s', (router['id']))
-    else:
-        logging.warning('Router provider-router already exists.')
-        router = routers['routers'][0]
-    return router
-
-
-def plug_extnet_into_router(neutron_client, router, network):
-    ports = neutron_client.list_ports(device_owner='network:router_gateway',
-                                      network_id=network['id'])
-    if len(ports['ports']) == 0:
-        logging.info('Plugging router into ext_net')
-        router = neutron_client.add_gateway_router(
-            router=router['id'],
-            body={'network_id': network['id']})
-        logging.info('Router connected')
-    else:
-        logging.warning('Router already connected')
-
-
-def plug_subnet_into_router(neutron_client, router, network, subnet):
-    routers = neutron_client.list_routers(name=router)
-    if len(routers['routers']) == 0:
-        logging.error('Unable to locate provider router %s', router)
-        sys.exit(1)
-    else:
-        # Check to see if subnet already plugged into router
-        ports = neutron_client.list_ports(
-            device_owner='network:router_interface',
-            network_id=network['id'])
-        if len(ports['ports']) == 0:
-            logging.info('Adding interface from subnet to %s' % (router))
-            router = routers['routers'][0]
-            neutron_client.add_interface_router(router['id'],
-                                                {'subnet_id': subnet['id']})
-        else:
-            logging.warning('Router already connected to subnet')
-
-
-def create_address_scope(neutron_client, project_id, name, ip_version=4):
-    """Create address scope
-
-    :param ip_version: integer 4 or 6
-    :param name: strint name for the address scope
-    """
-    address_scopes = neutron_client.list_address_scopes(name=name)
-    if len(address_scopes['address_scopes']) == 0:
-        logging.info('Creating {} address scope'.format(name))
-        address_scope_info = {
-            'address_scope': {
-                'name': name,
-                'shared': True,
-                'ip_version': ip_version,
-                'tenant_id': project_id,
-            }
-        }
-        address_scope = neutron_client.create_address_scope(
-                address_scope_info)['address_scope']
-        logging.info('New address scope created: %s', (address_scope['id']))
-    else:
-        logging.warning('Address scope {} already exists.'.format(name))
-        address_scope = address_scopes['address_scopes'][0]
-    return address_scope
-
-
-def create_subnetpool(neutron_client, project_id, name, subnetpool_prefix,
-                      address_scope, shared=True, domain=None):
-    subnetpools = neutron_client.list_subnetpools(name=name)
-    if len(subnetpools['subnetpools']) == 0:
-        logging.info('Creating subnetpool: %s',
-                     name)
-        subnetpool_msg = {
-            'subnetpool': {
-                'name': name,
-                'shared': shared,
-                'tenant_id': project_id,
-                'prefixes': [subnetpool_prefix],
-                'address_scope_id': address_scope['id'],
-            }
-        }
-        subnetpool = neutron_client.create_subnetpool(
-                subnetpool_msg)['subnetpool']
-    else:
-        logging.warning('Network %s already exists.', name)
-        subnetpool = subnetpools['subnetpools'][0]
-    return subnetpool
-
-
-def create_bgp_speaker(neutron_client, local_as=12345, ip_version=4,
-                       name='bgp-speaker'):
-    """Create BGP Speaker
-
-    @param neutron_client: Instance of neutronclient.v2.Client
-    @param local_as: int Local Autonomous System Number
-    @returns dict BGP Speaker object
-    """
-    bgp_speakers = neutron_client.list_bgp_speakers(name=name)
-    if len(bgp_speakers['bgp_speakers']) == 0:
-        logging.info('Creating BGP Speaker')
-        bgp_speaker_msg = {
-            'bgp_speaker': {
-                'name': name,
-                'local_as': local_as,
-                'ip_version': ip_version,
-            }
-        }
-        bgp_speaker = neutron_client.create_bgp_speaker(
-                bgp_speaker_msg)['bgp_speaker']
-    else:
-        logging.warning('BGP Speaker %s already exists.', name)
-        bgp_speaker = bgp_speakers['bgp_speakers'][0]
-    return bgp_speaker
-
-
-def add_network_to_bgp_speaker(neutron_client, bgp_speaker, network_name):
-    """Advertise network on BGP Speaker
-
-    @param neutron_client: Instance of neutronclient.v2.Client
-    @param bgp_speaker: dict BGP Speaker object
-    @param network_name: str Name of network to advertise
-    @returns None
-    """
-    network_id = get_net_uuid(neutron_client, network_name)
-    # There is no direct way to determine which networks have already
-    # been advertised. For example list_route_advertised_from_bgp_speaker shows
-    # ext_net as FIP /32s.
-    # Handle the expected exception if the route is already advertised
-    try:
-        logging.info('Advertising {} network on BGP Speaker {}'
-                     .format(network_name, bgp_speaker['name']))
-        neutron_client.add_network_to_bgp_speaker(bgp_speaker['id'],
-                                                  {'network_id': network_id})
-    except neutronexceptions.InternalServerError:
-        logging.warning('{} network already advertised.'.format(network_name))
-
-
-def create_bgp_peer(neutron_client, peer_application_name='quagga',
-                    remote_as=10000, auth_type='none'):
-    """Create BGP Peer
-
-    @param neutron_client: Instance of neutronclient.v2.Client
-    @param peer_application_name: str Name of juju application to find peer IP
-                                  Default: 'quagga'
-    @param remote_as: int Remote Autonomous System Number
-    @param auth_type: str BGP authentication type.
-                      Default: 'none'
-    @returns dict BGP Peer object
-    """
-    peer_unit = mojo_utils.get_juju_units(service=peer_application_name)[0]
-    peer_ip = mojo_utils.get_juju_unit_ip(peer_unit)
-    bgp_peers = neutron_client.list_bgp_peers(name=peer_application_name)
-    if len(bgp_peers['bgp_peers']) == 0:
-        logging.info('Creating BGP Peer')
-        bgp_peer_msg = {
-            'bgp_peer': {
-                'name': peer_application_name,
-                'peer_ip': peer_ip,
-                'remote_as': remote_as,
-                'auth_type': auth_type,
-            }
-        }
-        bgp_peer = neutron_client.create_bgp_peer(bgp_peer_msg)['bgp_peer']
-    else:
-        logging.warning('BGP Peer %s already exists.', peer_ip)
-        bgp_peer = bgp_peers['bgp_peers'][0]
-    return bgp_peer
-
-
-def add_peer_to_bgp_speaker(neutron_client, bgp_speaker, bgp_peer):
-    """Setup BGP peering relationship with BGP Peer and BGP Speaker
-
-    @param neutron_client: Instance of neutronclient.v2.Client
-    @param bgp_speaker: dict BGP Speaker object
-    @param bgp_peer: dict BGP Peer object
-    @returns None
-    """
-    # Handle the expected exception if the peer is already on the
-    # speaker
-    try:
-        logging.info('Adding peer {} on BGP Speaker {}'
-                     .format(bgp_peer['name'], bgp_speaker['name']))
-        neutron_client.add_peer_to_bgp_speaker(bgp_speaker['id'],
-                                               {'bgp_peer_id': bgp_peer['id']})
-    except neutronexceptions.Conflict:
-        logging.warning('{} peer already on BGP speaker.'
-                        .format(bgp_peer['name']))
 
 
 # Nova Helpers
@@ -840,6 +251,8 @@ def boot_instance(nova_client, neutron_client, image_name,
 def wait_for_active(nova_client, vm_name, wait_time):
     logging.info('Waiting %is for %s to reach ACTIVE '
                  'state' % (wait_time, vm_name))
+    # Pause here to avoid race
+    time.sleep(10)
     for counter in range(wait_time):
         # trying getting the servers a few times; it seems that nova client
         # randomly generates 400 errors and just trying again can clear the
@@ -953,48 +366,6 @@ def add_secgroup_rules(nova_client):
                                                 to_port=-1)
 
 
-def add_neutron_secgroup_rules(neutron_client, project_id):
-    secgroup = None
-    for group in neutron_client.list_security_groups().get('security_groups'):
-        if (group.get('name') == 'default' and
-            (group.get('project_id') == project_id or
-                (group.get('tenant_id') == project_id))):
-            secgroup = group
-    if not secgroup:
-        raise Exception("Failed to find default security group")
-    # Using presence of a 22 rule to indicate whether secgroup rules
-    # have been added
-    port_rules = [rule['port_range_min'] for rule in
-                  secgroup.get('security_group_rules')]
-    protocol_rules = [rule['protocol'] for rule in
-                      secgroup.get('security_group_rules')]
-    if 22 in port_rules:
-        logging.warn('Security group rules for ssh already added')
-    else:
-        logging.info('Adding ssh security group rule')
-        neutron_client.create_security_group_rule(
-            {'security_group_rule':
-                {'security_group_id': secgroup.get('id'),
-                 'protocol': 'tcp',
-                 'port_range_min': 22,
-                 'port_range_max': 22,
-                 'direction': 'ingress',
-                 }
-             })
-
-    if 'icmp' in protocol_rules:
-        logging.warn('Security group rules for ping already added')
-    else:
-        logging.info('Adding ping security group rule')
-        neutron_client.create_security_group_rule(
-            {'security_group_rule':
-                {'security_group_id': secgroup.get('id'),
-                 'protocol': 'icmp',
-                 'direction': 'ingress',
-                 }
-             })
-
-
 def ping(ip):
     # Use the system ping command with count of 1 and wait time of 1.
     ret = subprocess.call(['ping', '-c', '1', '-W', '1', ip],
@@ -1008,7 +379,7 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     if privkey:
-        key = paramiko.RSAKey.from_private_key(StringIO.StringIO(privkey))
+        key = paramiko.RSAKey.from_private_key(StringIO(privkey))
         ssh.connect(ip, username=username, password='', pkey=key)
     else:
         ssh.connect(ip, username=username, password=password)
@@ -1028,7 +399,8 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
 def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
                   number, privkey, active_wait=180, cloudinit_wait=180,
                   ping_wait=180):
-    image_config = mojo_utils.get_mojo_config('images.yaml')
+    image_file = mojo_utils.get_mojo_file('images.yaml')
+    image_config = _local_utils.get_yaml_config(image_file)
     for counter in range(number):
         instance = boot_instance(nova_client,
                                  neutron_client,
@@ -1065,25 +437,12 @@ def check_guest_connectivity(nova_client, ping_wait=180):
 
 # Hacluster helper
 
-def get_juju_leader(service):
-    # XXX Juju status should report the leader but doesn't at the moment.
-    # So, until it does run leader on the units
-    for unit in mojo_utils.get_juju_units(service=service):
-        leader_out = mojo_utils.remote_run(unit, 'is-leader')[0].strip()
-        if leader_out == 'True':
-            return unit
-
-
-def delete_juju_leader(service, resource=None, method='juju'):
-    mojo_utils.delete_unit(get_juju_leader(service), method=method)
-
-
 def get_crm_leader(service, resource=None):
     if not resource:
         resource = 'res_.*_vip'
     leader = set()
-    for unit in mojo_utils.get_juju_units(service=service):
-        crm_out = mojo_utils.remote_run(unit, 'sudo crm status')[0]
+    for unit in mojo_utils.get_juju_units(service):
+        crm_out = _local_utils.remote_run(unit, 'sudo crm status')
         for line in crm_out.splitlines():
             line = line.lstrip()
             if re.match(resource, line):
@@ -1098,64 +457,12 @@ def delete_crm_leader(service, resource=None, method='juju'):
     unit = mojo_utils.convert_machineno_to_unit(mach_no)
     mojo_utils.delete_unit(unit, method=method)
 
+
 # OpenStack Version helpers
-
-# XXX get_swift_codename and get_os_code_info are based on the functions with
-# the same name in ~charm-helpers/charmhelpers/contrib/openstack/utils.py
-# It'd be neat if we actually shared a common library.
-
-
-def get_swift_codename(version):
-    '''Determine OpenStack codename that corresponds to swift version.'''
-    codenames = [k for k, v in six.iteritems(SWIFT_CODENAMES) if version in v]
-    return codenames[0]
-
-
-def get_os_code_info(package, pkg_version):
-    # {'code_num': entry, 'code_name': OPENSTACK_CODENAMES[entry]}
-    # Remove epoch if it exists
-    if ':' in pkg_version:
-        pkg_version = pkg_version.split(':')[1:][0]
-    if 'swift' in package:
-        # Fully x.y.z match for swift versions
-        match = re.match('^(\d+)\.(\d+)\.(\d+)', pkg_version)
-    else:
-        # x.y match only for 20XX.X
-        # and ignore patch level for other packages
-        match = re.match('^(\d+)\.(\d+)', pkg_version)
-
-    if match:
-        vers = match.group(0)
-    # Generate a major version number for newer semantic
-    # versions of openstack projects
-    major_vers = vers.split('.')[0]
-    if (package in PACKAGE_CODENAMES and
-            major_vers in PACKAGE_CODENAMES[package]):
-        return PACKAGE_CODENAMES[package][major_vers]
-    else:
-        # < Liberty co-ordinated project versions
-        if 'swift' in package:
-            return get_swift_codename(vers)
-        else:
-            return OPENSTACK_CODENAMES[vers]
-
-
 def next_release(release):
-    old_index = OPENSTACK_CODENAMES.values().index(release)
+    old_index = list(OPENSTACK_CODENAMES.values()).index(release)
     new_index = old_index + 1
-    return OPENSTACK_CODENAMES.items()[new_index]
-
-
-def get_current_os_versions(deployed_services):
-    versions = {}
-    for service in UPGRADE_SERVICES:
-        if service['name'] not in deployed_services:
-            continue
-        version = mojo_utils.get_pkg_version(service['name'],
-                                             service['type']['pkg'])
-        versions[service['name']] = get_os_code_info(service['type']['pkg'],
-                                                     version)
-    return versions
+    return list(OPENSTACK_CODENAMES.items())[new_index]
 
 
 def get_lowest_os_version(current_versions):
@@ -1427,15 +734,13 @@ def check_dns_entry(des_client, ip, domain, record_name, juju_status=None,
     @param record_name: str record name
     @param juju_status: dict Current juju status
     """
-    if not juju_status:
-        juju_status = mojo_utils.get_juju_status()
     if designate_api == '1':
         check_dns_entry_in_designate_v1(des_client, ip, domain,
                                         record_name=record_name)
     else:
         check_dns_entry_in_designate_v2(des_client, [ip], domain,
                                         record_name=record_name)
-    check_dns_entry_in_bind(ip, record_name, juju_status=juju_status)
+    check_dns_entry_in_bind(ip, record_name)
 
 
 def check_dns_entry_in_designate_v1(des_client, ip, domain, record_name=None):
@@ -1496,15 +801,10 @@ def check_dns_entry_in_bind(ip, record_name, juju_status=None):
     @param record_name: str record name
     @param juju_status: dict Current juju status
     """
-    if not juju_status:
-        juju_status = mojo_utils.get_juju_status()
-
-    bind_units = mojo_utils.get_juju_units(
-        service='designate-bind',
-        juju_status=juju_status)
+    bind_units = mojo_utils.get_juju_units('designate-bind')
 
     for unit in bind_units:
-        addr = mojo_utils.get_juju_unit_ip(unit, juju_status=juju_status)
+        addr = mojo_utils.get_juju_unit_ip(unit)
         logging.info("Checking {} is {} against {} ({})".format(
             record_name,
             ip,

@@ -5,6 +5,11 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import logging
 
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
+
 
 def lookup_cirros_server(clients):
     cirros_images = get_cirros_images(clients)
@@ -82,29 +87,19 @@ def get_server_floating_ip(server):
 def main(argv):
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("urllib3").setLevel(logging.WARNING)
-    # Keystone policy.json shipped the charm with liberty requires a domain
-    # scoped token. Bug #1649106
-    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
-    if os_version == 'liberty':
-        scope = 'DOMAIN'
-    else:
-        scope = 'PROJECT'
-    undercloud_novarc = mojo_utils.get_undercloud_auth()
-    keystone_session_uc = mojo_os_utils.get_keystone_session(undercloud_novarc,
-                                                             scope=scope)
-    under_novac = mojo_os_utils.get_nova_session_client(keystone_session_uc)
+    keystone_session_uc = openstack_utils.get_undercloud_keystone_session()
+    under_novac = openstack_utils.get_nova_session_client(keystone_session_uc)
 
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
-    keystone_session_oc = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                             scope=scope)
-    clients = {'neutron': mojo_os_utils.get_neutron_session_client(
+    keystone_session_oc = openstack_utils.get_overcloud_keystone_session()
+    clients = {'neutron': openstack_utils.get_neutron_session_client(
                    keystone_session_oc),
-               'nova': mojo_os_utils.get_nova_session_client(
+               'nova': openstack_utils.get_nova_session_client(
                    keystone_session_oc),
                'glance': mojo_os_utils.get_glance_session_client(
                    keystone_session_oc),
                }
-    image_config = mojo_utils.get_mojo_config('images.yaml')
+    image_file = mojo_utils.get_mojo_file('images.yaml')
+    image_config = _local_utils.get_yaml_config(image_file)
     image_password = image_config['cirros']['password']
     # Look for existing Cirros guest
     server, ip = get_cirros_server(clients, image_password)

@@ -2,16 +2,19 @@
 import logging
 import sys
 import time
-import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
+
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
 
 
 def main(argv):
-    mojo_utils.setup_logging()
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
+    _local_utils.setup_logging()
+    keystone_session = openstack_utils.get_overcloud_keystone_session()
     aodhc = mojo_os_utils.get_aodh_session_client(keystone_session)
-    nova_client = mojo_os_utils.get_nova_session_client(keystone_session)
+    nova_client = openstack_utils.get_nova_session_client(keystone_session)
 
     servers = nova_client.servers.list()
     assert servers, "No servers available for AODH testing"

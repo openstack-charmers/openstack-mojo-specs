@@ -1,11 +1,13 @@
 #!/usr/bin/env python
+import logging
 import threading
 import hashlib
 import string
 import random
 import utils.mojo_os_utils as mojo_os_utils
-import utils.mojo_utils as mojo_utils
 import sys
+
+from zaza.utilities import openstack_utils
 
 
 class ObjectPushPull(threading.Thread):
@@ -21,7 +23,7 @@ class ObjectPushPull(threading.Thread):
         self.failures = 0
 
     def get_hash(self, rstring):
-        hash_object = hashlib.sha1(rstring)
+        hash_object = hashlib.sha1(rstring.encode('UTF-8'))
         return hash_object.hexdigest()
 
     def get_test_string(self,):
@@ -31,8 +33,8 @@ class ObjectPushPull(threading.Thread):
             'm': 100000,
             'l': 100000000,
         }
-        root_str = random.choice(string.letters)
-        root_str += random.choice(string.letters)
+        root_str = random.choice(string.ascii_letters)
+        root_str += random.choice(string.ascii_letters)
         return root_str*sizes[self.payload_size]
 
     def run(self):
@@ -47,8 +49,7 @@ class ObjectPushPull(threading.Thread):
                 self.failures += 1
 
     def get_swiftclient(self):
-        keystone_session = mojo_os_utils.get_keystone_session(
-                               mojo_utils.get_overcloud_auth())
+        keystone_session = openstack_utils.get_overcloud_keystone_session()
         swift_client = mojo_os_utils.get_swift_session_client(keystone_session)
         return swift_client
 
@@ -58,7 +59,7 @@ class ObjectPushPull(threading.Thread):
     def verify_file(self, fname, check_hash):
         headers, content = self.sc.get_object(self.container, fname,
                                               headers={'If-Match': self.etag})
-        return check_hash == self.get_hash(content)
+        return check_hash == self.get_hash(content.decode('UTF-8'))
 
     def upload_file(self, fname, contents):
         response = {}
@@ -80,7 +81,8 @@ def main(argv):
     print("Thread 2")
     print("    Successes: {}".format(thread2.successes))
     print("    Failures: {}".format(thread2.failures))
-    if thread2.failures > 0:
+    if (thread1.successes != 10 or thread2.successes != 100):
+        logging.error("Object Storage Test Failed")
         sys.exit(1)
 
 

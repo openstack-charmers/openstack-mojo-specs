@@ -3,22 +3,20 @@ import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
+
 
 def main(argv):
-    mojo_utils.setup_logging()
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
-    user_config = mojo_utils.get_mojo_config('keystone_users.yaml')
-    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
-    # Keystone policy.json shipped the charm with liberty requires a domain
-    # scoped token. Bug #1649106
-    if os_version == 'liberty':
-        scope = 'DOMAIN'
-    else:
-        scope = 'PROJECT'
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                          scope=scope)
-    keystone_client = (
-        mojo_os_utils.get_keystone_session_client(keystone_session))
+    _local_utils.setup_logging()
+    overcloud_novarc = openstack_utils.get_overcloud_auth()
+    user_file = mojo_utils.get_mojo_file('keystone_users.yaml')
+    user_config = _local_utils.get_yaml_config(user_file)
+    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    keystone_client = openstack_utils.get_keystone_session_client(
+        keystone_session)
     if overcloud_novarc.get('API_VERSION', 2) == 2:
         projects = [user['project'] for user in user_config]
         mojo_os_utils.project_create(keystone_client, projects)

@@ -1,18 +1,25 @@
 #!/usr/bin/env python
 import utils.mojo_utils as mojo_utils
-import utils.mojo_os_utils as mojo_os_utils
 import netaddr
 import logging
 
+from zaza import model
+from zaza.charm_lifecycle import utils as lifecycle_utils
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
+
 
 class VipPool():
-    def __init__(self, prov_net=None):
-        undercloud_novarc = mojo_utils.get_undercloud_auth()
-        neutronc = mojo_os_utils.get_neutron_client(undercloud_novarc)
+    def __init__(self, prov_net_id=None):
+        keystone_session = openstack_utils.get_undercloud_keystone_session()
+        neutronc = openstack_utils.get_neutron_session_client(
+            keystone_session)
         if prov_net_id:
             net = neutronc.list_networks(id=prov_net_id)['networks'][0]
         else:
-            net = mojo_os_utils.get_admin_net(neutronc)
+            net = openstack_utils.get_admin_net(neutronc)
         subnet_id = net['subnets'][0]
         subnet = neutronc.list_subnets(id=subnet_id)['subnets'][0]
         allocation_pools = subnet['allocation_pools']
@@ -40,8 +47,10 @@ class VipPool():
 
 logging.basicConfig(level=logging.INFO)
 vp = VipPool()
-juju_status = mojo_utils.get_juju_status()
-for svc in juju_status['services']:
-    if 'vip' in mojo_utils.juju_get_config_keys(svc):
-        mojo_utils.juju_set(svc, '%s=%s' % ('vip', vp.get_next()), wait=False)
+juju_status = _local_utils.get_full_juju_status()
+model_name = lifecycle_utils.get_juju_model()
+for application in juju_status.applications.keys():
+    if 'vip' in model.get_application_config(model_name, application).keys():
+        model.set_application_config(
+            model_name, application, {'vip': vp.get_next()})
 mojo_utils.juju_wait_finished()

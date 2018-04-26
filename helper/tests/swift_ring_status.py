@@ -3,6 +3,8 @@ import sys
 import utils.mojo_utils as mojo_utils
 import logging
 
+from zaza.utilities import _local_utils
+
 
 def process_ring_info(ring_info):
     ring_data = {}
@@ -15,21 +17,20 @@ def process_ring_info(ring_info):
 
 
 def verify_ring_data(ring_data):
-    ring_dict = ring_data.itervalues().next()
-    for unit in ring_data.iterkeys():
+    ring_dict = next(iter(ring_data.values()))
+    for unit in ring_data.keys():
         if ring_data[unit] != ring_dict:
             return False
     return True
 
 
-juju_status = mojo_utils.get_juju_status(service='swift-proxy')
-sp_units = mojo_utils.get_juju_units(juju_status=juju_status)
+sp_units = mojo_utils.get_juju_units('swift-proxy')
 ring_data = {}
 
 for unit in sp_units:
     cmd = 'ls -1 /etc/swift/*{.builder,.ring.gz,arse} 2>/dev/null ' \
           '| xargs -l md5sum'
-    out, err = mojo_utils.remote_run(unit, remote_cmd=cmd)
+    out = _local_utils.remote_run(unit, remote_cmd=cmd)
     ring_data[unit] = process_ring_info(out)
 
 if verify_ring_data(ring_data):

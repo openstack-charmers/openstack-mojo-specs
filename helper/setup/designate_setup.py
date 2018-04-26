@@ -5,14 +5,18 @@ import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 
-import designateclient
 from designateclient.v1.domains import Domain
 from designateclient.v1.records import Record
 from designateclient.v1.servers import Server
 
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
+
 
 def main(argv):
-    mojo_utils.setup_logging()
+    _local_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--resolver',
                         help='Resolver address. '
@@ -27,28 +31,23 @@ def main(argv):
                         default='designate-bind')
 
     options = parser.parse_args()
-    bind_service_name = mojo_utils.parse_mojo_arg(options, 'bind_service')
-    resolver = mojo_utils.parse_mojo_arg(options, 'resolver')
-    bind_unit = mojo_utils.get_juju_units(service=bind_service_name)[0]
+    bind_service_name = _local_utils.parse_arg(options, 'bind_service')
+    resolver = _local_utils.parse_arg(options, 'resolver')
+
+    bind_unit = mojo_utils.get_juju_units(bind_service_name)[0]
     if not resolver:
         resolver = mojo_utils.get_juju_unit_ip(bind_unit)
-    domain_name = mojo_utils.parse_mojo_arg(options, 'domain_name')
-    email = mojo_utils.parse_mojo_arg(options, 'email')
+    domain_name = _local_utils.parse_arg(options, 'domain_name')
+    email = _local_utils.parse_arg(options, 'email')
     nameserver = 'ns1.{}'.format(domain_name)
 
     logging.info('Setting up designate {} {}'.format(nameserver, resolver))
 
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
-    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
-    # Keystone policy.json shipped the charm with liberty requires a domain
-    # scoped token. Bug #1649106
-    if os_version == 'liberty':
-        scope = 'DOMAIN'
-    else:
-        scope = 'PROJECT'
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                          scope=scope)
-    neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
+    os_version = openstack_utils.get_current_os_versions(
+        'keystone')['keystone']
+
+    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    neutronc = openstack_utils.get_neutron_session_client(keystone_session)
 
     if os_version >= 'queens':
         designatec = mojo_os_utils.get_designate_session_client(
@@ -58,7 +57,7 @@ def main(argv):
             designatec,
             domain_name,
             email)
-        rs = mojo_os_utils.create_or_return_recordset(
+        mojo_os_utils.create_or_return_recordset(
             designatec,
             zone['id'],
             'www',
@@ -100,7 +99,7 @@ def main(argv):
             logging.info('{} record already exists.'.format(nameserver))
 
     logging.info('Update network to use domain {}'.format(domain_name))
-    net_uuid = mojo_os_utils.get_net_uuid(neutronc, 'private')
+    net_uuid = openstack_utils.get_net_uuid(neutronc, 'private')
     mojo_os_utils.update_network_dns(neutronc, net_uuid, domain_name)
 
 
