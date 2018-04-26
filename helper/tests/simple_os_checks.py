@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 import sys
-import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import argparse
+
+from zaza.utilities import (
+    _local_utils,
+    openstack_utils,
+)
+
 
 FLAVORS = {
     'm1.tiny': {
@@ -41,7 +46,7 @@ def init_flavors(nova_client):
 
 
 def main(argv):
-    mojo_utils.setup_logging()
+    _local_utils.setup_logging()
     parser = argparse.ArgumentParser()
     default_machines = ["cirros:m1.tiny:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")
@@ -49,38 +54,28 @@ def main(argv):
     parser.add_argument("--cloudinit_wait", default=180)
     parser.add_argument("--ping_wait", default=180)
     options = parser.parse_args()
-    machines = mojo_utils.parse_mojo_arg(options, 'machines', multiargs=True)
-    active_wait = int(mojo_utils.parse_mojo_arg(options, 'active_wait'))
-    cloudinit_wait = int(mojo_utils.parse_mojo_arg(options, 'cloudinit_wait'))
-    ping_wait = int(mojo_utils.parse_mojo_arg(options, 'ping_wait'))
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                          scope='PROJECT')
-    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
-    # Keystone policy.json shipped the charm with liberty requires a domain
-    # scoped token. Bug #1649106
-    if os_version == 'liberty':
-        project_query_session = mojo_os_utils.get_keystone_session(
-            overcloud_novarc,
-            scope='DOMAIN')
-    else:
-        project_query_session = keystone_session
-    keystonec = mojo_os_utils.get_keystone_session_client(
-        project_query_session)
+    machines = _local_utils.parse_arg(options, 'machines', multiargs=True)
+    active_wait = int(_local_utils.parse_arg(options, 'active_wait'))
+    cloudinit_wait = int(_local_utils.parse_arg(options, 'cloudinit_wait'))
+    ping_wait = int(_local_utils.parse_arg(options, 'ping_wait'))
+    overcloud_novarc = openstack_utils.get_overcloud_auth()
+    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    keystonec = openstack_utils.get_keystone_session_client(
+        keystone_session)
     domain = overcloud_novarc.get('OS_PROJECT_DOMAIN_NAME')
-    project_id = mojo_os_utils.get_project_id(
+    project_id = openstack_utils.get_project_id(
         keystonec,
         'admin',
         api_version=overcloud_novarc['API_VERSION'],
         domain_name=domain
     )
-    novac = mojo_os_utils.get_nova_session_client(keystone_session)
-    neutronc = mojo_os_utils.get_neutron_session_client(keystone_session)
+    novac = openstack_utils.get_nova_session_client(keystone_session)
+    neutronc = openstack_utils.get_neutron_session_client(keystone_session)
 
     init_flavors(novac)
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
-    mojo_os_utils.add_neutron_secgroup_rules(neutronc, project_id)
+    openstack_utils.add_neutron_secgroup_rules(neutronc, project_id)
     for server in novac.servers.list():
         novac.servers.delete(server.id)
     for instanceset in machines:

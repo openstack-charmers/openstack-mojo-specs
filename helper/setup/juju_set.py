@@ -3,6 +3,10 @@ import sys
 import utils.mojo_utils as mojo_utils
 import argparse
 
+from zaza import model
+from zaza.charm_lifecycle import utils as lifecycle_utils
+from zaza.utilities import _local_utils
+
 
 def main(argv):
     parser = argparse.ArgumentParser()
@@ -10,16 +14,19 @@ def main(argv):
     parser.add_argument("--kv")
     parser.add_argument("--wait")
     options = parser.parse_args()
-    service = mojo_utils.parse_mojo_arg(options, 'service')
-    kv = mojo_utils.parse_mojo_arg(options, 'kv')
-    wait = mojo_utils.parse_mojo_arg(options, 'wait')
+    application = _local_utils.parse_arg(options, 'service')
+    key, value = _local_utils.parse_arg(options, 'kv').split("=")
+    wait = _local_utils.parse_arg(options, 'wait')
     print("Wait: {}".format(wait))
     if wait is not None:
         wait = wait == 'True'
-    print("Service: {}".format(service))
-    print("Option: {}".format(kv))
+    print("Applicatoin: {}".format(application))
+    print("Option: {}={}".format(key, value))
     print("Wait: {}".format(wait))
-    mojo_utils.juju_set(service, kv, wait=wait)
+    model.set_application_config(
+        lifecycle_utils.get_juju_model(), application, {key: value})
+    if wait:
+        mojo_utils.juju_wait_finished()
 
 
 if __name__ == "__main__":

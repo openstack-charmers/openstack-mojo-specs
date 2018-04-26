@@ -120,7 +120,8 @@ def version():
     @returns string Juju version
     """
     try:
-        return subprocess.check_output([cmd(), 'version']).rstrip()
+        return subprocess.check_output(
+            [cmd(), 'version']).rstrip().decode('UTF-8')
     except OSError as e:
         raise JujuBinaryNotFound("Juju is not installed at {}. Error: {}"
                                  "".format(cmd(), e))
