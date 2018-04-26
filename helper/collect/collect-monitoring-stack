@@ -1,0 +1,10 @@
+kibana              cs:~ivoks/kibana
+elasticsearch       cs:elasticsearch
+filebeat            cs:xenial/filebeat
+nagios              cs:xenial/nagios
+nrpe                cs:xenial/nrpe
+prometheus          cs:~prometheus-charmers/prometheus
+grafana             cs:~prometheus-charmers/grafana
+telegraf            cs:~telegraf-charmers/telegraf
+telegraf-prometheus cs:~telegraf-charmers/telegraf
+llpd                cs:~ivoks/lldpd

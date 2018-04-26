@@ -1,5 +1,6 @@
 # Collect the charm branches from Launchpad
 collect config=collect-next-${MOJO_SERIES}
+collect config=collect-monitoring-stack
 
 # Use juju deployer with full.yaml bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
