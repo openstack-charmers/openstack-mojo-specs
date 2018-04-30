@@ -1,0 +1,1 @@
+Deploys ubuntu-lite, and upgrades the charm between series.
