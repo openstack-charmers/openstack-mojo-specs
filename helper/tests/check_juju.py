@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 
 # Deprecated: Replace juju_wait* with zaza.model.wait_for_application_states
