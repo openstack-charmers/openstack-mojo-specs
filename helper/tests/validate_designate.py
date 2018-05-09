@@ -4,19 +4,19 @@ import sys
 import utils.mojo_os_utils as mojo_os_utils
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
     openstack_utils,
 )
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--domain_name', help='DNS Domain Name. '
                                                     'Must end in a .',
                         default='mojo.serverstack.')
     options = parser.parse_args()
-    domain_name = _local_utils.parse_arg(options, 'domain_name')
+    domain_name = cli_utils.parse_arg(options, 'domain_name')
 
     os_version = openstack_utils.get_current_os_versions(
         'keystone')['keystone']

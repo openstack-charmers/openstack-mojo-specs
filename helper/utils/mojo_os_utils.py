@@ -28,7 +28,8 @@ from zaza.utilities.os_versions import (
     OPENSTACK_CODENAMES,
 )
 from zaza.utilities import (
-    _local_utils,
+    generic_utils,
+    juju_utils,
     openstack_utils,
 )
 
@@ -400,7 +401,7 @@ def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
                   number, privkey, active_wait=180, cloudinit_wait=180,
                   ping_wait=180):
     image_file = mojo_utils.get_mojo_file('images.yaml')
-    image_config = _local_utils.get_yaml_config(image_file)
+    image_config = generic_utils.get_yaml_config(image_file)
     for counter in range(number):
         instance = boot_instance(nova_client,
                                  neutron_client,
@@ -442,7 +443,7 @@ def get_crm_leader(service, resource=None):
         resource = 'res_.*_vip'
     leader = set()
     for unit in mojo_utils.get_juju_units(service):
-        crm_out = _local_utils.remote_run(unit, 'sudo crm status')
+        crm_out = juju_utils.remote_run(unit, 'sudo crm status')
         for line in crm_out.splitlines():
             line = line.lstrip()
             if re.match(resource, line):

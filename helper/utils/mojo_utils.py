@@ -10,7 +10,7 @@ import juju_wait
 from collections import Counter
 import json
 
-from zaza.utilities import _local_utils
+from zaza.utilities import juju_utils
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 
@@ -35,25 +35,25 @@ class ConfigFileNotFound(Exception):
 
 def get_juju_status(application=None, unit=None):
     if application:
-        return _local_utils.get_application_status(application=application,
-                                                   unit=unit)
+        return juju_utils.get_application_status(application=application,
+                                                 unit=unit)
     if unit:
         application = unit.split('/')[0]
-        return _local_utils.get_application_status(application=application,
-                                                   unit=unit)
-    return json.loads(_local_utils.get_full_juju_status().to_json())
+        return juju_utils.get_application_status(application=application,
+                                                 unit=unit)
+    return json.loads(juju_utils.get_full_juju_status().to_json())
 
 
 def get_juju_units(application):
     """ Get units for an application
 
-    Move to zaza.utilities._local_utils ASAP
+    Move to zaza.utilities.juju_utils ASAP
 
     :param application: str application name
     :return: list of application units
     """
     logging.debug("get_juju_units: deprecated move to zaza.utilities."
-                  "_local_utils")
+                  "juju_utils")
     units = model.get_units(
         lifecycle_utils.get_juju_model(), application)
     return [unit.entity_id for unit in units]
@@ -69,15 +69,15 @@ def get_juju_unit_ip(unit):
 
 def get_principle_applications():
     return [application for application in
-            _local_utils.get_full_juju_status().applications.keys()
-            if not _local_utils.get_application_status(
+            juju_utils.get_full_juju_status().applications.keys()
+            if not juju_utils.get_application_status(
                 application)['subordinate-to']]
 
 
 def get_subordinate_applications():
     return [application for application in
-            _local_utils.get_full_juju_status().applications.keys()
-            if _local_utils.get_application_status(
+            juju_utils.get_full_juju_status().applications.keys()
+            if juju_utils.get_application_status(
                 application)['subordinate-to']]
 
 
@@ -143,7 +143,7 @@ def get_juju_leader(service):
     # XXX Juju status should report the leader but doesn't at the moment.
     # So, until it does run leader on the units
     for unit in get_juju_units(service):
-        leader_out = _local_utils.remote_run(unit, 'is-leader').strip()
+        leader_out = juju_utils.remote_run(unit, 'is-leader').strip()
         if leader_out == 'True':
             return unit
 
@@ -154,8 +154,8 @@ def delete_juju_leader(service, resource=None, method='juju'):
 
 def panic_unit(unit):
     panic_cmd = 'sudo bash -c "echo c > /proc/sysrq-trigger"'
-    _local_utils.remote_run(unit, timeout='5s', remote_cmd=panic_cmd,
-                            fatal=False)
+    juju_utils.remote_run(unit, timeout='5s', remote_cmd=panic_cmd,
+                          fatal=False)
 
 
 def delete_unit_openstack(unit):
@@ -167,7 +167,7 @@ def delete_unit_openstack(unit):
 
 
 def delete_unit_provider(unit):
-    if _local_utils.get_provider_type() == 'openstack':
+    if juju_utils.get_provider_type() == 'openstack':
         delete_unit_openstack(unit)
 
 
@@ -814,7 +814,7 @@ def get_ubuntu_version(service):
     versions = []
     for unit in get_juju_units(service):
         cmd = 'lsb_release -sc'
-        out = _local_utils.remote_run(unit, cmd)
+        out = juju_utils.remote_run(unit, cmd)
         versions.append(out.split()[0])
     if len(set(versions)) != 1:
         raise Exception('Unexpected output from ubuntu version check')

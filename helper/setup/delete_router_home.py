@@ -5,17 +5,17 @@ import logging
 import argparse
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
     openstack_utils,
 )
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("router", nargs="?")
     options = parser.parse_args()
-    router_name = _local_utils.parse_arg(options, 'router')
+    router_name = cli_utils.parse_arg(options, 'router')
     keystone_session = openstack_utils.get_overcloud_keystone_session()
     neutron_client = openstack_utils.get_neutron_session_client(
         keystone_session)

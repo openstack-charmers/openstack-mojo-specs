@@ -4,15 +4,15 @@ import utils.mojo_utils as mojo_utils
 import logging
 import argparse
 
-from zaza.utilities import _local_utils
+from zaza.utilities import cli_utils
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("application", nargs="*")
     options = parser.parse_args()
-    unit_args = _local_utils.parse_arg(
+    unit_args = cli_utils.parse_arg(
         options,
         'application', multiargs=True)
     for application in unit_args:

@@ -4,7 +4,7 @@ import utils.mojo_os_utils as mojo_os_utils
 import argparse
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
     openstack_utils,
 )
 
@@ -46,7 +46,7 @@ def init_flavors(nova_client):
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     default_machines = ["cirros:m1.tiny:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")
@@ -54,10 +54,10 @@ def main(argv):
     parser.add_argument("--cloudinit_wait", default=180)
     parser.add_argument("--ping_wait", default=180)
     options = parser.parse_args()
-    machines = _local_utils.parse_arg(options, 'machines', multiargs=True)
-    active_wait = int(_local_utils.parse_arg(options, 'active_wait'))
-    cloudinit_wait = int(_local_utils.parse_arg(options, 'cloudinit_wait'))
-    ping_wait = int(_local_utils.parse_arg(options, 'ping_wait'))
+    machines = cli_utils.parse_arg(options, 'machines', multiargs=True)
+    active_wait = int(cli_utils.parse_arg(options, 'active_wait'))
+    cloudinit_wait = int(cli_utils.parse_arg(options, 'cloudinit_wait'))
+    ping_wait = int(cli_utils.parse_arg(options, 'ping_wait'))
     overcloud_novarc = openstack_utils.get_overcloud_auth()
     keystone_session = openstack_utils.get_overcloud_keystone_session()
     keystonec = openstack_utils.get_keystone_session_client(

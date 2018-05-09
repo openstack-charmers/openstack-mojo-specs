@@ -7,7 +7,7 @@ import logging
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
-    _local_utils,
+    generic_utils,
     openstack_utils,
 )
 
@@ -56,7 +56,7 @@ def main(argv):
     model_name = lifecycle_utils.get_juju_model()
 
     results_file = mojo_utils.get_mojo_file('tempest_expected_results.yaml')
-    expected_results = _local_utils.get_yaml_config(
+    expected_results = generic_utils.get_yaml_config(
         results_file)['smoke']
     action = model.run_action_on_leader(
         model_name,

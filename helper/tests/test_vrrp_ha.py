@@ -6,7 +6,8 @@ import utils.mojo_os_utils as mojo_os_utils
 import logging
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
+    generic_utils,
     openstack_utils,
 )
 
@@ -85,7 +86,7 @@ def get_server_floating_ip(server):
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     logging.getLogger("urllib3").setLevel(logging.WARNING)
     keystone_session_uc = openstack_utils.get_undercloud_keystone_session()
     under_novac = openstack_utils.get_nova_session_client(keystone_session_uc)
@@ -99,7 +100,7 @@ def main(argv):
                    keystone_session_oc),
                }
     image_file = mojo_utils.get_mojo_file('images.yaml')
-    image_config = _local_utils.get_yaml_config(image_file)
+    image_config = generic_utils.get_yaml_config(image_file)
     image_password = image_config['cirros']['password']
     # Look for existing Cirros guest
     server, ip = get_cirros_server(clients, image_password)

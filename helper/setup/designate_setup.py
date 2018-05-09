@@ -10,13 +10,13 @@ from designateclient.v1.records import Record
 from designateclient.v1.servers import Server
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
     openstack_utils,
 )
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument('-r', '--resolver',
                         help='Resolver address. '
@@ -31,14 +31,14 @@ def main(argv):
                         default='designate-bind')
 
     options = parser.parse_args()
-    bind_service_name = _local_utils.parse_arg(options, 'bind_service')
-    resolver = _local_utils.parse_arg(options, 'resolver')
+    bind_service_name = cli_utils.parse_arg(options, 'bind_service')
+    resolver = cli_utils.parse_arg(options, 'resolver')
 
     bind_unit = mojo_utils.get_juju_units(bind_service_name)[0]
     if not resolver:
         resolver = mojo_utils.get_juju_unit_ip(bind_unit)
-    domain_name = _local_utils.parse_arg(options, 'domain_name')
-    email = _local_utils.parse_arg(options, 'email')
+    domain_name = cli_utils.parse_arg(options, 'domain_name')
+    email = cli_utils.parse_arg(options, 'email')
     nameserver = 'ns1.{}'.format(domain_name)
 
     logging.info('Setting up designate {} {}'.format(nameserver, resolver))
