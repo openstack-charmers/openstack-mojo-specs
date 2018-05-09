@@ -6,18 +6,19 @@ import logging
 import os
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
+    generic_utils,
     openstack_utils,
 )
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     session = openstack_utils.get_overcloud_keystone_session()
     glance_client = mojo_os_utils.get_glance_session_client(session)
     current_images = mojo_os_utils.get_images_list(glance_client)
     image_file = mojo_utils.get_mojo_file('images.yaml')
-    image_config = _local_utils.get_yaml_config(image_file)
+    image_config = generic_utils.get_yaml_config(image_file)
     cache_dir = '/tmp/img_cache'
     for image in image_config.keys():
         if image_config[image]['glance_name'] in current_images:

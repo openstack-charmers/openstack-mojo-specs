@@ -4,16 +4,17 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
+    generic_utils,
     openstack_utils,
 )
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     overcloud_novarc = openstack_utils.get_overcloud_auth()
     user_file = mojo_utils.get_mojo_file('keystone_users.yaml')
-    user_config = _local_utils.get_yaml_config(user_file)
+    user_config = generic_utils.get_yaml_config(user_file)
     keystone_session = openstack_utils.get_overcloud_keystone_session()
     keystone_client = openstack_utils.get_keystone_session_client(
         keystone_session)

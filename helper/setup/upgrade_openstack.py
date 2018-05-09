@@ -9,7 +9,7 @@ import subprocess
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
     openstack_utils,
 )
 
@@ -68,7 +68,7 @@ def get_upgrade_targets(target_release, current_versions):
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--target_release",
@@ -76,7 +76,7 @@ def main(argv):
                              "to have script upgrade based on the lowest value"
                              "across all services")
     options = parser.parse_args()
-    target_release = _local_utils.parse_arg(options, 'target_release')
+    target_release = cli_utils.parse_arg(options, 'target_release')
     principle_services = mojo_utils.get_principle_applications()
     current_versions = openstack_utils.get_current_os_versions(
         principle_services)

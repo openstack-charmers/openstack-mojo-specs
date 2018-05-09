@@ -3,7 +3,7 @@ import sys
 import utils.mojo_utils as mojo_utils
 import logging
 
-from zaza.utilities import _local_utils
+from zaza.utilities import juju_utils
 
 
 def process_ring_info(ring_info):
@@ -30,7 +30,7 @@ ring_data = {}
 for unit in sp_units:
     cmd = 'ls -1 /etc/swift/*{.builder,.ring.gz,arse} 2>/dev/null ' \
           '| xargs -l md5sum'
-    out = _local_utils.remote_run(unit, remote_cmd=cmd)
+    out = juju_utils.remote_run(unit, remote_cmd=cmd)
     ring_data[unit] = process_ring_info(out)
 
 if verify_ring_data(ring_data):

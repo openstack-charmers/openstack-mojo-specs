@@ -2,7 +2,7 @@
 import sys
 import utils.mojo_utils as mojo_utils
 
-from zaza.utilitites import _local_utils
+from zaza.utilitites import juju_utils
 
 
 def main(argv):
@@ -11,7 +11,7 @@ def main(argv):
     hashes = set()
     for unit in mojo_utils.get_juju_units('keystone'):
         mojo_utils.remote_upload(unit, cert_script, remote_script)
-        hashes.add(_local_utils.remote_run(unit, remote_script)[0].strip())
+        hashes.add(juju_utils.remote_run(unit, remote_script)[0].strip())
     if len(hashes) != 1:
         raise Exception('Keystone cert mismatch')
 

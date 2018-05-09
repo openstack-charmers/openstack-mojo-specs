@@ -4,7 +4,7 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
     openstack_utils,
 )
 
@@ -16,7 +16,7 @@ TEST_RECORD = {TEST_WWW_RECORD: '10.0.0.23'}
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     # Setup client
     keystone_session = openstack_utils.get_overcloud_keystone_session()
     os_version = openstack_utils.get_current_os_versions(

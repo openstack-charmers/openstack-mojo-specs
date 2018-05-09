@@ -7,12 +7,15 @@ import xml.dom.minidom
 import re
 import ast
 
-from zaza.utilities import _local_utils
+from zaza.utilities import (
+    cli_utils,
+    juju_utils,
+)
 
 
 def rabbit_unit_status(unit):
     cmd = 'rabbitmqctl -q cluster_status'
-    output = _local_utils.remote_run(
+    output = juju_utils.remote_run(
         unit, remote_cmd=cmd)
     output = output.replace('\n', '')
     matchObj = re.search(r'running_nodes,(.*)}, {partitions', output)
@@ -36,7 +39,7 @@ def rabbit_status():
 
 
 def unit_crm_online(unit):
-    xml_out = _local_utils.remote_run(
+    xml_out = juju_utils.remote_run(
         unit, remote_cmd='crm_mon -X')
     tree = xml.dom.minidom.parseString(xml_out)
     itemlist = tree.getElementsByTagName('node')
@@ -63,7 +66,7 @@ def check_crm_status(application):
     if not juju_units:
         return
     cmd = 'which crm_mon || echo "Not Found"'
-    output = _local_utils.remote_run(
+    output = juju_utils.remote_run(
         juju_units[0], remote_cmd=cmd)
     if output.rstrip() == "Not Found":
         return
@@ -88,7 +91,7 @@ def check_cluster_status(application):
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("term_method", default='juju', nargs='?')
     skip_applications = ['neutron-gateway', 'mongodb',

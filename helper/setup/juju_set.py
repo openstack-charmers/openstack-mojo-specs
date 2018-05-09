@@ -5,7 +5,7 @@ import argparse
 
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
-from zaza.utilities import _local_utils
+from zaza.utilities import cli_utils
 
 
 def main(argv):
@@ -14,9 +14,9 @@ def main(argv):
     parser.add_argument("--kv")
     parser.add_argument("--wait")
     options = parser.parse_args()
-    application = _local_utils.parse_arg(options, 'service')
-    key, value = _local_utils.parse_arg(options, 'kv').split("=")
-    wait = _local_utils.parse_arg(options, 'wait')
+    application = cli_utils.parse_arg(options, 'service')
+    key, value = cli_utils.parse_arg(options, 'kv').split("=")
+    wait = cli_utils.parse_arg(options, 'wait')
     print("Wait: {}".format(wait))
     if wait is not None:
         wait = wait == 'True'

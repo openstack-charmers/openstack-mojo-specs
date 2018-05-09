@@ -4,15 +4,15 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import argparse
 
-from zaza.utilitites import _local_utils
+from zaza.utilitites import cli_utils
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("term_method", default='juju', nargs='?')
     options = parser.parse_args()
-    term_method = _local_utils.parse_arg(options, 'term_method')
+    term_method = cli_utils.parse_arg(options, 'term_method')
     services = mojo_utils.get_principle_applications()
     for svc in services:
         doomed_service = services.pop(0)

@@ -6,7 +6,8 @@ import logging
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
-    _local_utils,
+    cli_utils,
+    juju_utils,
     openstack_utils,
 )
 
@@ -45,9 +46,9 @@ class VipPool():
             raise Exception("vip pool exhausted")
 
 
-logging.basicConfig(level=logging.INFO)
+cli_utils.setup_logging()
 vp = VipPool()
-juju_status = _local_utils.get_full_juju_status()
+juju_status = juju_utils.get_full_juju_status()
 model_name = lifecycle_utils.get_juju_model()
 for application in juju_status.applications.keys():
     if 'vip' in model.get_application_config(model_name, application).keys():

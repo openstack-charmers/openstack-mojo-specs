@@ -3,15 +3,15 @@ import sys
 import utils.mojo_utils as mojo_utils
 import argparse
 
-from zaza.utilities import _local_utils
+from zaza.utilities import cli_utils
 
 
 def main(argv):
-    _local_utils.setup_logging()
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("units", nargs="*")
     options = parser.parse_args()
-    unit_args = _local_utils.parse_arg(options, 'units', multiargs=True)
+    unit_args = cli_utils.parse_arg(options, 'units', multiargs=True)
     for unitreq in unit_args:
         if ':' in unitreq:
             application, unitcount = unitreq.split(':')
