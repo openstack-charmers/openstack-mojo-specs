@@ -7,8 +7,8 @@ import logging
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
-    generic_utils,
-    openstack_utils,
+    generic as generic_utils,
+    openstack as openstack_utils,
 )
 
 

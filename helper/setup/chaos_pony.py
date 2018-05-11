@@ -4,7 +4,7 @@ import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import argparse
 
-from zaza.utilitites import cli_utils
+from zaza.utilitites import cli as cli_utils
 
 
 def main(argv):

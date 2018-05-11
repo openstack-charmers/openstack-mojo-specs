@@ -10,8 +10,8 @@ from designateclient.v1.records import Record
 from designateclient.v1.servers import Server
 
 from zaza.utilities import (
-    cli_utils,
-    openstack_utils,
+    cli as cli_utils,
+    openstack as openstack_utils,
 )
 
 

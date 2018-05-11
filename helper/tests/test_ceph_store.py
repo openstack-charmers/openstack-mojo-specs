@@ -4,8 +4,8 @@ import argparse
 import sys
 
 from zaza.utilities import (
-    cli_utils,
-    juju_utils,
+    cli as cli_utils,
+    juju as juju_utils,
 )
 
 

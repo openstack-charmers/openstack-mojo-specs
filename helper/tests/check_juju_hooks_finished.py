@@ -3,7 +3,7 @@
 import utils.mojo_utils as mojo_utils
 import sys
 
-from zaza.utilities import juju_utils
+from zaza.utilities import juju as juju_utils
 
 
 def remote_runs(units):
