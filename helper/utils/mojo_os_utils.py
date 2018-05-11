@@ -28,9 +28,9 @@ from zaza.utilities.os_versions import (
     OPENSTACK_CODENAMES,
 )
 from zaza.utilities import (
-    generic_utils,
-    juju_utils,
-    openstack_utils,
+    generic as generic_utils,
+    juju as juju_utils,
+    openstack as openstack_utils,
 )
 
 if six.PY3:

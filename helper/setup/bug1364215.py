@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
-from zaza.utilitites import juju_utils
+from zaza.utilitites import juju as juju_utils
 
 
 def main(argv):

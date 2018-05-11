@@ -5,7 +5,7 @@ import argparse
 
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
-from zaza.utilities import cli_utils
+from zaza.utilities import cli as cli_utils
 
 
 def main(argv):

@@ -6,9 +6,9 @@ import logging
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
-    cli_utils,
-    juju_utils,
-    openstack_utils,
+    cli as cli_utils,
+    juju as juju_utils,
+    openstack as openstack_utils,
 )
 
 

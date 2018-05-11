@@ -10,7 +10,7 @@ import juju_wait
 from collections import Counter
 import json
 
-from zaza.utilities import juju_utils
+from zaza.utilities import juju as juju_utils
 from zaza import model
 from zaza.charm_lifecycle import utils as lifecycle_utils
 

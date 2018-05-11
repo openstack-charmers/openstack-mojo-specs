@@ -3,7 +3,7 @@ import sys
 import utils.mojo_utils as mojo_utils
 import logging
 
-from zaza.utilities import juju_utils
+from zaza.utilities import juju as juju_utils
 
 
 def process_ring_info(ring_info):
