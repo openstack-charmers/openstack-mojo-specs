@@ -1,11 +1,11 @@
 # Collect the charm branches from Launchpad
-collect config=collect-next-${MOJO_SERIES}
+collect config=collect-stable-${MOJO_SERIES}
 
 # Prepare artefacts required by the bundle
 build config=generate_certs.py
 
 # Use juju deployer with full.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-ssl.yaml delay=0 wait=False target=${MOJO_SERIES}-queens
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-ssl.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
