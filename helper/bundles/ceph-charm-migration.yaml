@@ -15,7 +15,7 @@ base:
       options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: False
+        # osd-reformat: False # charm-ceph doesn't support the more strongly typed configuration
         fsid: 5a791d94-980b-11e4-b6f6-3c970e8b1cf7
         monitor-secret: AQAi5a9UeJXUExAA+By9u+GPhl8/XiUQ4nwI3A==
     ceph-mon:
