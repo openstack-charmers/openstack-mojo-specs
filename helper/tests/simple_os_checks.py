@@ -85,14 +85,31 @@ def main(argv):
         novac.servers.delete(server.id)
     for instanceset in machines:
         image_name, flavor_name, count = instanceset.split(":")
+        # when instance count allows boot instances off both regular instance
+        # storage and volume storage
+        #
+        # account for count=1 and odd numbers
+        regular_boot_count = (int(count) / 2) + (int(count) % 2)
+        volume_boot_count = int(count) / 2
         mojo_os_utils.boot_and_test(novac, neutronc,
                                     image_name=image_name,
                                     flavor_name=flavor_name,
-                                    number=int(count),
+                                    number=regular_boot_count,
                                     privkey=priv_key,
                                     active_wait=active_wait,
                                     cloudinit_wait=cloudinit_wait,
-                                    ping_wait=ping_wait)
+                                    ping_wait=ping_wait,
+                                    )
+        mojo_os_utils.boot_and_test(novac, neutronc,
+                                    image_name=image_name,
+                                    flavor_name=flavor_name,
+                                    number=volume_boot_count,
+                                    privkey=priv_key,
+                                    active_wait=active_wait,
+                                    cloudinit_wait=cloudinit_wait,
+                                    ping_wait=ping_wait,
+                                    boot_from_volume=True,
+                                    )
 
 
 if __name__ == "__main__":
