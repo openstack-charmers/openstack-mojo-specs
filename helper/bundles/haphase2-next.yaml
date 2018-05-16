@@ -137,7 +137,7 @@ openstack-services:
     - [ cinder-ceph, ceph ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ "neutron-gateway:amqp", rabbitmq-server ]
-    - [ openstack-dashboard, keystone ]
+    - [ "openstack-dashboard:identity-service", keystone ]
     - [ openstack-dashboard, dashboard-hacluster ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-proxy-hacluster ]
