@@ -335,11 +335,15 @@ xenial-ocata-ha:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
   overrides:
     ha-bindiface: ens2
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # pike
 xenial-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -348,11 +352,15 @@ xenial-pike-ha:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 artful-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
   overrides:
     ha-bindiface: ens2
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # queens
 xenial-queens-ha:
   inherits: [ openstack-services, ceilometer-gnocchi ]
@@ -360,6 +368,8 @@ xenial-queens-ha:
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 bionic-queens-ha:
   inherits: xenial-queens-ha
   series: bionic
