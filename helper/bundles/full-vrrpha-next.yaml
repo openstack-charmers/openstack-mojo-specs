@@ -66,7 +66,7 @@ openstack-services:
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
     - [ neutron-gateway, nova-cloud-controller ]
-    - [ openstack-dashboard, keystone ]
+    - [ "openstack-dashboard:identity-service", keystone ]
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
