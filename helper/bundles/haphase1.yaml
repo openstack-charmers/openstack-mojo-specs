@@ -102,6 +102,7 @@ openstack-services:
         zone: 1
         block-device: vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z2:
       charm: swift-storage-z2
       constraints: mem=1G
@@ -109,6 +110,7 @@ openstack-services:
         zone: 2
         block-device: vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z3:
       charm: swift-storage-z3
       constraints: mem=1G
@@ -116,6 +118,7 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
 openstack-mysql-database:
   inherits: openstack-services
   services:
