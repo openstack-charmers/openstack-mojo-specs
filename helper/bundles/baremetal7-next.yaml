@@ -59,6 +59,7 @@ openstack-services:
         zone: 1
         block-device: /dev/vdb /dev/sdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z2:
       charm: swift-storage
       constraints: "mem=2G"
@@ -66,6 +67,7 @@ openstack-services:
         zone: 2
         block-device: /dev/vdb /dev/sdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z3:
       charm: swift-storage
       constraints: "mem=2G"
@@ -73,6 +75,7 @@ openstack-services:
         zone: 3
         block-device: /dev/vdb /dev/sdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     keystone:
       charm: keystone
       options:
