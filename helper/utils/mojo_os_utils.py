@@ -840,7 +840,10 @@ def wait_for_active(nova_client, vm_name, wait_time):
     logging.info('Waiting %is for %s to reach ACTIVE '
                  'state' % (wait_time, vm_name))
     for counter in range(wait_time):
-        instance = nova_client.servers.find(name=vm_name)
+        # In pike+ servers.find throws a novaclient.exceptions.NoUniqueMatch
+        # exception. Subsequent calls work for some reason. Either way just
+        # use the first element reduced by servers.findall
+        instance = nova_client.servers.findall(name=vm_name)[0]
         if instance.status == 'ACTIVE':
             logging.info('%s is ACTIVE' % (vm_name))
             return True
