@@ -18,6 +18,7 @@ from keystoneauth1.identity import (
 )
 import mojo_utils
 from novaclient import client as novaclient_client
+from novaclient import exceptions as novaclient_exceptions
 from neutronclient.v2_0 import client as neutronclient
 from neutronclient.common import exceptions as neutronexceptions
 
@@ -840,10 +841,25 @@ def wait_for_active(nova_client, vm_name, wait_time):
     logging.info('Waiting %is for %s to reach ACTIVE '
                  'state' % (wait_time, vm_name))
     for counter in range(wait_time):
-        # In pike+ servers.find throws a novaclient.exceptions.NoUniqueMatch
-        # exception. Subsequent calls work for some reason. Either way just
-        # use the first element reduced by servers.findall
-        instance = nova_client.servers.findall(name=vm_name)[0]
+        # trying getting the servers a few times; it seems that nova client
+        # randomly generates 400 errors and just trying again can clear the
+        # problem. See launchpad bug:
+        # https://bugs.launchpad.net/python-novaclient/+bug/1772926
+        count = 0
+        while count < 10:
+            try:
+                # In pike+ servers.find throws a
+                # novaclient.exceptions.NoUniqueMatch exception. Subsequent
+                # calls work for some reason. Either way just use the first
+                # element reduced by servers.findall
+                instance = nova_client.servers.findall(name=vm_name)[0]
+                break
+            except novaclient_exceptions.BadRequest:
+                count += 1
+                time.sleep(1)
+        else:
+            raise Exception("Could get the instance name; nova client issue"
+                            " probably ... :(")
         if instance.status == 'ACTIVE':
             logging.info('%s is ACTIVE' % (vm_name))
             return True
