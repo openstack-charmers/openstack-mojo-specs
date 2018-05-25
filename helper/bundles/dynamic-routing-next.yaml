@@ -209,8 +209,6 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-bind ]
     - [ designate, memcached ]
     - [ designate, neutron-api ]
-    # designate <-> nova-compute needed for legacy notifications
-    - [ designate, nova-compute ]
     - [ keystone, tempest ]
 openstack-services-xenial-mitaka:
   inherits: openstack-services-trusty-mitaka
