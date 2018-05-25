@@ -24,35 +24,11 @@ def main(argv):
     for server in nova_client.servers.list():
         for addr_info in server.addresses['private']:
             if addr_info['OS-EXT-IPS:type'] == 'floating':
-                mojo_os_utils.check_dns_entry_in_bind(
-                    addr_info['addr'],
-                    '{}.{}'.format(server.name, domain_name))
-            # Test legacy notifications based records
-            if addr_info['OS-EXT-IPS:type'] == 'fixed' and nova_domain:
-                keystone_client = mojo_os_utils.get_keystone_session_client(
-                    keystone_session)
-
-                record_ctxt = {
-                    'hostname': server.name,
-                    'zone': nova_domain}
-
-                target_project = overcloud_novarc.get(
-                    'OS_TENANT_NAME',
-                    overcloud_novarc.get('OS_PROJECT_NAME'))
-                for project in keystone_client.projects.list():
-                    if project.name == target_project:
-                        record_ctxt['project_id'] = project.id
-                        record_ctxt['tenant_id'] = project.id
-
-                record_format = mojo_utils.juju_get(
-                    'designate',
-                    'nova-record-format')
-                record_name = record_format % record_ctxt
-                mojo_os_utils.check_dns_entry_in_designate(
+                mojo_os_utils.check_dns_entry(
                     des_client,
                     addr_info['addr'],
-                    nova_domain,
-                    record_name=record_name)
+                    domain_name,
+                    '{}.{}'.format(server.name, domain_name))
 
 
 if __name__ == "__main__":
