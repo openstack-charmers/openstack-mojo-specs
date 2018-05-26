@@ -90,9 +90,6 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
-    tempest:
-      charm: tempest
-      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
@@ -121,7 +118,6 @@ openstack-services:
     - [ swift-proxy, swift-storage-z1 ]
     - [ swift-proxy, swift-storage-z2 ]
     - [ swift-proxy, swift-storage-z3 ]
-    - [ keystone, tempest ]
 ceilometer-mongodb:
   services:
     ceilometer:
@@ -315,6 +311,12 @@ trusty-mitaka-staging:
 xenial-mitaka:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: xenial
+  services:
+    tempest:
+      charm: tempest
+      constraints: mem=1G
+  relations:
+    - [ keystone, tempest ]
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
