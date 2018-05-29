@@ -28,22 +28,25 @@ openstack-services:
       constraints: mem=1G
       options:
         zone: 1
-        block-device: vdb
+        block-device: /dev/vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z2:
       charm: swift-storage
       constraints: mem=1G
       options:
         zone: 2
-        block-device: vdb
+        block-device: /dev/vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z3:
       charm: swift-storage
       constraints: mem=1G
       options:
         zone: 3
-        block-device: vdb
+        block-device: /dev/vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
   relations:
     - [ keystone, mysql ]
     - [ glance, mysql ]
