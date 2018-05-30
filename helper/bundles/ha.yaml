@@ -34,7 +34,7 @@ openstack-services:
       options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
+        osd-reformat: "yes"
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -314,9 +314,6 @@ trusty-mitaka-proposed:
 xenial-mitaka-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
-  services:
-    mysql:
-      branch: lp:charms/trusty/mysql
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
