@@ -6,6 +6,51 @@ import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import logging
+import subprocess
+
+# TODO move to zaza or some other central location
+# {application: {target_release: {'add': [peer_rel1, peer_rel2],
+#                                 'remove': [peer_rel1, peer_rel2],}}}
+RELATION_CHANGES = {
+    'ceilometer':
+        {'queens':
+            {'add':
+                ['keystone:identity-credentials',
+                 'ceilometer:identity-credentials'
+                 ],
+             'remove':
+                ['keystone:identity-service',
+                 'ceilometer:identity-service'
+                 ],
+
+             },
+         },
+}
+
+
+def update_relations(application, target_release):
+    if application not in RELATION_CHANGES.keys():
+        logging.debug("No relation changes for {}".format(application))
+        return
+    if target_release not in RELATION_CHANGES[application].keys():
+        logging.debug("No relation changes for {} at {}"
+                      .format(application, target_release))
+        return
+
+    logging.info("Updating relations for {} at {}"
+                 .format(application, target_release))
+    if RELATION_CHANGES[application][target_release].get('remove'):
+        cmd = ['juju', 'remove-relation']
+        for peer_rel in (RELATION_CHANGES[application][target_release]
+                         ['remove']):
+            cmd.append(peer_rel)
+        subprocess.check_call(cmd)
+
+    if RELATION_CHANGES[application][target_release].get('add'):
+        cmd = ['juju', 'add-relation']
+        for peer_rel in RELATION_CHANGES[application][target_release]['add']:
+            cmd.append(peer_rel)
+        subprocess.check_call(cmd)
 
 
 def get_upgrade_targets(target_release, current_versions):
@@ -48,6 +93,8 @@ def main(argv):
             continue
         logging.info('Upgrading {} to {}'.format(service['name'],
                                                  target_release))
+        # Update required relations
+        update_relations(service['name'], target_release)
         ubuntu_version = mojo_utils.get_ubuntu_version(service['name'])
         option = "{}=cloud:{}-{}/proposed".format(
             service['type']['origin_setting'],
