@@ -21,10 +21,8 @@ openstack-services:
       charm: ceph-osd
       constraints: mem=1G
       num_units: 3
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: "yes"
+      storage:
+        osd-devices:  cinder,10G
     keystone:
       charm: keystone
       constraints: mem=1G
