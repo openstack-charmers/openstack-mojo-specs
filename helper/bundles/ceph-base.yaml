@@ -23,7 +23,6 @@ base:
       options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
     ntp:
       annotations:
         gui-x: '1000'

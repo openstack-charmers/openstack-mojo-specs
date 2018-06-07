@@ -37,7 +37,6 @@ base:
       options:
         ephemeral-unmount: /mnt
         osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: False
       to:
         - "3"
         - "4"
