@@ -3,8 +3,6 @@
 import swiftclient
 import glanceclient
 from aodhclient.v2 import client as aodh_client
-
-import mojo_utils
 from novaclient import exceptions as novaclient_exceptions
 
 import designateclient
@@ -175,10 +173,9 @@ def user_create_v2(kclient, users):
 
 
 def user_create_v3(kclient, users):
-    current_users = [user.name for user in kclient.users.list()]
     for user in users:
         project = user.get('project') or user.get('tenant')
-        if user['username'] in current_users:
+        if kclient.users.find(username=user['username']):
             logging.warning('Not creating user %s it already'
                             'exists' % (user['username']))
         else:
