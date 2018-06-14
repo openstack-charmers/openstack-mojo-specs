@@ -18,6 +18,7 @@ from keystoneauth1.identity import (
 )
 import mojo_utils
 from novaclient import client as novaclient_client
+from novaclient import exceptions as novaclient_exceptions
 from neutronclient.v2_0 import client as neutronclient
 from neutronclient.common import exceptions as neutronexceptions
 
@@ -840,7 +841,25 @@ def wait_for_active(nova_client, vm_name, wait_time):
     logging.info('Waiting %is for %s to reach ACTIVE '
                  'state' % (wait_time, vm_name))
     for counter in range(wait_time):
-        instance = nova_client.servers.find(name=vm_name)
+        # trying getting the servers a few times; it seems that nova client
+        # randomly generates 400 errors and just trying again can clear the
+        # problem. See launchpad bug:
+        # https://bugs.launchpad.net/python-novaclient/+bug/1772926
+        count = 0
+        while count < 10:
+            try:
+                # In pike+ servers.find throws a
+                # novaclient.exceptions.NoUniqueMatch exception. Subsequent
+                # calls work for some reason. Either way just use the first
+                # element reduced by servers.findall
+                instance = nova_client.servers.findall(name=vm_name)[0]
+                break
+            except novaclient_exceptions.BadRequest:
+                count += 1
+                time.sleep(1)
+        else:
+            raise Exception("Could get the instance name; nova client issue"
+                            " probably ... :(")
         if instance.status == 'ACTIVE':
             logging.info('%s is ACTIVE' % (vm_name))
             return True
@@ -1316,8 +1335,10 @@ def create_designate_dns_domain(designate_client, domain_name, email,
         delete_designate_dns_domain(designate_client, domain_name)
         for i in range(1, 10):
             try:
-                domain = des_domains.Domain(name=domain_name, email=email)
-                dom_obj = designate_client.domains.create(domain)
+                dom_obj = create_designate_zone(
+                    designate_client,
+                    domain_name,
+                    email)
             except des_exceptions.Conflict:
                 print("Waiting for delete {}/10".format(i))
                 time.sleep(10)
@@ -1355,11 +1376,10 @@ def delete_designate_dns_domain(designate_client, domain_name):
     @param domain_name: str Name of domain to lookup
     @raises AssertionError: if domain deletion fails
     """
-    dns_zone_id = get_designate_domain_objects(designate_client, domain_name)
-    old_doms = get_designate_domain_objects(designate_client, domain_name)
+    old_doms = get_designate_zone_objects_v2(designate_client, domain_name)
     for old_dom in old_doms:
-        logging.info("Deleting old domain {}".format(old_dom.id))
-        designate_client.domains.delete(old_dom.id)
+        logging.info("Deleting old domain {}".format(old_dom['id']))
+        designate_client.zones.delete(old_dom['id'])
 
 
 def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
@@ -1432,11 +1452,15 @@ def check_dns_entry_in_designate_v1(des_client, ip, domain, record_name=None):
     """
     records = get_designate_dns_records_v1(des_client, domain, ip)
     assert records, "Record not found for {} in designate".format(ip)
+    logging.info('Found record in {} for {} in designate'.format(domain, ip))
 
     if record_name:
         recs = [r for r in records if r.name == record_name]
         assert recs, "No DNS entry name matches expected name {}".format(
             record_name)
+        logging.info('Found record in {} for {} in designate'.format(
+            domain,
+            record_name))
 
 
 def check_dns_entry_in_designate_v2(des_client, ip, domain, record_name=None):
@@ -1453,11 +1477,15 @@ def check_dns_entry_in_designate_v2(des_client, ip, domain, record_name=None):
     """
     records = get_designate_dns_records_v2(des_client, domain, ip)
     assert records, "Record not found for {} in designate".format(ip)
+    logging.info('Found record in {} for {} in designate'.format(domain, ip))
 
     if record_name:
         recs = [r for r in records if r['name'] == record_name]
         assert recs, "No DNS entry name matches expected name {}".format(
             record_name)
+        logging.info('Found record in {} for {} in designate'.format(
+            domain,
+            record_name))
 
 
 def check_dns_entry_in_bind(ip, record_name, juju_status=None):
@@ -1521,10 +1549,15 @@ def get_alarm(aclient, alarm_name):
     return None
 
 
-def delete_alarm(aclient, alarm_name):
+def delete_alarm(aclient, alarm_name, cache_wait=False):
     alarm = get_alarm(aclient, alarm_name)
     if alarm:
         aclient.alarm.delete(alarm['alarm_id'])
+    # AODH has an alarm cache (see event_alarm_cache_ttl in aodh.conf). This
+    # means deleted alarms can persist and fire. The default is 60s and is
+    # currently not configrable via the charm so 61s is a safe assumption.
+    if cache_wait:
+        time.sleep(61)
 
 
 def get_alarm_state(aclient, alarm_id):

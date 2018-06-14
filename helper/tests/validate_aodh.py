@@ -23,7 +23,7 @@ def main(argv):
         logging.info('Using server {} for aodh test'.format(server.name))
         server = nova_client.servers.find(name=server.name)
         logging.info('Deleting alarm {} if it exists'.format(alarm_name))
-        mojo_os_utils.delete_alarm(aodhc, alarm_name)
+        mojo_os_utils.delete_alarm(aodhc, alarm_name, cache_wait=True)
         logging.info('Creating alarm {}'.format(alarm_name))
         alarm_def = {
             'type': 'event',

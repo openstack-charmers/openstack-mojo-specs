@@ -20,10 +20,8 @@ base:
         gui-y: '500'
       charm: ceph-osd
       num_units: 3
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
+      storage:
+        osd-devices:  cinder,10G
     ntp:
       annotations:
         gui-x: '1000'

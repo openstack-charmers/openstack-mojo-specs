@@ -4,8 +4,8 @@ base:
       num_units: 3
       options:
         harden: os ssh
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
+      storage:
+        osd-devices:  cinder,10G
     ceph-mon:
       num_units: 3
       options:
