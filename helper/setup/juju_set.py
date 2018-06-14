@@ -4,7 +4,6 @@ import utils.mojo_utils as mojo_utils
 import argparse
 
 from zaza import model
-from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import cli as cli_utils
 
 
@@ -23,8 +22,7 @@ def main(argv):
     print("Applicatoin: {}".format(application))
     print("Option: {}={}".format(key, value))
     print("Wait: {}".format(wait))
-    model.set_application_config(
-        lifecycle_utils.get_juju_model(), application, {key: value})
+    model.set_application_config(application, {key: value})
     if wait:
         mojo_utils.juju_wait_finished()
 

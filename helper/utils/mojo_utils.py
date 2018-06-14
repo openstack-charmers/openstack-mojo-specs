@@ -10,9 +10,11 @@ import juju_wait
 from collections import Counter
 import json
 
-from zaza.utilities import juju as juju_utils
+from zaza.utilities import (
+    juju as juju_utils,
+    openstack as openstack_utils,
+)
 from zaza import model
-from zaza.charm_lifecycle import utils as lifecycle_utils
 
 
 JUJU_STATUSES = {
@@ -54,15 +56,13 @@ def get_juju_units(application):
     """
     logging.debug("get_juju_units: deprecated move to zaza.utilities."
                   "juju_utils")
-    units = model.get_units(
-        lifecycle_utils.get_juju_model(), application)
+    units = model.get_units(application)
     return [unit.entity_id for unit in units]
 
 
 def get_juju_unit_ip(unit):
     application_name = unit.split('/')[0]
-    unit_obj = model.get_units(
-        lifecycle_utils.get_juju_model(), application_name)[0]
+    unit_obj = model.get_units(application_name)[0]
     unit_ip = unit_obj.public_address
     return unit_ip
 
@@ -233,15 +233,13 @@ def juju_set(service, option, wait=None):
         juju_wait_finished()
 
 
-def juju_get_config_keys(service):
-    service_config = model.get_application_config(
-        lifecycle_utils.get_juju_model(), service)
+def juju_get_config_keys(application):
+    service_config = model.get_application_config(application)
     return list(service_config.keys())
 
 
-def juju_get(service, option):
-    service_config = model.get_application_config(
-        lifecycle_utils.get_juju_model(), service)
+def juju_get(application, option):
+    service_config = model.get_application_config(application)
     try:
         return service_config.get(option).get('value')
     except AttributeError:

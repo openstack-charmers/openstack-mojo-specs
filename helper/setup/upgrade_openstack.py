@@ -7,7 +7,6 @@ import logging
 import subprocess
 
 from zaza import model
-from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
     cli as cli_utils,
     openstack as openstack_utils,
@@ -80,7 +79,6 @@ def main(argv):
     principle_services = mojo_utils.get_principle_applications()
     current_versions = openstack_utils.get_current_os_versions(
         principle_services)
-    model_name = lifecycle_utils.get_juju_model()
     if target_release == 'auto':
         # If in auto mode find the lowest value openstack release across all
         # services and make sure all servcies are upgraded to one release
@@ -106,15 +104,13 @@ def main(argv):
         config = {application['type']['origin_setting']:
                   "cloud:{}-{}/proposed"
                   .format(ubuntu_version, target_release)}
-        model.set_application_config(
-            model_name, application['name'], config)
+        model.set_application_config(application['name'], config)
         # NOTE: For liberty->mitaka upgrade ceilometer-agent gets stuck at
         # 'Services not running that should be: memcached' after nova-compute
         # upgrade, and test would wait forever. Therefore we upgrade
         # ceilometer-agent immediately after nova-compute.
         if application['name'] == 'nova-compute':
-            model.set_application_config(
-                model_name, 'ceilometer-agent', config)
+            model.set_application_config('ceilometer-agent', config)
         mojo_utils.juju_wait_finished()
 
 
