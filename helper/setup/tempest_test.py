@@ -5,7 +5,6 @@ import utils.mojo_os_utils as mojo_os_utils
 import logging
 
 from zaza import model
-from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
     generic as generic_utils,
     openstack as openstack_utils,
@@ -53,13 +52,10 @@ def main(argv):
     # has admin role on so make sure that exists (pre-17.02)
     keystone_v3_domain_setup()
 
-    model_name = lifecycle_utils.get_juju_model()
-
     results_file = mojo_utils.get_mojo_file('tempest_expected_results.yaml')
     expected_results = generic_utils.get_yaml_config(
         results_file)['smoke']
     action = model.run_action_on_leader(
-        model_name,
         'tempest',
         'run-tempest',
         action_params={})

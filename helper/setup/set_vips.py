@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 import utils.mojo_utils as mojo_utils
 import netaddr
-import logging
 
 from zaza import model
-from zaza.charm_lifecycle import utils as lifecycle_utils
 from zaza.utilities import (
     cli as cli_utils,
     juju as juju_utils,
@@ -49,9 +47,7 @@ class VipPool():
 cli_utils.setup_logging()
 vp = VipPool()
 juju_status = juju_utils.get_full_juju_status()
-model_name = lifecycle_utils.get_juju_model()
 for application in juju_status.applications.keys():
-    if 'vip' in model.get_application_config(model_name, application).keys():
-        model.set_application_config(
-            model_name, application, {'vip': vp.get_next()})
+    if 'vip' in model.get_application_config(application).keys():
+        model.set_application_config(application, {'vip': vp.get_next()})
 mojo_utils.juju_wait_finished()
