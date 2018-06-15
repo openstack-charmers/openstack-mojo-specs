@@ -29,7 +29,7 @@ def main(argv):
             mojo_os_utils.domain_create(keystone_client, [user['domain']])
             mojo_os_utils.project_create(keystone_client, [user['project']],
                                          user['domain'])
-    mojo_os_utils.user_create_v3(keystone_client, user_config)
+        mojo_os_utils.user_create_v3(keystone_client, user_config)
 
 
 if __name__ == "__main__":
