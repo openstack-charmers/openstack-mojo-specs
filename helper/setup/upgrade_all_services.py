@@ -1,11 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
 import os
 
+from zaza.utilities import cli as cli_utils
+
 
 def main(argv):
-    mojo_utils.setup_logging()
+    cli_utils.setup_logging()
     switch_map = {
         'neutron-gateway': 'local:{}/{}'.format(os.environ['MOJO_SERIES'],
                                                 'neutron-gateway')

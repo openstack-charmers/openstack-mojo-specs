@@ -1,21 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import os
-import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import distro_info
 import logging
 import argparse
 
+from zaza.utilities import cli as cli_utils
+
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("--service")
     parser.add_argument("--resource")
     options = parser.parse_args()
-    service = mojo_utils.parse_mojo_arg(options, 'service')
-    resource = mojo_utils.parse_mojo_arg(options, 'resource')
+    service = cli_utils.parse_arg(options, 'service')
+    resource = cli_utils.parse_arg(options, 'resource')
     xenial = distro_info.UbuntuDistroInfo().all.index('xenial')
     series = os.environ.get('MOJO_SERIES')
     mojo_env = distro_info.UbuntuDistroInfo().all.index(series)

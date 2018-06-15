@@ -1,17 +1,22 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
-import utils.mojo_os_utils as mojo_os_utils
 import logging
 import argparse
 import xml.dom.minidom
 import re
 import ast
 
+from zaza.utilities import (
+    cli as cli_utils,
+    juju as juju_utils,
+)
+
 
 def rabbit_unit_status(unit):
     cmd = 'rabbitmqctl -q cluster_status'
-    output = mojo_utils.remote_run(unit, remote_cmd=cmd)[0]
+    output = juju_utils.remote_run(
+        unit, remote_cmd=cmd)
     output = output.replace('\n', '')
     matchObj = re.search(r'running_nodes,(.*)}, {partitions', output)
     machine_numbers = []
@@ -21,7 +26,7 @@ def rabbit_unit_status(unit):
 
 
 def rabbit_status():
-    juju_units = mojo_utils.get_juju_units(service='rabbitmq-server')
+    juju_units = mojo_utils.get_juju_units('rabbitmq-server')
     machine_numbers = get_machine_numbers('rabbitmq-server')
     for unit in juju_units:
         units = rabbit_unit_status(unit)
@@ -34,8 +39,8 @@ def rabbit_status():
 
 
 def unit_crm_online(unit):
-    output = mojo_utils.remote_run(unit, remote_cmd='crm_mon -X')
-    xml_out = output[0]
+    xml_out = juju_utils.remote_run(
+        unit, remote_cmd='crm_mon -X')
     tree = xml.dom.minidom.parseString(xml_out)
     itemlist = tree.getElementsByTagName('node')
     online_units = []
@@ -47,8 +52,8 @@ def unit_crm_online(unit):
     return online_units
 
 
-def get_machine_numbers(service):
-    juju_units = mojo_utils.get_juju_units(service=service)
+def get_machine_numbers(application):
+    juju_units = mojo_utils.get_juju_units(application)
     machine_numbers = []
     for unit in juju_units:
         machine_numbers.append(mojo_utils.convert_unit_to_machinename(unit))
@@ -56,50 +61,54 @@ def get_machine_numbers(service):
     return machine_numbers
 
 
-def check_crm_status(service):
-    juju_units = mojo_utils.get_juju_units(service=service)
+def check_crm_status(application):
+    juju_units = mojo_utils.get_juju_units(application)
     if not juju_units:
         return
     cmd = 'which crm_mon || echo "Not Found"'
-    output = mojo_utils.remote_run(juju_units[0], remote_cmd=cmd)
-    if output[0].rstrip() == "Not Found":
+    output = juju_utils.remote_run(
+        juju_units[0], remote_cmd=cmd)
+    if output.rstrip() == "Not Found":
         return
     for unit in juju_units:
-        mach_nums = get_machine_numbers(service)
+        mach_nums = get_machine_numbers(application)
         crm_online = unit_crm_online(unit)
         if mach_nums == crm_online:
-            logging.info('Service %s status on %s look good' % (service, unit))
+            logging.info('Service %s status on %s look good'
+                         .format((application, unit)))
         else:
             logging.info('%s != %s' % (str(mach_nums), str(crm_online)))
-            msg = ('Mismatch on crm status for service {} '
-                   'on unit {}'.format(service, unit))
+            msg = ('Mismatch on crm status for application {} '
+                   'on unit {}'.format(application, unit))
             raise Exception(msg)
 
 
-def check_cluster_status(service):
-    if service == 'rabbitmq-service':
+def check_cluster_status(application):
+    if application == 'rabbitmq-application':
         rabbit_status()
     else:
-        check_crm_status(service)
+        check_crm_status(application)
 
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("term_method", default='juju', nargs='?')
-    skip_services = ['neutron-gateway', 'mongodb', 'heat', 'rabbitmq-server']
-    princ_services = mojo_utils.get_principle_services()
-    services = [item for item in princ_services if item not in skip_services]
-    for svc in services:
-        doomed_service = services.pop(0)
-        mojo_os_utils.delete_juju_leader(doomed_service)
+    skip_applications = ['neutron-gateway', 'mongodb',
+                         'heat', 'rabbitmq-server']
+    princ_applications = mojo_utils.get_principle_applications()
+    applications = [item for item in princ_applications
+                    if item not in skip_applications]
+    for svc in applications:
+        doomed_application = applications.pop(0)
+        mojo_utils.delete_juju_leader(doomed_application)
         mojo_utils.juju_check_hooks_complete()
-        mojo_utils.juju_status_check_and_wait()
-        check_cluster_status(doomed_service)
-        mojo_utils.add_unit(doomed_service, unit_num=1)
-        mojo_utils.juju_status_check_and_wait()
+        mojo_utils.juju_wait_finished()
+        check_cluster_status(doomed_application)
+        mojo_utils.add_unit(doomed_application, unit_num=1)
+        mojo_utils.juju_wait_finished()
         mojo_utils.juju_check_hooks_complete()
-        check_crm_status(doomed_service)
+        check_crm_status(doomed_application)
 
 
 if __name__ == "__main__":
