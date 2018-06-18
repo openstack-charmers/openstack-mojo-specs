@@ -331,9 +331,13 @@ xenial-ocata-ha:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # pike
 xenial-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -341,6 +345,10 @@ xenial-pike-ha:
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 artful-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
+  relations:
+    - [ cinder-ceph, nova-compute ]

@@ -58,6 +58,8 @@ openstack-services:
         block-device: "None"
         glance-api-version: 2
       constraints": mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
     glance:
       charm: glance
       constraints: mem=1G
@@ -110,7 +112,8 @@ openstack-services:
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph-mon ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph-mon ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ "openstack-dashboard:identity-service", keystone ]
     - [ swift-proxy, keystone ]
@@ -339,6 +342,8 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-ocata-proposed:
   inherits: xenial-ocata
   overrides:
@@ -352,6 +357,8 @@ xenial-ocata-staging:
 zesty-ocata:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-proposed:
   inherits: zesty-ocata
   overrides:

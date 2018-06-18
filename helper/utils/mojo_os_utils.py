@@ -819,20 +819,35 @@ def create_keypair(nova_client, keypair_name):
 
 
 def boot_instance(nova_client, neutron_client, image_name,
-                  flavor_name, key_name):
+                  flavor_name, key_name, boot_from_volume=False):
     image = nova_client.glance.find_image(image_name)
     flavor = nova_client.flavors.find(name=flavor_name)
     net = neutron_client.find_resource("network", "private")
     nics = [{'net-id': net.get('id')}]
     # Obviously time may not produce a unique name
     vm_name = time.strftime("%Y%m%d%H%M%S")
+    if boot_from_volume:
+        bdmv2 = [{
+                'boot_index': '0',
+                'uuid': image.id,
+                'source_type': 'image',
+                'volume_size': flavor.disk,
+                'destination_type': 'volume',
+                'delete_on_termination': True,
+                }]
+        _image = None
+    else:
+        bdmv2 = None
+        _image = image
     logging.info('Creating %s %s %s'
                  'instance %s' % (flavor_name, image_name, nics, vm_name))
     instance = nova_client.servers.create(name=vm_name,
-                                          image=image,
+                                          image=_image,
                                           flavor=flavor,
                                           key_name=key_name,
-                                          nics=nics)
+                                          nics=nics,
+                                          block_device_mapping_v2=bdmv2,
+                                          )
     logging.info('Issued boot')
     return instance
 
@@ -1027,14 +1042,16 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
 
 def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
                   number, privkey, active_wait=180, cloudinit_wait=180,
-                  ping_wait=180):
+                  ping_wait=180, boot_from_volume=False):
     image_config = mojo_utils.get_mojo_config('images.yaml')
     for counter in range(number):
         instance = boot_instance(nova_client,
                                  neutron_client,
                                  image_name=image_name,
                                  flavor_name=flavor_name,
-                                 key_name='mojo')
+                                 key_name='mojo',
+                                 boot_from_volume=boot_from_volume,
+                                 )
         logging.info("Launched {}".format(instance))
         wait_for_boot(nova_client, instance.name,
                       image_config[image_name]['bootstring'], active_wait,

@@ -364,6 +364,8 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-ocata-proposed:
   inherits: xenial-ocata
   overrides:
@@ -374,9 +376,13 @@ xenial-ocata-staging:
   overrides:
     openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
     source: ppa:ubuntu-cloud-archive/ocata-staging
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata:
   inherits: openstack-icehouse
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-proposed:
   inherits: zesty-ocata
   overrides:
@@ -389,6 +395,8 @@ xenial-pike:
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-pike-proposed:
   inherits: xenial-pike
   overrides:
@@ -402,6 +410,8 @@ xenial-pike-staging:
 artful-pike:
   inherits: openstack-icehouse
   series: artful
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-queens:
   inherits: xenial-pike
   overrides:
