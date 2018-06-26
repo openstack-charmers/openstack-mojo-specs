@@ -25,7 +25,7 @@ base:
       charm: ceph-osd
       num_units: 3
       storage:
-        osd-devices:  cinder,10G
+        osd-devices:  cinder,40G
     ntp:
       annotations:
         gui-x: '1000'
