@@ -26,7 +26,7 @@ base-services:
       constraints: mem=1G
       num_units: 3
       storage:
-        osd-devices:  cinder,10G
+        osd-devices:  cinder,40G
     ntp:
       charm: ntp
       num_units: 0

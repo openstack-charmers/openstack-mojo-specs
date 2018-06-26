@@ -21,7 +21,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 3
       storage:
-        osd-devices:  cinder,10G
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
