@@ -84,8 +84,12 @@ def main(argv):
         # storage and volume storage
         #
         # account for count=1 and odd numbers
-        regular_boot_count = int(int(count) / 2) + (int(count) % 2)
-        volume_boot_count = int(int(count) / 2)
+
+        # NOTE(fnordahl) temporarilly disable test while tests settle
+        # regular_boot_count = int(int(count) / 2) + (int(count) % 2)
+        # volume_boot_count = int(int(count) / 2)
+        regular_boot_count = int(count)
+        volume_boot_count = 0
         mojo_os_utils.boot_and_test(novac, neutronc,
                                     image_name=image_name,
                                     flavor_name=flavor_name,
