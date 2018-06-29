@@ -1,0 +1,2 @@
+This spec deploys a swift cluster fronted by a single swift proxy. The
+resulting object store is then tested.

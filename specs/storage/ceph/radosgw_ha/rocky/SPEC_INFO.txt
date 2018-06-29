@@ -1,0 +1,3 @@
+This spec deploys a ceph cluster fronted by multiple ceph rados gateway nodes.
+The rados gw leader is removed and additional units added. With tests run
+after each change

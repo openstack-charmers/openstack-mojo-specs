@@ -79,3 +79,9 @@ xenial-queens:
 bionic-queens:
   inherits: base
   series: bionic
+# rocky
+bionic-rocky:
+  inherits: base
+  series: bionic
+  overrides:
+    source: cloud:bionic-rocky/proposed
