@@ -352,3 +352,13 @@ artful-pike-ha:
   series: artful
   relations:
     - [ cinder-ceph, nova-compute ]
+# queens
+xenial-queens:
+  inherits: [ xenial-pike-ha ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
+bionic-queens:
+  inherits: [ artful-pike-ha ]
+  series: bionic
