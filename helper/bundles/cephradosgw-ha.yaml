@@ -107,11 +107,6 @@ bionic-queens:
   inherits: openstack-services
   series: bionic
 # rocky
-xenial-rocky:
-  inherits: openstack-services
-  series: xenial
-  overrides:
-    source: cloud:xenial-rocky/proposed
 bionic-rocky:
   inherits: openstack-services
   series: bionic

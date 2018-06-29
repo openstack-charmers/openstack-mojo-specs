@@ -136,15 +136,8 @@ bionic-queens:
     openstack-origin: distro-proposed
     source: distro-proposed
 # rocky
-xenial-rocky:
-  inherits: [ xenial-queens ]
-  series: xenial
-  overrides:
-    openstack-origin: cloud:xenial-rocky/proposed
-    source: cloud:xenial-rocky/proposed
 bionic-rocky:
-  inherits: xenial-rocky
-  series: bionic
+  inherits: bionic-queens
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
