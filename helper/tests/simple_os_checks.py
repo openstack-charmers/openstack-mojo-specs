@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import utils.mojo_os_utils as mojo_os_utils
 import argparse
@@ -59,7 +60,13 @@ def main(argv):
     cloudinit_wait = int(cli_utils.parse_arg(options, 'cloudinit_wait'))
     ping_wait = int(cli_utils.parse_arg(options, 'ping_wait'))
     overcloud_novarc = openstack_utils.get_overcloud_auth()
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
     keystonec = openstack_utils.get_keystone_session_client(
         keystone_session)
     domain = overcloud_novarc.get('OS_PROJECT_DOMAIN_NAME')

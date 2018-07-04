@@ -59,9 +59,8 @@ def get_aodh_session_client(session):
     return aodh_client.Client(session=session)
 
 
-def get_swift_client(novarc_creds, insecure=True):
+def get_swift_client(novarc_creds):
     swift_creds = get_swift_creds(novarc_creds)
-    swift_creds['insecure'] = insecure
     return swiftclient.client.Connection(**swift_creds)
 
 

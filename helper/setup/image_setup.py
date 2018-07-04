@@ -14,7 +14,12 @@ from zaza.utilities import (
 
 def main(argv):
     cli_utils.setup_logging()
-    session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    session = openstack_utils.get_overcloud_keystone_session(verify=cacert)
     glance_client = mojo_os_utils.get_glance_session_client(session)
     current_images = mojo_os_utils.get_images_list(glance_client)
     image_file = mojo_utils.get_mojo_file('images.yaml')

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import logging
+import os
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
@@ -45,8 +46,13 @@ def main(argv):
 
     os_version = openstack_utils.get_current_os_versions(
         'keystone')['keystone']
-
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
     neutronc = openstack_utils.get_neutron_session_client(keystone_session)
 
     if os_version >= 'queens':

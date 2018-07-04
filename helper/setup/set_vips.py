@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import utils.mojo_utils as mojo_utils
 import netaddr
 
@@ -12,7 +13,14 @@ from zaza.utilities import (
 
 class VipPool():
     def __init__(self, prov_net_id=None):
-        keystone_session = openstack_utils.get_undercloud_keystone_session()
+        try:
+            cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'),
+                                  'cacert.pem')
+            os.stat(cacert)
+        except FileNotFoundError:
+            cacert = None
+        keystone_session = openstack_utils.get_undercloud_keystone_session(
+            verify=cacert)
         neutronc = openstack_utils.get_neutron_session_client(
             keystone_session)
         if prov_net_id:

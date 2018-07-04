@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import utils.mojo_utils as mojo_utils
 import logging
@@ -16,7 +17,13 @@ def main(argv):
     parser.add_argument("router", nargs="?")
     options = parser.parse_args()
     router_name = cli_utils.parse_arg(options, 'router')
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
     neutron_client = openstack_utils.get_neutron_session_client(
         keystone_session)
     router = neutron_client.list_routers(name=router_name)['routers'][0]['id']
