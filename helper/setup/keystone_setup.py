@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
@@ -15,7 +16,13 @@ def main(argv):
     overcloud_novarc = openstack_utils.get_overcloud_auth()
     user_file = mojo_utils.get_mojo_file('keystone_users.yaml')
     user_config = generic_utils.get_yaml_config(user_file)
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
     keystone_client = openstack_utils.get_keystone_session_client(
         keystone_session)
     if overcloud_novarc.get('API_VERSION', 2) == 2:

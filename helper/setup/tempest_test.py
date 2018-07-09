@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
@@ -31,7 +32,15 @@ def warn(msg):
 def keystone_v3_domain_setup():
     overcloud_novarc = openstack_utils.get_overcloud_auth()
     if overcloud_novarc.get('API_VERSION', 2) == 3:
-        keystone_session = openstack_utils.get_overcloud_keystone_session()
+        try:
+            cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'),
+                                  'cacert.pem')
+            os.stat(cacert)
+        except FileNotFoundError:
+            cacert = None
+
+        keystone_session = openstack_utils.get_overcloud_keystone_session(
+            verify=cacert)
         keystone_client = openstack_utils.get_keystone_session_client(
             keystone_session)
         mojo_os_utils.project_create(keystone_client,

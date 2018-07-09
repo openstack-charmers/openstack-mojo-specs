@@ -1,0 +1,25 @@
+# Collect the charm branches from Launchpad
+collect config=collect-stable-${MOJO_SERIES}
+
+# Prepare artefacts required by the bundle
+build config=generate_certs.py
+
+# Use juju deployer with full.yaml bundle
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-ssl.yaml delay=0 wait=False target=${MOJO_SERIES}-queens
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Create sdn on overcloud
+script config=network_setup.py
+
+# Setup glance images
+script config=image_setup.py
+
+# Setup keystone users
+script config=keystone_setup.py
+
+# Launch instances on the overcloud
+verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
+
+# Success

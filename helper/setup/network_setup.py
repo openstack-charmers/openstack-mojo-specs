@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 
 # In this case, the utility get_mojo_file is very specific to mojo and
@@ -10,4 +11,10 @@ from zaza.configure import network
 
 if __name__ == "__main__":
     net_topology_file = get_mojo_file("network.yaml")
-    sys.exit(network.run_from_cli(net_topology_file=net_topology_file))
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    sys.exit(network.run_from_cli(net_topology_file=net_topology_file,
+                                  cacert=cacert))
