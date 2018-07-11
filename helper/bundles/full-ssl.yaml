@@ -21,18 +21,23 @@ openstack-services:
       constraints: mem=1G
       num_units: 3
       storage:
-        osd-devices:  cinder,10G
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-        https-service-endpoints: "True"
-        use-https: "yes"
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     nova-compute:
       charm: nova-compute
       num_units: 3
@@ -46,6 +51,9 @@ openstack-services:
       constraints: mem=1G
       options:
         network-manager: Neutron
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     neutron-gateway:
       charm: neutron-gateway
       constraints: mem=4G
@@ -57,12 +65,19 @@ openstack-services:
       options:
         block-device: "None"
         glance-api-version: 2
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
       constraints": mem=1G
     cinder-ceph:
       charm: cinder-ceph
     glance:
       charm: glance
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     swift-proxy:
       charm: swift-proxy
       constraints: mem=1G
@@ -70,6 +85,9 @@ openstack-services:
         zone-assignment: manual
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     swift-storage-z1:
       charm: swift-storage-z1
       constraints: mem=1G
@@ -125,6 +143,10 @@ ceilometer-mongodb:
     ceilometer:
       charm: ceilometer
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     ceilometer-agent:
       charm: ceilometer-agent
     mongodb:
@@ -144,6 +166,10 @@ charm-ceilometer-gnocchi:
     ceilometer:
       charm: ceilometer
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     ceilometer-agent:
       charm: ceilometer-agent
     gnocchi:
@@ -185,6 +211,9 @@ openstack-icehouse:
       options:
         neutron-security-groups: True
         flat-network-providers: physnet1
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
@@ -204,6 +233,9 @@ openstack-icehouse-msg-split:
       constraints: mem=1G
       options:
         neutron-security-groups: True
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     neutron-openvswitch:
       charm: neutron-openvswitch
     rabbitmq-server-neutron:
@@ -246,7 +278,7 @@ trusty-icehouse:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: trusty
 trusty-icehouse-msg-split:
-  inherits: openstack-icehouse-msg-split
+  inherits: [ openstack-icehouse-msg-split, ceilometer-mongodb ]
   series: trusty
 trusty-icehouse-proposed:
   inherits: trusty-icehouse
@@ -364,3 +396,37 @@ zesty-ocata-proposed:
   overrides:
     source: proposed
     openstack-origin: distro-proposed
+# pike
+xenial-pike:
+  inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+xenial-pike-proposed:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-pike/proposed
+    source: cloud:xenial-proposed/pike
+xenial-pike-staging:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
+    source: ppa:ubuntu-cloud-archive/pike-staging
+artful-pike:
+  inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
+  series: artful
+artful-pike-proposed:
+  inherits: artful-pike
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+xenial-queens:
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
+bionic-queens:
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  series: bionic

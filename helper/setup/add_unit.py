@@ -1,12 +1,14 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
 import logging
 import argparse
 
+from zaza.utilities import cli as cli_utils
+
 
 def main(argv):
-    logging.basicConfig(level=logging.INFO)
+    cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
     parser.add_argument("units", nargs="*")
     options = parser.parse_args()

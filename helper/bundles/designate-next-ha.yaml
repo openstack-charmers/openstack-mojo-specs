@@ -26,7 +26,7 @@ base-services:
       constraints: mem=1G
       num_units: 3
       storage:
-        osd-devices:  cinder,10G
+        osd-devices:  cinder,40G
     ntp:
       charm: ntp
       num_units: 0
@@ -423,3 +423,12 @@ bionic-queens:
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

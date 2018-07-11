@@ -22,7 +22,7 @@ openstack-services:
       constraints: mem=1G
       num_units: 3
       storage:
-        osd-devices:  cinder,10G
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -368,3 +368,13 @@ artful-pike:
   series: artful
   relations:
     - [ cinder-ceph, nova-compute ]
+# queens
+xenial-queens:
+  inherits: [ xenial-pike ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
+bionic-queens:
+  inherits: [ artful-pike ]
+  series: bionic

@@ -1,8 +1,15 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+import os
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
 import logging
+
+from zaza import model
+from zaza.utilities import (
+    generic as generic_utils,
+    openstack as openstack_utils,
+)
 
 
 class TempestRunException(Exception):
@@ -23,15 +30,23 @@ def warn(msg):
 
 
 def keystone_v3_domain_setup():
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
+    overcloud_novarc = openstack_utils.get_overcloud_auth()
     if overcloud_novarc.get('API_VERSION', 2) == 3:
-        keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc)
-        keystone_client = mojo_os_utils.get_keystone_session_client(
+        try:
+            cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'),
+                                  'cacert.pem')
+            os.stat(cacert)
+        except FileNotFoundError:
+            cacert = None
+
+        keystone_session = openstack_utils.get_overcloud_keystone_session(
+            verify=cacert)
+        keystone_client = openstack_utils.get_keystone_session_client(
             keystone_session)
         mojo_os_utils.project_create(keystone_client,
                                      ['admin'],
                                      'admin_domain')
-        admin_project_id = mojo_os_utils.get_tenant_id(
+        admin_project_id = openstack_utils.get_project_id(
             keystone_client,
             'admin',
             api_version=3,
@@ -46,16 +61,15 @@ def main(argv):
     # has admin role on so make sure that exists (pre-17.02)
     keystone_v3_domain_setup()
 
-    expected_results = mojo_utils.get_mojo_config(
-        'tempest_expected_results.yaml')['smoke']
-    tempest_unit = mojo_utils.get_juju_units(service='tempest')
-    action_id = mojo_utils.action_run(
-        tempest_unit[0],
+    results_file = mojo_utils.get_mojo_file('tempest_expected_results.yaml')
+    expected_results = generic_utils.get_yaml_config(
+        results_file)['smoke']
+    action = model.run_action_on_leader(
+        'tempest',
         'run-tempest',
-        timeout=18000)
-    action_output = mojo_utils.action_get_output(action_id)
-    logging.debug(action_output)
-    actual_results = action_output['results']
+        action_params={})
+    logging.debug(action.message)
+    actual_results = action.data['results']
 
     result_matrix = {
         'failed': {
