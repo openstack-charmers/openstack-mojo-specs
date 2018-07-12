@@ -31,7 +31,7 @@ OPENSTACK_RELEASES = {
     'ocata': ['xenial', 'zesty'],
     'pike': ['xenial', 'artful'],
     'queens': ['xenial', 'bionic'],
-    'rocky': ['bionic'], # TODO : Add Cosmic
+    'rocky': ['bionic', 'cosmic'],
 }
 
 
