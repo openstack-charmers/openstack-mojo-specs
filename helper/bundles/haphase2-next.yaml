@@ -152,7 +152,6 @@ openstack-database-relations:
     - [ mysql, mysql-hacluster ]
     - [ keystone, mysql ]
     - [ nova-cloud-controller, mysql ]
-    - [ nova-compute, mysql ]
     - [ glance, mysql ]
     - [ cinder, mysql ]
 openstack-mysql-database:
