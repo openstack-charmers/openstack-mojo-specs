@@ -17,7 +17,6 @@ openstack-services:
       constraints: mem=1G
       options:
         osd-devices: /dev/vdb
-        osd-reformat: True
         ephemeral-unmount: /mnt
     keystone:
       charm: keystone
