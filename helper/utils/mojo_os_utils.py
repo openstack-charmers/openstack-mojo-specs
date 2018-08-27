@@ -98,12 +98,12 @@ def download_image(image, image_glance_name=None):
     return local_file
 
 
-def upload_image(gclient, ifile, image_name, public, disk_format,
+def upload_image(gclient, ifile, image_name, visibility, disk_format,
                  container_format):
     logging.info('Uploading %s to glance ' % (image_name))
     image = gclient.images.create(
         name=image_name,
-        is_public=public,
+        visibility=visibility,
         disk_format=disk_format,
         container_format=container_format)
     with open(ifile, 'rb') as fimage:
