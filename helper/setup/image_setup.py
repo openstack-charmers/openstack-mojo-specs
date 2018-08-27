@@ -40,7 +40,7 @@ def main(argv):
             glance_client,
             local_file,
             image_config[image]['glance_name'],
-            image_config[image]['is_public'],
+            image_config[image]['visibility'],
             image_config[image]['disk_format'],
             image_config[image]['container_format'])
 
