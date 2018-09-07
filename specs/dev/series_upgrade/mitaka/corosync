@@ -1,0 +1,11 @@
+# Corosync runtime directory
+#COROSYNC_RUN_DIR=/var/lib/corosync
+
+# Path to corosync.conf
+#COROSYNC_MAIN_CONFIG_FILE=/etc/corosync/corosync.conf
+
+# Path to authfile
+#COROSYNC_TOTEM_AUTHKEY_FILE=/etc/corosync/authkey
+
+# Command line options
+#OPTIONS=""

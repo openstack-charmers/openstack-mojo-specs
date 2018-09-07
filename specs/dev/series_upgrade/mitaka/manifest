@@ -1,0 +1,16 @@
+# Collect the charm branches from Launchpad
+collect config=collect-next-${MOJO_SERIES}
+
+# Use juju deployer with series_upgrade.yaml bundle
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=series_upgrade.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Setup keystone users
+script config=keystone_setup.py
+
+# Run Series Upgrade
+script config=series_upgrade.py
+
+# Success

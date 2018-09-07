@@ -1,0 +1,1 @@
+This spec performs a series upgrade on a cloud.
