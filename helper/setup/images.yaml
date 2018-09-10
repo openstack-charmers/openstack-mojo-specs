@@ -6,7 +6,7 @@ cirros:
   container_format: bare
   disk_format: qcow2
   glance_name: cirros
-  is_public: 'true'
+  visibility: 'public'
   url: http://10.245.161.162:80/swift/v1/images/cirros-0.3.4-x86_64-disk.img
 precise:
   auth_type: privkey
@@ -15,7 +15,7 @@ precise:
   container_format: bare
   disk_format: qcow2
   glance_name: precise
-  is_public: 'true'
+  visibility: 'public'
   url: http://cloud-images.ubuntu.com/precise/current/precise-server-cloudimg-amd64-disk1.img
 trusty:
   auth_type: privkey
@@ -24,5 +24,5 @@ trusty:
   container_format: bare
   disk_format: qcow2
   glance_name: trusty
-  is_public: 'true'
+  visibility: 'public'
   url: http://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img

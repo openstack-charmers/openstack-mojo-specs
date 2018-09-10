@@ -84,7 +84,7 @@ def get_designate_session_client(session, all_tenants=True,
 
 
 def get_glance_session_client(session):
-    return glanceclient.Client('1', session=session)
+    return glanceclient.Client('2', session=session)
 
 
 # Glance Helpers
@@ -98,16 +98,16 @@ def download_image(image, image_glance_name=None):
     return local_file
 
 
-def upload_image(gclient, ifile, image_name, public, disk_format,
+def upload_image(gclient, ifile, image_name, visibility, disk_format,
                  container_format):
     logging.info('Uploading %s to glance ' % (image_name))
+    image = gclient.images.create(
+        name=image_name,
+        visibility=visibility,
+        disk_format=disk_format,
+        container_format=container_format)
     with open(ifile, 'rb') as fimage:
-        gclient.images.create(
-            name=image_name,
-            is_public=public,
-            disk_format=disk_format,
-            container_format=container_format,
-            data=fimage)
+        gclient.images.upload(image.id, fimage)
 
 
 def get_images_list(gclient):
