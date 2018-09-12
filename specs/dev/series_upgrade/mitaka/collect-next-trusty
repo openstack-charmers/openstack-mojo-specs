@@ -1,6 +1,6 @@
-cinder                 /home/thedac/dev/cinder
-percona-cluster        /home/thedac/dev/percona-cluster
-keystone                /home/thedac/dev/keystone
-rabbitmq-server        /home/thedac/dev/rabbitmq-server
-hacluster              /home/thedac/dev/hacluster
+cinder                 cs:~openstack-charms-next/cinder
+percona-cluster        cs:~openstack-charms-next/percona-cluster
+keystone               cs:~openstack-charms-next/keystone
+rabbitmq-server        cs:~openstack-charms-next/rabbitmq-server
+hacluster              cs:~openstack-charms-next/hacluster
 
