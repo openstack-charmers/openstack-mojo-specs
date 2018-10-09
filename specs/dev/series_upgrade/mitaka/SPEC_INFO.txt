@@ -1,1 +1,2 @@
-This spec performs a series upgrade on a cloud.
+This spec performs a series upgrade from Trust to Xenial.
+It uses the HA oneshot bundle.

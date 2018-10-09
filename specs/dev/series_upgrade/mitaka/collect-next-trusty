@@ -1,6 +1,0 @@
-cinder                 cs:~openstack-charms-next/cinder
-percona-cluster        cs:~openstack-charms-next/percona-cluster
-keystone               cs:~openstack-charms-next/keystone
-rabbitmq-server        cs:~openstack-charms-next/rabbitmq-server
-hacluster              cs:~openstack-charms-next/hacluster
-

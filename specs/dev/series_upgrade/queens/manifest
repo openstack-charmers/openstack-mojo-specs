@@ -1,11 +1,9 @@
-## Validate env variables
-script config=preflight.py
-
 # Collect the charms
-collect config=collect-next-ha
+collect config=collect-next-reactive-${MOJO_SERIES}
 
-# Use juju deployer to create the units for the deployment
-deploy config=ha-next.yaml delay=0 wait=False target=${MOJO_SERIES}-queens-ha timeout=${MOJO_DEPLOY_TIMEOUT:-5400}
+# Use juju deployer with designate-next-ha.yaml bundle
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-queens
+
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
@@ -19,11 +17,20 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
+# Setup Designate
+script config=designate_setup.py
+
 # Launch instances on the overcloud
 verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Test DNS records
+verify config=validate_designate.py
+
+# Test AODH Alarms
+verify config=validate_aodh.py
 
 # Run Series Upgrade
 script config=series_upgrade.py
@@ -36,5 +43,11 @@ verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="6
 
 # Test obj store by sending and recieving files
 verify config=test_obj_store.py
+
+# Test DNS records
+verify config=validate_designate.py
+
+# Test AODH Alarms
+verify config=validate_aodh.py
 
 # Success
