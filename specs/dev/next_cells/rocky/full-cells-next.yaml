@@ -1,0 +1,236 @@
+# vim: set ts=2 et:
+openstack-services:
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=1G
+      options:
+        dataset-size: 50%
+    ceph-mon:
+      charm: ceph-mon
+      num_units: 3
+      options:
+        expected-osd-count: 3
+    ceph-osd:
+      charm: ceph-osd
+      constraints: mem=1G
+      num_units: 3
+      storage:
+        osd-devices:  cinder,40G
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    openstack-dashboard:
+      charm: openstack-dashboard
+      constraints: mem=1G
+    nova-compute:
+      charm: nova-compute
+      num_units: 3
+      constraints: mem=4G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+        migration-auth-type: ssh
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=1G
+      options:
+        network-manager: Neutron
+    neutron-gateway:
+      charm: neutron-gateway
+      constraints: mem=4G
+      options:
+        instance-mtu: 1300
+        bridge-mappings: physnet1:br-ex
+    cinder:
+      charm: cinder
+      options:
+        block-device: "None"
+        glance-api-version: 2
+      constraints": mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
+    glance:
+      charm: glance
+      constraints: mem=1G
+    swift-proxy:
+      charm: swift-proxy
+      constraints: mem=1G
+      options:
+        zone-assignment: manual
+        replicas: 3
+        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+    swift-storage-z1:
+      charm: swift-storage-z1
+      constraints: mem=1G
+      options:
+        zone: 1
+        block-device: vdb
+        overwrite: "true"
+        ephemeral-unmount: "/mnt"
+    swift-storage-z2:
+      charm: swift-storage-z2
+      constraints: mem=1G
+      options:
+        zone: 2
+        block-device: vdb
+        overwrite: "true"
+        ephemeral-unmount: "/mnt"
+    swift-storage-z3:
+      charm: swift-storage-z3
+      constraints: mem=1G
+      options:
+        zone: 3
+        block-device: vdb
+        overwrite: "true"
+        ephemeral-unmount: "/mnt"
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    gnocchi:
+      charm: gnocchi
+    memcached:
+      charm: memcached
+    mysql-cell2:
+      charm: cs:percona-cluster
+      num_units: 1
+      options:
+        innodb-buffer-pool-size: 256M
+        max-connections: 1000
+    nova-cell-controller-cell2:
+      charm: nova-cell-controller
+      series: bionic
+      num_units: 1
+      options:
+        worker-multiplier: 0.25
+        cell-name: "cell2"
+    nova-compute-cell2:
+      charm: nova-compute
+      num_units: 1
+      constraints: mem=4G
+      options:
+        config-flags: default_ephemeral_format=ext4
+        enable-live-migration: true
+        enable-resize: true
+        migration-auth-type: ssh
+    rabbitmq-server-nova:
+      charm: rabbitmq-server
+      num_units: 1
+    rabbitmq-server-nova-cell2:
+      charm: rabbitmq-server
+      num_units: 1
+    rabbitmq-server-neutron:
+      charm: rabbitmq-server
+      num_units: 1
+    neutron-api:
+      charm: cs:neutron-api
+      num_units: 1
+      options:
+        flat-network-providers: physnet1
+        neutron-security-groups: true
+        worker-multiplier: 0.25
+    neutron-openvswitch:
+      charm: cs:neutron-openvswitch
+      num_units: 0
+  relations:
+    - - nova-compute:neutron-plugin
+      - neutron-openvswitch:neutron-plugin
+    - - nova-compute-cell2:neutron-plugin
+      - neutron-openvswitch:neutron-plugin
+    - - neutron-openvswitch:amqp
+      - rabbitmq-server-neutron:amqp
+    - [ keystone, mysql ]
+    - - nova-cloud-controller:shared-db
+      - mysql:shared-db
+    - - nova-cloud-controller:amqp-cell
+      - rabbitmq-server-nova-cell2:amqp
+    - [ nova-cloud-controller, glance ]
+    - [ nova-cloud-controller, keystone ]
+    - [ nova-compute, nova-cloud-controller ]
+    - - nova-compute
+      - rabbitmq-server-nova:amqp
+    - [ nova-compute, glance ]
+    - [ nova-compute, ceph-mon ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ glance, ceph-mon ]
+    - [ ceph-mon, ceph-osd ]
+    - [ glance, "cinder:image-service" ]
+    - [ cinder, mysql ]
+    - [ cinder, rabbitmq-server-nova ]
+    - [ cinder, nova-cloud-controller ]
+    - [ cinder, keystone ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph-mon ]
+    - [ neutron-gateway, nova-cloud-controller ]
+    - [ "openstack-dashboard:identity-service", keystone ]
+    - [ swift-proxy, keystone ]
+    - [ swift-proxy, swift-storage-z1 ]
+    - [ swift-proxy, swift-storage-z2 ]
+    - [ swift-proxy, swift-storage-z3 ]
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ ceilometer, rabbitmq-server-nova ]
+    - [ ceilometer, gnocchi ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - - ceph-mon
+      - gnocchi
+    - - gnocchi
+      - memcached
+    - - gnocchi
+      - ceilometer
+    - - gnocchi
+      - keystone
+    - - gnocchi
+      - mysql
+    - - ceilometer
+      - keystone:identity-credentials
+    - - nova-cloud-controller:nova-cell-api
+      - nova-cell-controller-cell2:nova-cell-compute
+    - - nova-cloud-controller:shared-db-cell
+      - mysql-cell2:shared-db
+    - - nova-cloud-controller:amqp-cell
+      - rabbitmq-server-nova-cell2:amqp
+    - - nova-compute-cell2:amqp
+      - rabbitmq-server-nova-cell2:amqp
+    - - neutron-gateway:amqp
+      - rabbitmq-server-neutron:amqp
+    - - neutron-gateway:amqp-nova
+      - rabbitmq-server-nova:amqp
+    - - nova-cell-controller-cell2:cloud-compute
+      - nova-compute-cell2:cloud-compute
+    - - nova-compute-cell2:image-service
+      - glance:image-service
+    - - nova-cloud-controller:amqp
+      - rabbitmq-server-nova:amqp
+    - - nova-cell-controller-cell2:amqp
+      - rabbitmq-server-nova-cell2:amqp
+    - - nova-cell-controller-cell2:shared-db
+      - mysql-cell2:shared-db
+    - - neutron-api:identity-service
+      - keystone:identity-service
+    - - neutron-openvswitch:neutron-plugin-api
+      - neutron-api:neutron-plugin-api
+    - - neutron-api:shared-db
+      - mysql:shared-db
+    - - neutron-api:amqp
+      - rabbitmq-server-neutron:amqp
+    - - neutron-gateway:neutron-plugin-api
+      - neutron-api:neutron-plugin-api
+    - - nova-cloud-controller:neutron-api
+      - neutron-api:neutron-api
+    - - nova-compute-cell2:cloud-credentials
+      - keystone:identity-credentials
+# rocky
+bionic-rocky:
+  inherits: openstack-services
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
