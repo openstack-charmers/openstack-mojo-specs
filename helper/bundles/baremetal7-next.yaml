@@ -140,8 +140,8 @@ openstack-services:
       num_units: 0
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller:shared-db, mysql:shared-db ]
-    - [ nova-cloud-controller:amqp, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
@@ -177,7 +177,7 @@ openstack-services:
     - - ceph-osd:mon
       - ceph:osd
 #    - - aodh:shared-db
-#      - mysql:shared-db
+#      - "mysql:shared-db"
 #    - - aodh:identity-service
 #      - keystone:identity-service
 #    - - aodh:amqp

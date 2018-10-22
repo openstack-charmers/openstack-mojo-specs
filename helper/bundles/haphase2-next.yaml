@@ -119,7 +119,7 @@ openstack-services:
   relations:
     - [ keystone, keystone-hacluster ]
     - [ nova-cloud-controller, ncc-hacluster ]
-    - [ nova-cloud-controller:amqp, rabbitmq-server ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
@@ -151,7 +151,7 @@ openstack-database-relations:
   relations:
     - [ mysql, mysql-hacluster ]
     - [ keystone, mysql ]
-    - [ nova-cloud-controller:shared-db, mysql ]
+    - [ "nova-cloud-controller:shared-db", mysql ]
     - [ glance, mysql ]
     - [ cinder, mysql ]
 openstack-mysql-database:
