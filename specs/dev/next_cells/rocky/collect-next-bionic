@@ -1,6 +1,6 @@
 aodh                   cs:~openstack-charmers-next/aodh
 ceilometer-agent       cs:~openstack-charmers-next/ceilometer-agent
-ceilometer             cs:~openstack-charmers-next/ceilometer
+ceilometer             cs:~gnuoy/ceilometer-2;channel=unpublished
 ceph-mon               cs:~openstack-charmers-next/ceph-mon
 ceph-osd               cs:~openstack-charmers-next/ceph-osd
 cinder-ceph            cs:~openstack-charmers-next/cinder-ceph
@@ -18,7 +18,7 @@ nova-cloud-controller  cs:~openstack-charmers-next/nova-cloud-controller
 nova-compute           cs:~openstack-charmers-next/nova-compute
 ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
-rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
+rabbitmq-server        cs:~gnuoy/rabbitmq-server-2;channel=unpublished
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
 swift-storage-z1       cs:~openstack-charmers-next/swift-storage
 swift-storage-z2       cs:~openstack-charmers-next/swift-storage
