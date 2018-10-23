@@ -1,6 +1,9 @@
 # vim: set ts=2 et:
 openstack-services:
   services:
+    aodh:
+      charm: aodh
+      constraints: mem=1G
     mysql:
       charm: mysql
       constraints: mem=1G
@@ -28,7 +31,7 @@ openstack-services:
       constraints: mem=1G
     nova-compute:
       charm: nova-compute
-      num_units: 3
+      num_units: 1
       constraints: mem=4G
       options:
         enable-live-migration: True
@@ -118,7 +121,7 @@ openstack-services:
         enable-live-migration: true
         enable-resize: true
         migration-auth-type: ssh
-    rabbitmq-server-nova:
+    rabbitmq-server-general:
       charm: rabbitmq-server
       num_units: 1
     rabbitmq-server-nova-cell2:
@@ -135,9 +138,12 @@ openstack-services:
         neutron-security-groups: true
         worker-multiplier: 0.25
     neutron-openvswitch:
-      charm: cs:neutron-openvswitch
+      charm: neutron-openvswitch
       num_units: 0
   relations:
+    - [ aodh, rabbitmq-server-general ]
+    - [ aodh, mysql ]
+    - [ aodh, keystone ]
     - - nova-compute:neutron-plugin
       - neutron-openvswitch:neutron-plugin
     - - nova-compute-cell2:neutron-plugin
@@ -153,7 +159,7 @@ openstack-services:
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
     - - nova-compute
-      - rabbitmq-server-nova:amqp
+      - rabbitmq-server-general:amqp
     - [ nova-compute, glance ]
     - [ nova-compute, ceph-mon ]
     - [ glance, mysql ]
@@ -162,7 +168,7 @@ openstack-services:
     - [ ceph-mon, ceph-osd ]
     - [ glance, "cinder:image-service" ]
     - [ cinder, mysql ]
-    - [ cinder, rabbitmq-server-nova ]
+    - [ cinder, rabbitmq-server-general ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
     - [ cinder, cinder-ceph ]
@@ -175,9 +181,12 @@ openstack-services:
     - [ swift-proxy, swift-storage-z3 ]
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server-nova ]
+    - [ "ceilometer:amqp", rabbitmq-server-general ]
+    - [ "ceilometer:amqp-listener", rabbitmq-server-neutron ]
+    - [ "ceilometer:amqp-listener", rabbitmq-server-nova-cell2 ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, nova-compute-cell2 ]
     - [ ceilometer-agent, ceilometer ]
     - - ceph-mon
       - gnocchi
@@ -202,13 +211,13 @@ openstack-services:
     - - neutron-gateway:amqp
       - rabbitmq-server-neutron:amqp
     - - neutron-gateway:amqp-nova
-      - rabbitmq-server-nova:amqp
+      - rabbitmq-server-general:amqp
     - - nova-cell-controller-cell2:cloud-compute
       - nova-compute-cell2:cloud-compute
     - - nova-compute-cell2:image-service
       - glance:image-service
     - - nova-cloud-controller:amqp
-      - rabbitmq-server-nova:amqp
+      - rabbitmq-server-general:amqp
     - - nova-cell-controller-cell2:amqp
       - rabbitmq-server-nova-cell2:amqp
     - - nova-cell-controller-cell2:shared-db
