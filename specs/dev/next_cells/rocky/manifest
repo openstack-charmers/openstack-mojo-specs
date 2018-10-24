@@ -16,6 +16,9 @@ script config=image_setup.py
 # Setup keystone users
 script config=keystone_setup.py
 
+# Setup ceilometer
+script config=ceilometer_setup.py
+
 # Launch instances on the overcloud
 verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 
