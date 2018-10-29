@@ -1,3 +1,6 @@
+# Validate env variables
+script config=preflight.py
+
 # Collect the charms
 collect config=collect-next-reactive-${MOJO_SERIES}
 

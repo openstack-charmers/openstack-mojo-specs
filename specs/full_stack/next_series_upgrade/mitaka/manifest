@@ -1,11 +1,11 @@
-## Validate env variables
+# Validate env variables
 script config=preflight.py
 
 # Collect the charms
 collect config=collect-next-ha
 
 # Use juju deployer to create the units for the deployment
-deploy config=ha-next.yaml delay=0 wait=False target=${MOJO_SERIES}-queens-ha timeout=${MOJO_DEPLOY_TIMEOUT:-5400}
+deploy config=ha-next.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka-ha timeout=${MOJO_DEPLOY_TIMEOUT:-5400}
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
