@@ -268,6 +268,16 @@ openstack-services-xenial-queens:
   relations:
     - - ceilometer
       - keystone:identity-credentials
+openstack-services-bionic-rocky:
+  inherits: openstack-services-xenial-queens
+  services:
+    barbican:
+      charm: barbican
+      constraints: mem=1G
+  relations:
+    - [ barbican, rabbitmq-server ]
+    - [ barbican, mysql ]
+    - [ barbican, keystone ]
 # pike
 xenial-pike:
   inherits: [ openstack-services-xenial-ocata, dynamic-routing-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -317,18 +327,9 @@ bionic-queens:
     source: distro-proposed
 # rocky
 bionic-rocky:
-  inherits: bionic-queens
-  services:
-    barbican:
-      charm: barbican
-      constraints: mem=1G
-  relations:
-    - [ barbican, rabbitmq-server ]
-    - [ barbican, mysql ]
-    - [ barbican, keystone ]
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
 cosmic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-bionic-rocky, dynamic-routing-services, charm-ceilometer-gnocchi ]
   series: cosmic
