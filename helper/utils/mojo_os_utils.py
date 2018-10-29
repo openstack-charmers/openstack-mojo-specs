@@ -409,8 +409,8 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
 
 
 def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
-                  number, privkey, active_wait=180, cloudinit_wait=180,
-                  ping_wait=180, boot_from_volume=False):
+                  number, privkey, active_wait=600, cloudinit_wait=600,
+                  ping_wait=600, boot_from_volume=False):
     image_file = mojo_utils.get_mojo_file('images.yaml')
     image_config = generic_utils.get_yaml_config(image_file)
     for counter in range(int(number)):
@@ -442,7 +442,7 @@ def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
             raise Exception('SSH failed to instance at %s' % (ip))
 
 
-def check_guest_connectivity(nova_client, ping_wait=180):
+def check_guest_connectivity(nova_client, ping_wait=600):
     for guest in nova_client.servers.list():
         fip = nova_client.floating_ips.find(instance_id=guest.id).ip
         if not wait_for_ping(fip, ping_wait):

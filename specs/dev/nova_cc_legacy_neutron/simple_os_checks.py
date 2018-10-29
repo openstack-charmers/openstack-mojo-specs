@@ -10,9 +10,9 @@ def main(argv):
     parser = argparse.ArgumentParser()
     default_machines = ["precise:m1.small:1", "cirros:m1.tiny:1"]
     parser.add_argument("machines", default=default_machines, nargs="*")
-    parser.add_argument("--active_wait", default=180)
-    parser.add_argument("--cloudinit_wait", default=180)
-    parser.add_argument("--ping_wait", default=180)
+    parser.add_argument("--active_wait", default=600)
+    parser.add_argument("--cloudinit_wait", default=600)
+    parser.add_argument("--ping_wait", default=600)
     options = parser.parse_args()
     machines = mojo_utils.parse_mojo_arg(options, 'machines', multiargs=True)
     active_wait = int(mojo_utils.parse_mojo_arg(options, 'active_wait'))
