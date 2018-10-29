@@ -28,7 +28,7 @@ openstack-services:
       constraints: mem=1G
       options:
         zone: 1
-        block-device: vdb
+        block-device: /dev/vdb
         overwrite: "true"
         ephemeral-unmount: "/mnt"
     swift-storage-z2:
@@ -36,7 +36,7 @@ openstack-services:
       constraints: mem=1G
       options:
         zone: 2
-        block-device: vdb
+        block-device: /dev/vdb
         overwrite: "true"
         ephemeral-unmount: "/mnt"
     swift-storage-z3:
@@ -44,7 +44,7 @@ openstack-services:
       constraints: mem=1G
       options:
         zone: 3
-        block-device: vdb
+        block-device: /dev/vdb
         overwrite: "true"
         ephemeral-unmount: "/mnt"
   relations:
@@ -127,3 +127,12 @@ bionic-queens:
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

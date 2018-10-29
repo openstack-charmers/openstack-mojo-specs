@@ -10,6 +10,7 @@ openstack-services:
         sst-password: changeme
         root-password: changeme
         vip: "{{ MOJO_OS_VIP01 }}"
+        min-cluster-size: 3
     mysql-hacluster:
       charm: hacluster
       options:
@@ -28,10 +29,8 @@ openstack-services:
       charm: ceph-osd
       constraints: mem=1G
       num_units: 3
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
+      storage:
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -165,12 +164,11 @@ openstack-services:
       charm: neutron-openvswitch
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -235,7 +233,7 @@ ceilometer-mongodb:
       - keystone:identity-service
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -262,7 +260,7 @@ charm-ceilometer-gnocchi:
   relations:
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -337,11 +335,15 @@ xenial-ocata-ha:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
   overrides:
     ha-bindiface: ens2
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # pike
 xenial-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -350,11 +352,15 @@ xenial-pike-ha:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 artful-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
   overrides:
     ha-bindiface: ens2
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # queens
 xenial-queens-ha:
   inherits: [ openstack-services, ceilometer-gnocchi ]
@@ -362,9 +368,20 @@ xenial-queens-ha:
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 bionic-queens-ha:
   inherits: xenial-queens-ha
   series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

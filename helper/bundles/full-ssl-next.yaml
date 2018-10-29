@@ -20,21 +20,24 @@ openstack-services:
       charm: ceph-osd
       constraints: mem=1G
       num_units: 3
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
+      storage:
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
       options:
         admin-password: openstack
         admin-token: ubuntutesting
-        https-service-endpoints: "True"
-        use-https: "yes"
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     nova-compute:
       charm: nova-compute
       num_units: 3
@@ -48,6 +51,9 @@ openstack-services:
       constraints: mem=1G
       options:
         network-manager: Neutron
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     neutron-gateway:
       charm: neutron-gateway
       constraints: mem=4G
@@ -59,10 +65,19 @@ openstack-services:
       options:
         block-device: "None"
         glance-api-version: 2
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
       constraints": mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
     glance:
       charm: glance
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     swift-proxy:
       charm: swift-proxy
       constraints: mem=1G
@@ -70,6 +85,9 @@ openstack-services:
         zone-assignment: manual
         replicas: 3
         swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     swift-storage-z1:
       charm: swift-storage-z1
       constraints: mem=1G
@@ -96,12 +114,11 @@ openstack-services:
         ephemeral-unmount: "/mnt"
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -115,7 +132,8 @@ openstack-services:
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph-mon ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph-mon ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ "openstack-dashboard:identity-service", keystone ]
     - [ swift-proxy, keystone ]
@@ -127,6 +145,10 @@ ceilometer-mongodb:
     ceilometer:
       charm: ceilometer
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     ceilometer-agent:
       charm: ceilometer-agent
     mongodb:
@@ -137,7 +159,7 @@ ceilometer-mongodb:
       - keystone:identity-service
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -146,6 +168,10 @@ charm-ceilometer-gnocchi:
     ceilometer:
       charm: ceilometer
       constraints: mem=1G
+      options:
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     ceilometer-agent:
       charm: ceilometer-agent
     gnocchi:
@@ -155,7 +181,7 @@ charm-ceilometer-gnocchi:
   relations:
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -187,6 +213,9 @@ openstack-icehouse:
       options:
         neutron-security-groups: True
         flat-network-providers: physnet1
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
@@ -206,6 +235,9 @@ openstack-icehouse-msg-split:
       constraints: mem=1G
       options:
         neutron-security-groups: True
+        ssl_ca: include-base64://{{local_dir}}/cacert.pem
+        ssl_cert: include-base64://{{local_dir}}/cert.pem
+        ssl_key: include-base64://{{local_dir}}/cert.key
     neutron-openvswitch:
       charm: neutron-openvswitch
     rabbitmq-server-neutron:
@@ -344,6 +376,8 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-ocata-proposed:
   inherits: xenial-ocata
   overrides:
@@ -357,6 +391,8 @@ xenial-ocata-staging:
 zesty-ocata:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-proposed:
   inherits: zesty-ocata
   overrides:
@@ -369,6 +405,8 @@ xenial-pike:
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-pike-proposed:
   inherits: xenial-pike
   overrides:
@@ -382,20 +420,35 @@ xenial-pike-staging:
 artful-pike:
   inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
+  relations:
+    - [ cinder-ceph, nova-compute ]
 artful-pike-proposed:
   inherits: artful-pike
   overrides:
     source: proposed
     openstack-origin: distro-proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-queens:
   inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 bionic-queens:
   inherits: xenial-queens
   series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

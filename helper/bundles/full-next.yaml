@@ -18,10 +18,8 @@ openstack-services:
       charm: ceph-osd
       constraints: mem=1G
       num_units: 3
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
+      storage:
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -56,6 +54,8 @@ openstack-services:
         block-device: "None"
         glance-api-version: 2
       constraints": mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
     glance:
       charm: glance
       constraints: mem=1G
@@ -92,12 +92,11 @@ openstack-services:
         ephemeral-unmount: "/mnt"
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -111,7 +110,8 @@ openstack-services:
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph-mon ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph-mon ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ "openstack-dashboard:identity-service", keystone ]
     - [ swift-proxy, keystone ]
@@ -133,7 +133,7 @@ ceilometer-mongodb:
       - keystone:identity-service
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -151,7 +151,7 @@ charm-ceilometer-gnocchi:
   relations:
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -340,6 +340,8 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-ocata-proposed:
   inherits: xenial-ocata
   overrides:
@@ -353,6 +355,8 @@ xenial-ocata-staging:
 zesty-ocata:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # pike
 xenial-pike:
   inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -360,6 +364,8 @@ xenial-pike:
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-pike-proposed:
   inherits: xenial-pike
   overrides:
@@ -373,15 +379,28 @@ xenial-pike-staging:
 artful-pike:
   inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-queens:
   inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 bionic-queens:
   inherits: xenial-queens
   series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

@@ -21,10 +21,8 @@ openstack-services:
       charm: ceph-osd
       constraints: mem=1G
       num_units: 3
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb /dev/sdb /dev/xvdb
-        osd-reformat: True
+      storage:
+        osd-devices:  cinder,40G
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -100,12 +98,11 @@ openstack-services:
       charm: heat
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -145,7 +142,7 @@ ceilometer-mongodb:
       - keystone:identity-service
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -163,7 +160,7 @@ charm-ceilometer-gnocchi:
   relations:
     - - ceilometer
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -355,6 +352,8 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-ocata-proposed:
   inherits: xenial-ocata
   overrides:
@@ -368,6 +367,8 @@ xenial-ocata-staging:
 zesty-ocata:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-proposed:
   inherits: zesty-ocata
   overrides:
@@ -380,6 +381,8 @@ xenial-pike:
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-pike-proposed:
   inherits: xenial-pike
   overrides:
@@ -393,6 +396,8 @@ xenial-pike-staging:
 artful-pike:
   inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
+  relations:
+    - [ cinder-ceph, nova-compute ]
 artful-pike-proposed:
   inherits: artful-pike
   overrides:
@@ -405,9 +410,20 @@ xenial-queens:
   overrides:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 bionic-queens:
   inherits: xenial-queens
   series: bionic
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

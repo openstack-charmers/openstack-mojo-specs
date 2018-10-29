@@ -1,9 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
-import argparse
-import time
+
+from zaza.utilities import (
+    cli as cli_utils,
+    openstack as openstack_utils,
+)
+
 
 TEST_DOMAIN = 'mojo-ha-tests.com.'
 TEST_DOMAIN_EMAIL = 'fred@mojo-ha-tests.com'
@@ -12,40 +16,30 @@ TEST_RECORD = {TEST_WWW_RECORD: '10.0.0.23'}
 
 
 def main(argv):
-    mojo_utils.setup_logging()
+    cli_utils.setup_logging()
     # Setup client
-    overcloud_novarc = mojo_utils.get_overcloud_auth()
-    keystone_session = mojo_os_utils.get_keystone_session(overcloud_novarc,
-                                                          scope='PROJECT')
-    client = mojo_os_utils.get_designate_session_client(keystone_session)
-    os_version = mojo_os_utils.get_current_os_versions('keystone')['keystone']
+    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    os_version = openstack_utils.get_current_os_versions(
+        'keystone')['keystone']
 
     if os_version >= 'queens':
-        designate_api_version = 2
-        zone = mojo_os_utils.create_or_return_zone(
-            client,
-            TEST_DOMAIN,
-            TEST_DOMAIN_EMAIL)
-        rs = mojo_os_utils.create_or_return_recordset(
-            client,
-            zone['id'],
-            'www',
-            'A',
-            [TEST_RECORD[TEST_WWW_RECORD]])
+        designate_api_version = '2'
     else:
-        designate_api_version = 1
+        designate_api_version = '1'
+    client = mojo_os_utils.get_designate_session_client(
+        keystone_session, client_version=designate_api_version)
 
-        # Create test domain and record in test domain
-        domain = mojo_os_utils.create_designate_dns_domain(
-            client,
-            TEST_DOMAIN,
-            TEST_DOMAIN_EMAIL)
-        record = mojo_os_utils.create_designate_dns_record(
-            client,
-            domain.id,
-            TEST_WWW_RECORD,
-            "A",
-            TEST_RECORD[TEST_WWW_RECORD])
+    designate_api_version = 2
+    zone = mojo_os_utils.create_or_return_zone(
+        client,
+        TEST_DOMAIN,
+        TEST_DOMAIN_EMAIL)
+    mojo_os_utils.create_or_return_recordset(
+        client,
+        zone['id'],
+        'www',
+        'A',
+        [TEST_RECORD[TEST_WWW_RECORD]])
 
     # Test record is in bind and designate
     mojo_os_utils.check_dns_entry(

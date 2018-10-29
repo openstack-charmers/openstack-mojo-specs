@@ -12,9 +12,8 @@ openstack-services:
     ceph-osd:
       num_units: 3
       constraints: mem=1G
-      options:
-        ephemeral-unmount: /mnt
-        osd-devices: /dev/vdb
+      storage:
+        osd-devices:  cinder,40G
     ceph-mon:
       num_units: 3
       constraints: mem=1G
@@ -48,6 +47,8 @@ openstack-services:
         block-device: "None"
         glance-api-version: 2
       constraints": mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
     glance:
       charm: glance
       constraints: mem=1G
@@ -84,12 +85,11 @@ openstack-services:
         ephemeral-unmount: "/mnt"
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -103,7 +103,8 @@ openstack-services:
     - [ cinder, rabbitmq-server ]
     - [ cinder, nova-cloud-controller ]
     - [ cinder, keystone ]
-    - [ cinder, ceph-mon ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph-mon ]
     - [ "openstack-dashboard:identity-service", keystone ]
     - [ swift-proxy, keystone ]
     - [ swift-proxy, swift-storage-z1 ]
@@ -268,9 +269,13 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata:
   inherits: openstack-icehouse
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 
 # pike
 xenial-pike:
@@ -279,12 +284,16 @@ xenial-pike:
   overrides:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-pike:
   inherits: openstack-icehouse
   series: zesty
   overrides:
     openstack-origin: cloud:zesty-pike
     source: cloud:zesty-pike
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # queens
 xenial-queens:
   inherits: xenial-pike
@@ -297,3 +306,12 @@ bionic-queens:
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
+# rocky
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

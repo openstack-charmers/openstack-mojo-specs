@@ -31,6 +31,7 @@ OPENSTACK_RELEASES = {
     'ocata': ['xenial', 'zesty'],
     'pike': ['xenial', 'artful'],
     'queens': ['xenial', 'bionic'],
+    'rocky': ['bionic', 'cosmic'],
 }
 
 

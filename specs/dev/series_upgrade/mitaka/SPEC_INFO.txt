@@ -1,0 +1,2 @@
+This spec performs a series upgrade from Trusty to Xenial.
+It uses the HA oneshot bundle.

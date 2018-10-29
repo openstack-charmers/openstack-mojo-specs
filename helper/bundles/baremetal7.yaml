@@ -41,7 +41,6 @@ openstack-services:
       charm: ceph-osd
       options:
         osd-devices: /dev/vdb /dev/sdb
-        osd-reformat: True
       to:
         - "0"
     swift-proxy:
@@ -141,12 +140,11 @@ openstack-services:
       num_units: 0
   relations:
     - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
+    - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -169,7 +167,7 @@ openstack-services:
     - [ swift-proxy, swift-storage-z3 ]
     - - ceilometer
       - keystone:identity-service
-    - [ ceilometer, rabbitmq-server ]
+    - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
@@ -365,6 +363,8 @@ xenial-ocata:
   overrides:
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-ocata-proposed:
   inherits: xenial-ocata
   overrides:
@@ -378,6 +378,8 @@ xenial-ocata-staging:
 zesty-ocata:
   inherits: openstack-icehouse
   series: zesty
+  relations:
+    - [ cinder-ceph, nova-compute ]
 zesty-ocata-proposed:
   inherits: zesty-ocata
   overrides:

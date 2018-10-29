@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
 
 
 def main(argv):
-    return mojo_utils.juju_status_check_and_wait()
+    return mojo_utils.juju_wait_finished()
 
 
 if __name__ == "__main__":
