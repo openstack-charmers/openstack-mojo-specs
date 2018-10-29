@@ -1,4 +1,4 @@
-## Validate env variables
+# Validate env variables
 script config=preflight.py
 
 # Collect the charms
