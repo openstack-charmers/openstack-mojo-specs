@@ -259,18 +259,8 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
     - [ keystone, tempest ]
-openstack-services-xenial-mitaka:
-  inherits: openstack-services-trusty-mitaka
-  services:
-    barbican:
-      charm: barbican
-      constraints: mem=1G
-  relations:
-    - [ barbican, rabbitmq-server ]
-    - [ barbican, mysql ]
-    - [ barbican, keystone ]
 openstack-services-xenial-ocata:
-  inherits: openstack-services-xenial-mitaka
+  inherits: openstack-services-trusty-mitaka
   services:
     gnocchi:
       charm: gnocchi
@@ -426,6 +416,14 @@ bionic-queens:
 # rocky
 bionic-rocky:
   inherits: bionic-queens
+  services:
+    barbican:
+      charm: barbican
+      constraints: mem=1G
+  relations:
+    - [ barbican, rabbitmq-server ]
+    - [ barbican, mysql ]
+    - [ barbican, keystone ]
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
