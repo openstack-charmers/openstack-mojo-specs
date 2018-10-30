@@ -98,41 +98,74 @@ openstack-services:
         ssl-cert: include-base64://{{local_dir}}/cert.pem
         ssl-key: include-base64://{{local_dir}}/cert.key
   relations:
-    - [ keystone, mysql ]
-    - [ nova-cloud-controller, mysql ]
-    - [ nova-cloud-controller, rabbitmq-server ]
-    - [ nova-cloud-controller, glance ]
-    - [ nova-cloud-controller, keystone ]
-    - [ nova-compute, nova-cloud-controller ]
-    - [ nova-compute, mysql ]
-    - - nova-compute
+    - - keystone:shared-db
+      - mysql:shared-db
+    - - nova-cloud-controller:shared-db
+      - mysql:shared-db
+    - - nova-cloud-controller:amqp
       - rabbitmq-server:amqp
-    - [ nova-compute, glance ]
-    - [ nova-compute, ceph-mon ]
-    - [ glance, mysql ]
-    - [ glance, keystone ]
-    - [ glance, ceph-mon ]
-    - [ ceph-mon, ceph-osd ]
-    - [ glance, "cinder:image-service" ]
-    - [ cinder, mysql ]
-    - [ cinder, rabbitmq-server ]
-    - [ cinder, nova-cloud-controller ]
-    - [ cinder, keystone ]
-    - [ cinder, cinder-ceph ]
-    - [ cinder-ceph, ceph-mon ]
-    - [ neutron-gateway, nova-cloud-controller ]
-    - [ "openstack-dashboard:identity-service", keystone ]
-    - [ swift-proxy, keystone ]
-    - [ swift-proxy, swift-storage-z1 ]
-    - [ swift-proxy, swift-storage-z2 ]
-    - [ swift-proxy, swift-storage-z3 ]
-    - [ vault, mysql ]
-    - [ keystone, vault ]
-    - [ neutron-api, vault ]
-    - [ nova-cloud-controller, vault ]
-    - [ swift-proxy, vault ]
-    - [ cinder, vault ]
-    - [ glance, vault ]
+    - - nova-cloud-controller:image-service
+      - glance:image-service
+    - - nova-cloud-controller:identity-service
+      - keystone:identity-service
+    - - nova-compute:cloud-compute
+      - nova-cloud-controller:cloud-compute
+    - - nova-compute:amqp
+      - rabbitmq-server:amqp
+    - - nova-compute:image-service
+      - glance:image-service
+    - - nova-compute:ceph
+      - ceph-mon:client
+    - - glance:shared-db
+      - mysql:shared-db
+    - - glance:identity-service
+      - keystone:identity-service
+    - - glance:ceph
+      - ceph-mon:client
+    - - ceph-mon:osd
+      - ceph-osd:mon
+    - - glance:image-service
+      - cinder:image-service
+    - - cinder:shared-db
+      - mysql:shared-db
+    - - cinder:amqp
+      - rabbitmq-server:amqp
+    - - cinder:cinder-volume-service
+      - nova-cloud-controller:cinder-volume-service
+    - - cinder:identity-service
+      - keystone:identity-service
+    - - cinder:storage-backend
+      - cinder-ceph:storage-backend
+    - - cinder-ceph:ceph
+      - ceph-mon:client
+    - - neutron-gateway:quantum-network-service
+      - nova-cloud-controller:quantum-network-service
+    - - openstack-dashboard:identity-service
+      - keystone:identity-service
+    - - swift-proxy:identity-service
+      - keystone:identity-service
+    - - swift-proxy:swift-storage
+      - swift-storage-z1:swift-storage
+    - - swift-proxy:swift-storage
+      - swift-storage-z2:swift-storage
+    - - swift-proxy:swift-storage
+      - swift-storage-z3:swift-storage
+    - - vault:shared-db
+      - mysql:shared-db
+    - - keystone:certificates
+      - vault:certificates
+    - - neutron-api:certificates
+      - vault:certificates
+    - - nova-cloud-controller:certificates
+      - vault:certificates
+    - - swift-proxy:certificates
+      - vault:certificates
+    - - cinder:certificates
+      - vault:certificates
+    - - glance:certificates
+      - vault:certificates
+    - - rabbitmq-server:certificates
+      - vault:certificates
 ceilometer-mongodb:
   services:
     ceilometer:
@@ -144,14 +177,16 @@ ceilometer-mongodb:
       charm: mongodb
       constraints: mem=1G
   relations:
-    - - ceilometer
+    - - ceilometer:identity-service
       - keystone:identity-service
-    - - ceilometer
-      - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
-    - [ ceilometer, mongodb ]
-    - [ ceilometer-agent, nova-compute ]
-    - [ ceilometer-agent, ceilometer ]
+    - - ceilometer:amqp
+      - rabbitmq-server:amqp
+    - - ceilometer:shared-db
+      - mongodb:database
+    - - ceilometer-agent:nova-ceilometer
+      - nova-compute:nova-ceilometer
+    - - ceilometer-agent:ceilometer-service
+      - ceilometer:ceilometer-service
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -164,31 +199,34 @@ charm-ceilometer-gnocchi:
     memcached:
       charm: memcached
   relations:
-    - - ceilometer
+    - - ceilometer:identity-notifications
       - keystone:identity-notifications
-    - [ ceilometer, rabbitmq-server ]
-    - [ ceilometer, gnocchi ]
-    - [ ceilometer-agent, nova-compute ]
-    - [ ceilometer-agent, ceilometer ]
-    - - ceph-mon
-      - gnocchi
-    - - gnocchi
-      - memcached
-    - - gnocchi
-      - ceilometer
-    - - gnocchi
-      - keystone
-    - - gnocchi
-      - mysql
+    - - ceilometer:amqp
+      - rabbitmq-server:amqp
+    - - ceilometer-agent:nova-ceilometer
+      - nova-compute:nova-ceilometer
+    - - ceilometer-agent:ceilometer-service
+      - ceilometer:ceilometer-service
+    - - ceph-mon:client
+      - gnocchi:storage-ceph
+    - - gnocchi:coordinator-memcached
+      - memcached:cache
+    - - gnocchi:metric-service
+      - ceilometer:metric-service
+    - - gnocchi:identity-service
+      - keystone:identity-service
+    - - gnocchi:shared-db
+      - mysql:shared-db
 ceilometer-gnocchi:
   inherits: [ charm-ceilometer-gnocchi]
   relations:
-    - - ceilometer
+    - - ceilometer:identity-credentials
       - keystone:identity-credentials
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
-    - [ "neutron-gateway:amqp", rabbitmq-server ]
+    - - neutron-gateway:amqp
+      - rabbitmq-server:amqp
 openstack-icehouse:
   inherits: openstack-singlerabbit
   services:
@@ -201,177 +239,22 @@ openstack-icehouse:
     neutron-openvswitch:
       charm: neutron-openvswitch
   relations:
-  - [ neutron-api, mysql ]
-  - [ neutron-api, rabbitmq-server ]
-  - [ neutron-api, nova-cloud-controller ]
-  - [ neutron-api, neutron-openvswitch ]
-  - [ neutron-api, keystone ]
-  - [ neutron-api, neutron-gateway ]
-  - [ neutron-openvswitch, nova-compute ]
-  - [ neutron-openvswitch, rabbitmq-server ]
-openstack-icehouse-msg-split:
-  inherits: openstack-services
-  services:
-    neutron-api:
-      charm: neutron-api
-      constraints: mem=1G
-      options:
-        neutron-security-groups: True
-    neutron-openvswitch:
-      charm: neutron-openvswitch
-    rabbitmq-server-neutron:
-      charm: rabbitmq-server
-      constraints: mem=1G
-  relations:
-  - [ neutron-api, mysql ]
-  - [ neutron-api, rabbitmq-server-neutron ]
-  - [ neutron-api, nova-cloud-controller ]
-  - [ neutron-api, neutron-openvswitch ]
-  - [ neutron-api, keystone ]
-  - [ neutron-api, neutron-gateway ]
-  - [ neutron-openvswitch, nova-compute ]
-  - [ neutron-openvswitch, rabbitmq-server-neutron ]
-  - [ "neutron-gateway:amqp-nova", rabbitmq-server ]
-  - [ "neutron-gateway:amqp", rabbitmq-server-neutron ]
-# icehouse
-precise-icehouse:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: precise
-  overrides:
-    openstack-origin: cloud:precise-icehouse
-    source: cloud:precise-updates/icehouse
-precise-icehouse-proposed:
-  inherits: precise-icehouse
-  overrides:
-    openstack-origin: cloud:precise-icehouse/proposed
-    source: cloud:precise-updates/icehouse
-precise-icehouse-staging:
-  inherits: precise-icehouse
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/icehouse-staging
-    source: ppa:ubuntu-cloud-archive/icehouse-staging
-precise-icehouse-trunk:
-  inherits: precise-icehouse
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
-    source: ppa:openstack-ubuntu-testing/icehouse
-trusty-icehouse:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: trusty
-trusty-icehouse-msg-split:
-  inherits: [ openstack-icehouse-msg-split, ceilometer-mongodb ]
-  series: trusty
-trusty-icehouse-proposed:
-  inherits: trusty-icehouse
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-trusty-icehouse-trunk:
-  inherits: trusty-icehouse
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/icehouse
-    source: ppa:openstack-ubuntu-testing/icehouse
-    offline-compression: "no"
-# kilo
-trusty-kilo:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-kilo
-    source: cloud:trusty-kilo
-trusty-kilo-proposed:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: cloud:trusty-kilo/proposed
-    source: cloud:trusty-proposed/kilo
-trusty-kilo-staging:
-  inherits: trusty-kilo
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/kilo-staging
-    source: ppa:ubuntu-cloud-archive/kilo-staging
-# liberty
-trusty-liberty:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-liberty
-    source: cloud:trusty-liberty
-trusty-liberty-proposed:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: cloud:trusty-liberty/proposed
-    source: cloud:trusty-liberty/proposed
-trusty-liberty-staging:
-  inherits: trusty-liberty
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/liberty-staging
-    source: ppa:ubuntu-cloud-archive/liberty-staging
-# mitaka
-trusty-mitaka:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: trusty
-  overrides:
-    openstack-origin: cloud:trusty-mitaka
-    source: cloud:trusty-mitaka
-trusty-mitaka-proposed:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: cloud:trusty-mitaka/proposed
-    source: cloud:trusty-proposed/mitaka
-trusty-mitaka-staging:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
-    source: ppa:ubuntu-cloud-archive/mitaka-staging
-xenial-mitaka:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: xenial
-xenial-mitaka-proposed:
-  inherits: xenial-mitaka
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-# newton
-xenial-newton:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: xenial
-  overrides:
-    openstack-origin: cloud:xenial-newton
-    source: cloud:xenial-newton
-xenial-newton-proposed:
-  inherits: xenial-newton
-  overrides:
-    openstack-origin: cloud:xenial-newton/proposed
-    source: cloud:xenial-proposed/newton
-xenial-newton-staging:
-  inherits: xenial-newton
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/newton-staging
-    source: ppa:ubuntu-cloud-archive/newton-staging
-# ocata
-xenial-ocata:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: xenial
-  overrides:
-    openstack-origin: cloud:xenial-ocata
-    source: cloud:xenial-ocata
-  relations:
-    - [ cinder-ceph, nova-compute ]
-xenial-ocata-proposed:
-  inherits: xenial-ocata
-  overrides:
-    openstack-origin: cloud:xenial-ocata/proposed
-    source: cloud:xenial-proposed/ocata
-xenial-ocata-staging:
-  inherits: xenial-ocata
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
-    source: ppa:ubuntu-cloud-archive/ocata-staging
-zesty-ocata:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
-  series: zesty
-  relations:
-    - [ cinder-ceph, nova-compute ]
+  - - neutron-api:shared-db
+    - mysql:shared-db
+  - - neutron-api:amqp
+    - rabbitmq-server:amqp
+  - - neutron-api:neutron-api
+    - nova-cloud-controller:neutron-api
+  - - neutron-api:neutron-plugin-api
+    - neutron-openvswitch:neutron-plugin-api
+  - - neutron-api:identity-service
+    - keystone:identity-service
+  - - neutron-api:neutron-plugin-api
+    - neutron-gateway:neutron-plugin-api
+  - - neutron-openvswitch:neutron-plugin
+    - nova-compute:neutron-plugin
+  - - neutron-openvswitch:amqp
+    - rabbitmq-server:amqp
 # pike
 xenial-pike:
   inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -380,22 +263,8 @@ xenial-pike:
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
   relations:
-    - [ cinder-ceph, nova-compute ]
-xenial-pike-proposed:
-  inherits: xenial-pike
-  overrides:
-    openstack-origin: cloud:xenial-pike/proposed
-    source: cloud:xenial-proposed/pike
-xenial-pike-staging:
-  inherits: xenial-pike
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
-    source: ppa:ubuntu-cloud-archive/pike-staging
-artful-pike:
-  inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
-  series: artful
-  relations:
-    - [ cinder-ceph, nova-compute ]
+    - - cinder-ceph:ceph-access
+      - nova-compute:ceph-access
 xenial-queens:
   inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
@@ -403,7 +272,8 @@ xenial-queens:
     openstack-origin: cloud:xenial-queens/proposed
     source: cloud:xenial-queens/proposed
   relations:
-    - [ cinder-ceph, nova-compute ]
+    - - cinder-ceph:ceph-access
+      - nova-compute:ceph-access
 bionic-queens:
   inherits: xenial-queens
   series: bionic
