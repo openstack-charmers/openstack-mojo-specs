@@ -259,18 +259,8 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
     - [ keystone, tempest ]
-openstack-services-xenial-mitaka:
-  inherits: openstack-services-trusty-mitaka
-  services:
-    barbican:
-      charm: barbican
-      constraints: mem=1G
-  relations:
-    - [ barbican, rabbitmq-server ]
-    - [ barbican, mysql ]
-    - [ barbican, keystone ]
 openstack-services-xenial-ocata:
-  inherits: openstack-services-xenial-mitaka
+  inherits: openstack-services-trusty-mitaka
   services:
     gnocchi:
       charm: gnocchi
@@ -294,6 +284,16 @@ openstack-services-xenial-queens:
   relations:
     - - ceilometer
       - keystone:identity-credentials
+openstack-services-bionic-rocky:
+  inherits: openstack-services-xenial-queens
+  services:
+    barbican:
+      charm: barbican
+      constraints: mem=1G
+  relations:
+    - [ barbican, rabbitmq-server ]
+    - [ barbican, mysql ]
+    - [ barbican, keystone ]
 # mitaka
 trusty-mitaka:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
@@ -425,10 +425,10 @@ bionic-queens:
     source: distro-proposed
 # rocky
 bionic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
 cosmic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
   series: cosmic
