@@ -108,3 +108,6 @@ bionic-rocky:
   series: bionic
   overrides:
     source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: openstack-services
+  series: cosmic

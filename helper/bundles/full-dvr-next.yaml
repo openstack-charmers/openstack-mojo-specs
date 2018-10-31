@@ -315,3 +315,6 @@ bionic-rocky:
 cosmic-rocky:
   inherits: bionic-queens
   series: cosmic
+  overrides:
+    openstack-origin: distro
+    source: distro
