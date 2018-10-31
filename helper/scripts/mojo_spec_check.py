@@ -243,15 +243,17 @@ def check_for_ambiguous_relations(dir_list):
     found_ambiguous_relation_ep = set()
     for file_name, yaml_data in get_yaml_data(dir_list):
         for relations in extract_relations(yaml_data):
+            if not relations:
+                continue
             for relation in relations:
                 for ep in relation:
                     if ':' not in ep:
                         found_ambiguous_relation_ep.add(file_name)
     if found_ambiguous_relation_ep:
-        logging.error(
-            'Bundle {} contains ambiguous relation(s)'.format(
-                ','.join(found_ambiguous_relation_ep)))
-
+        logging.error('Following bundle(s) contain ambiguous relation(s):')
+        for b in found_ambiguous_relation_ep:
+            logging.error('    ' + b)
+    return found_ambiguous_relation_ep
 
 def check_dirname(openstack_release):
     """Check tip dirname matches Openstack release referenced in manifest"""
