@@ -98,3 +98,6 @@ bionic-rocky:
 cosmic-rocky:
   inherits: base
   series: cosmic
+cosmic-rocky:
+  inherits: base
+  series: cosmic
