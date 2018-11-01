@@ -1,0 +1,1 @@
+../../../../helper/setup/wipe_charm_dir.py

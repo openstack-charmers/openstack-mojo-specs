@@ -3,7 +3,7 @@
 echo "Checking specs..."
 for spec in $(find specs/{storage,full_stack} -name manifest); do
     spec_dir=$(dirname $spec)
-    MSGS=$(./helper/scripts/mojo-spec-check.py $spec_dir 2>&1)
+    MSGS=$(./helper/scripts/mojo_spec_check.py $spec_dir 2>&1)
     if [[ "$MSGS" == *WARNING* ]] || [[ "$MSGS" == *ERROR* ]]; then
         result="(!)"
         failed=1
