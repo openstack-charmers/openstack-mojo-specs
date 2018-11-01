@@ -415,14 +415,11 @@ xenial-queens:
   inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
   series: xenial
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-queens/proposed
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
 bionic-queens:
   inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
   series: bionic
-  overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
 # rocky
 bionic-rocky:
   inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
@@ -432,3 +429,6 @@ bionic-rocky:
 cosmic-rocky:
   inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

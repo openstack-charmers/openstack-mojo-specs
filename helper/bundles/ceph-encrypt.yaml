@@ -73,7 +73,7 @@ xenial-queens:
   inherits: base
   series: xenial
   overrides:
-    source: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens
 bionic-queens:
   inherits: base
   series: bionic
@@ -86,3 +86,5 @@ bionic-rocky:
 cosmic-rocky:
   inherits: base
   series: cosmic
+  overrides:
+    source: distro-proposed
