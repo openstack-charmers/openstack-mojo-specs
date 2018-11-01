@@ -7,13 +7,13 @@ cinder-ceph            cs:~openstack-charmers-next/cinder-ceph
 cinder                 cs:~openstack-charmers-next/cinder
 glance                 cs:~openstack-charmers-next/glance
 heat                   cs:~openstack-charmers-next/heat
-keystone               cs:~gnuoy/keystone-26;channel=unpublished
+keystone               cs:~openstack-charmers-next/keystone
 mongodb                cs:~thedac/mongodb
 mysql                  cs:~openstack-charmers-next/percona-cluster
 neutron-api            cs:~openstack-charmers-next/neutron-api
 neutron-gateway        cs:~openstack-charmers-next/neutron-gateway
 neutron-openvswitch    cs:~openstack-charmers-next/neutron-openvswitch
-nova-cloud-controller  cs:~gnuoy/nova-cloud-controller-44;channel=unpublished
+nova-cloud-controller  cs:~openstack-charmers-next/nova-cloud-controller
 nova-compute           cs:~openstack-charmers-next/nova-compute
 ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
