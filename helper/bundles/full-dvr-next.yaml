@@ -303,6 +303,9 @@ xenial-queens:
 bionic-queens:
   inherits: xenial-pike
   series: bionic
+  overrides:
+    openstack-origin: distro
+    source: distro
 # rocky
 bionic-rocky:
   inherits: bionic-queens
