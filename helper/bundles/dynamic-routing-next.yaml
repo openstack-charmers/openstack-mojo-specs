@@ -250,6 +250,9 @@ openstack-services-xenial-ocata:
       charm: gnocchi
     memcached:
       charm: cs:memcached
+    quagga:
+      options:
+        use-16bit-asn: True
   relations:
     - [ gnocchi, ceph-mon ]
     - [ gnocchi, mysql ]
@@ -260,6 +263,10 @@ openstack-services-xenial-ocata:
     - [ cinder-ceph, nova-compute ]
 openstack-services-xenial-queens:
   inherits: openstack-services-xenial-ocata
+  services:
+    quagga:
+      options:
+        use-16bit-asn: False
   overrides:
     nova-domain: ''
     neutron-domain: ''
