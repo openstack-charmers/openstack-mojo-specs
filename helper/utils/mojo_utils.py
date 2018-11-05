@@ -111,11 +111,14 @@ def convert_machineno_to_unit(machineno, juju_status=None):
     services = [service for service in juju_status['applications']]
     for svc in services:
         if 'units' in juju_status['applications'][svc]:
-            for unit in juju_status['applications'][svc]['units']:
-                unit_info = juju_status[
-                    'applications'][svc]['units'][unit]
-                if unit_info['machine'] == machineno:
-                    return unit
+            if juju_status['applications'][svc]['units']:
+                for unit in juju_status['applications'][svc]['units']:
+                    unit_info = juju_status[
+                        'applications'][svc]['units'][unit]
+                    if unit_info['machine'] == machineno:
+                        return unit
+            else:
+                logging.info("service {} doesn't have any units".format(svc))
 
 
 def remote_shell_check(unit, timeout=None):
