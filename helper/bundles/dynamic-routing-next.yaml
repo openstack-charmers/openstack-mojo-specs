@@ -331,6 +331,8 @@ bionic-queens:
   series: bionic
 # rocky
 bionic-rocky:
+  inherits: [ openstack-services-xenial-queens, dynamic-routing-services, charm-ceilometer-gnocchi ]
+  series: bionic
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
