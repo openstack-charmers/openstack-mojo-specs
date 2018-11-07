@@ -13,6 +13,7 @@ openstack-services:
         sst-password: changeme
         root-password: changeme
         vip: "{{ MOJO_OS_VIP01 }}"
+        min-cluster-size: 3
     mysql-hacluster:
       charm: hacluster
       options:
