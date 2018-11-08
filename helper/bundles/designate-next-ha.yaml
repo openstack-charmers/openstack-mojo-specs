@@ -296,7 +296,7 @@ openstack-services-bionic-rocky:
     - [ barbican, keystone ]
 # mitaka
 trusty-mitaka:
-  inherits: [ openstack-trusty-mitaka, ceilometer-mongodb ]
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka
@@ -312,7 +312,7 @@ trusty-mitaka-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
     source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: [ openstack-trusty-mitaka, ceilometer-mongodb ]
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
@@ -321,7 +321,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton:
-  inherits: [ openstack-trusty-mitaka, ceilometer-mongodb ]
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
