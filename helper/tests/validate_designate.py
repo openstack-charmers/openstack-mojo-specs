@@ -20,7 +20,7 @@ def main(argv):
 
     os_version = openstack_utils.get_current_os_versions(
         'keystone')['keystone']
-    if os_version >= 'queens':
+    if os_version >= 'mitaka':
         designate_api = '2'
     else:
         designate_api = '1'

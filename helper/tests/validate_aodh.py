@@ -52,7 +52,7 @@ def main(argv):
                 logging.info('Alarm triggered')
                 break
             else:
-                time.sleep(5)
+                time.sleep(15)
         else:
             raise Exception("Alarm failed to trigger")
 

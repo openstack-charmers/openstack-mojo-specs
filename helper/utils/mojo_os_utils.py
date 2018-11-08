@@ -725,7 +725,7 @@ def check_dns_record_exists(dns_server_ip, query_name, expected_ip,
                 'Attempt {}/{} to lookup {}@{} failed. Sleeping before '
                 'retrying'.format(i, retry_count, query_name,
                                   dns_server_ip))
-            time.sleep(5)
+            time.sleep(15)
         else:
             break
     else:

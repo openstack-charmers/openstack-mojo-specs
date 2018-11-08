@@ -22,14 +22,13 @@ def main(argv):
     os_version = openstack_utils.get_current_os_versions(
         'keystone')['keystone']
 
-    if os_version >= 'queens':
+    if os_version >= 'mitaka':
         designate_api_version = '2'
     else:
         designate_api_version = '1'
     client = mojo_os_utils.get_designate_session_client(
         keystone_session, client_version=designate_api_version)
 
-    designate_api_version = 2
     zone = mojo_os_utils.create_or_return_zone(
         client,
         TEST_DOMAIN,
