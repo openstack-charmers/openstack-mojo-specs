@@ -105,12 +105,6 @@ def main(argv):
                   "cloud:{}-{}/proposed"
                   .format(ubuntu_version, target_release)}
         model.set_application_config(application['name'], config)
-        # NOTE: For liberty->mitaka upgrade ceilometer-agent gets stuck at
-        # 'Services not running that should be: memcached' after nova-compute
-        # upgrade, and test would wait forever. Therefore we upgrade
-        # ceilometer-agent immediately after nova-compute.
-        if application['name'] == 'nova-compute':
-            model.set_application_config('ceilometer-agent', config)
         mojo_utils.juju_wait_finished()
 
 
