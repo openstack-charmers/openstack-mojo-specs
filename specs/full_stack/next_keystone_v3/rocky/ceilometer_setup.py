@@ -1,0 +1,1 @@
+../../../../helper/setup/ceilometer_setup.py
