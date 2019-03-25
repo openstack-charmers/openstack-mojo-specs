@@ -175,6 +175,7 @@ ceilometer-mongodb:
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+    - [ "ceilometer-agent:amqp", rabbitmq-server ]
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -193,6 +194,7 @@ charm-ceilometer-gnocchi:
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+    - [ "ceilometer-agent:amqp", rabbitmq-server ]
     - - ceph-mon
       - gnocchi
     - - gnocchi
