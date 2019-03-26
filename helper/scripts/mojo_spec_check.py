@@ -231,7 +231,7 @@ def check_yaml_syntax(dir_list):
         if f.endswith('.yaml'):
             stream = open(f, 'r')
             try:
-                yaml.load(stream)
+                yaml.safe_load(stream)
             except yaml.scanner.ScannerError:
                 logging.error('%s contains yaml errors, '
                               'mojo spec will fail.' % f)

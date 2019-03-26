@@ -267,7 +267,7 @@ def get_juju_environments_yaml():
     @returns Dictionary of the data from the environments.yaml file
     """
     juju_env_file = open(os.environ['HOME'] + "/.juju/environments.yaml", 'r')
-    return yaml.load(juju_env_file)
+    return yaml.safe_load(juju_env_file)
 
 
 class MissingOSAthenticationException(Exception):
@@ -839,7 +839,7 @@ def action_get_output(action_id):
     output = subprocess.check_output(cmd)
     if six.PY3:
         output = output.decode('utf-8')
-    return yaml.load(output)
+    return yaml.safe_load(output)
 
 
 def action_get_status(action_id):
@@ -864,7 +864,7 @@ def action_run(unit, action_name, action_args=None, timeout=600):
     output = subprocess.check_output(cmd)
     if six.PY3:
         output = output.decode('utf-8')
-    action_out = yaml.load(output)
+    action_out = yaml.safe_load(output)
     action_id = action_out['Action queued with id']
     if timeout:
         action_wait(action_id, timeout)
