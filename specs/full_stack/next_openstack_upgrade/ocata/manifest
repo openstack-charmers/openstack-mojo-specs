@@ -4,9 +4,6 @@ collect config=collect-next-xenial
 # Use juju deployer with full.yaml bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
 
-# Setup ceilometer
-script config=ceilometer_setup.py
-
 # Create sdn on overcloud
 script config=network_setup.py
 
