@@ -245,23 +245,16 @@ openstack-services-trusty-mitaka:
     - [ designate, memcached ]
     - [ designate, neutron-api ]
     - [ keystone, tempest ]
-openstack-services-xenial-mitaka:
-  inherits: openstack-services-trusty-mitaka
-  services:
-    barbican:
-      charm: barbican
-      constraints: mem=1G
-  relations:
-    - [ barbican, rabbitmq-server ]
-    - [ barbican, mysql ]
-    - [ barbican, keystone ]
 openstack-services-xenial-ocata:
-  inherits: openstack-services-xenial-mitaka
+  inherits: openstack-services-trusty-mitaka
   services:
     gnocchi:
       charm: gnocchi
     memcached:
       charm: cs:memcached
+    quagga:
+      options:
+        use-16bit-asn: True
   relations:
     - [ gnocchi, ceph-mon ]
     - [ gnocchi, mysql ]
@@ -272,6 +265,10 @@ openstack-services-xenial-ocata:
     - [ cinder-ceph, nova-compute ]
 openstack-services-xenial-queens:
   inherits: openstack-services-xenial-ocata
+  services:
+    quagga:
+      options:
+        use-16bit-asn: False
   overrides:
     nova-domain: ''
     neutron-domain: ''
@@ -280,6 +277,16 @@ openstack-services-xenial-queens:
   relations:
     - - ceilometer
       - keystone:identity-credentials
+openstack-services-bionic-rocky:
+  inherits: openstack-services-xenial-queens
+  services:
+    barbican:
+      charm: barbican
+      constraints: mem=1G
+  relations:
+    - [ barbican, rabbitmq-server ]
+    - [ barbican, mysql ]
+    - [ barbican, keystone ]
 # pike
 xenial-pike:
   inherits: [ openstack-services-xenial-ocata, dynamic-routing-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
@@ -319,20 +326,21 @@ xenial-queens:
   inherits: [ openstack-services-xenial-queens, dynamic-routing-services, charm-ceilometer-gnocchi ]
   series: xenial
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-queens/proposed
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
 bionic-queens:
   inherits: [ openstack-services-xenial-queens, dynamic-routing-services, charm-ceilometer-gnocchi ]
   series: bionic
-  overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
 # rocky
 bionic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-xenial-queens, dynamic-routing-services, charm-ceilometer-gnocchi ]
+  series: bionic
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
 cosmic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-bionic-rocky, dynamic-routing-services, charm-ceilometer-gnocchi ]
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

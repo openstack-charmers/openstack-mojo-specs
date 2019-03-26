@@ -368,22 +368,25 @@ xenial-queens-ha:
   inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-queens/proposed
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
   relations:
     - [ cinder-ceph, nova-compute ]
 bionic-queens-ha:
   inherits: xenial-queens-ha
   series: bionic
   overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
+    openstack-origin: distro
+    source: distro
 # rocky
-bionic-rocky:
+bionic-rocky-ha:
   inherits: bionic-queens
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
-cosmic-rocky:
+cosmic-rocky-ha:
   inherits: bionic-queens
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

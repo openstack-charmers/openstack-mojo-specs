@@ -13,6 +13,7 @@ mysql                  cs:~openstack-charmers-next/percona-cluster
 neutron-api            cs:~openstack-charmers-next/neutron-api
 neutron-gateway        cs:~openstack-charmers-next/neutron-gateway
 neutron-openvswitch    cs:~openstack-charmers-next/neutron-openvswitch
+nova-cell-controller   cs:~openstack-charmers-next/nova-cell-controller
 nova-cloud-controller  cs:~openstack-charmers-next/nova-cloud-controller
 nova-compute           cs:~openstack-charmers-next/nova-compute
 ntp                    cs:ntp
@@ -25,3 +26,4 @@ swift-storage-z3       cs:~openstack-charmers-next/swift-storage
 tempest                cs:~openstack-charmers-next/tempest
 gnocchi                cs:~openstack-charmers-next/gnocchi
 memcached              cs:memcached
+vault                  cs:~openstack-charmers-next/vault

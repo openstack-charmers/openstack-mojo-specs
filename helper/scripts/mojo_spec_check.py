@@ -118,6 +118,25 @@ def get_openstack_release_name():
         return openstack_release
 
 
+def extract_relations(data):
+    try:
+        for key, value in data.items():
+            if key == 'relations':
+                yield value
+            else:
+                for inner_value in extract_relations(value):
+                    yield inner_value
+    except AttributeError:
+        pass
+
+
+def get_yaml_data(dir_list):
+    for f in dir_list:
+        if f.endswith('.yaml'):
+            with open(f, 'r') as stream:
+                yield (f, yaml.load(stream))
+
+
 # Checks
 def check_manifest_ubuntu_release():
     """Check Ubuntu release is not hardcoded in manifest"""
@@ -217,6 +236,24 @@ def check_yaml_syntax(dir_list):
                 logging.error('%s contains yaml errors, '
                               'mojo spec will fail.' % f)
 
+
+def check_for_ambiguous_relations(dir_list):
+    """Check bundles do not contain ambiguous relations"""
+    logging.info('Checking for ambiguous relations...')
+    found_ambiguous_relation_ep = set()
+    for file_name, yaml_data in get_yaml_data(dir_list):
+        for relations in extract_relations(yaml_data):
+            if not relations:
+                continue
+            for relation in relations:
+                for ep in relation:
+                    if ':' not in ep:
+                        found_ambiguous_relation_ep.add(file_name)
+    if found_ambiguous_relation_ep:
+        logging.error('Following bundle(s) contain ambiguous relation(s):')
+        for b in found_ambiguous_relation_ep:
+            logging.error('    ' + b)
+    return found_ambiguous_relation_ep
 
 def check_dirname(openstack_release):
     """Check tip dirname matches Openstack release referenced in manifest"""

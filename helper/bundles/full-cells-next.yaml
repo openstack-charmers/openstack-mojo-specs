@@ -236,6 +236,16 @@ openstack-services:
       - neutron-api:neutron-api
     - - nova-compute-cell2:cloud-credentials
       - keystone:identity-credentials
+# queens
+xenial-queens:
+  inherits: openstack-services
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
+bionic-queens:
+  inherits: openstack-services
+  series: bionic
 # rocky
 bionic-rocky:
   inherits: openstack-services
@@ -243,3 +253,6 @@ bionic-rocky:
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: openstack-services
+  series: cosmic

@@ -1,7 +1,4 @@
 # vim: set ts=2 et:
-#
-# Config and topology for STABLE charms
-#
 openstack-services:
   services:
     mysql:
@@ -13,6 +10,7 @@ openstack-services:
         sst-password: changeme
         root-password: changeme
         vip: "{{ MOJO_OS_VIP01 }}"
+        min-cluster-size: 3
     mysql-hacluster:
       charm: hacluster
       options:
@@ -130,6 +128,7 @@ openstack-services:
         zone: 1
         block-device: vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z2:
       charm: swift-storage-z2
       constraints: mem=1G
@@ -137,6 +136,7 @@ openstack-services:
         zone: 2
         block-device: vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     swift-storage-z3:
       charm: swift-storage-z3
       constraints: mem=1G
@@ -144,6 +144,7 @@ openstack-services:
         zone: 3
         block-device: vdb
         overwrite: "true"
+        ephemeral-unmount: "/mnt"
     heat:
       charm: heat
     neutron-api:
@@ -311,16 +312,19 @@ trusty-mitaka-proposed:
 xenial-mitaka-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
+  overrides:
+    ha-bindiface: ens2
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
     source: proposed
     openstack-origin: distro-proposed
-# newton
+    ha-bindiface: ens2
 xenial-newton-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
+    ha-bindiface: ens2
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
 # ocata
@@ -328,6 +332,7 @@ xenial-ocata-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
+    ha-bindiface: ens2
     openstack-origin: cloud:xenial-ocata
     source: cloud:xenial-ocata
   relations:
@@ -335,6 +340,8 @@ xenial-ocata-ha:
 zesty-ocata-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: zesty
+  overrides:
+    ha-bindiface: ens2
   relations:
     - [ cinder-ceph, nova-compute ]
 # pike
@@ -342,6 +349,7 @@ xenial-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: xenial
   overrides:
+    ha-bindiface: ens2
     openstack-origin: cloud:xenial-pike
     source: cloud:xenial-pike
   relations:
@@ -349,15 +357,34 @@ xenial-pike-ha:
 artful-pike-ha:
   inherits: [ openstack-services, ceilometer-mongodb, charm-ceilometer-gnocchi ]
   series: artful
+  overrides:
+    ha-bindiface: ens2
   relations:
     - [ cinder-ceph, nova-compute ]
 # queens
-xenial-queens:
-  inherits: [ xenial-pike-ha ]
+xenial-queens-ha:
+  inherits: [ openstack-services, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens
     source: cloud:xenial-queens
-bionic-queens:
-  inherits: [ artful-pike-ha ]
+  relations:
+    - [ cinder-ceph, nova-compute ]
+bionic-queens-ha:
+  inherits: xenial-queens-ha
   series: bionic
+  overrides:
+    openstack-origin: distro
+    source: distro
+# rocky
+bionic-rocky-ha:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky-ha:
+  inherits: bionic-queens
+  series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

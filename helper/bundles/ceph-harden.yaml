@@ -88,3 +88,5 @@ bionic-rocky:
 cosmic-rocky:
   inherits: base
   series: cosmic
+  overrides:
+    source: distro-proposed

@@ -127,8 +127,8 @@ zesty-ocata:
 xenial-queens:
   inherits: xenial-pike
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-queens/proposed
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
 bionic-queens:
   inherits: xenial-pike
   series: bionic
@@ -144,3 +144,6 @@ bionic-rocky:
 cosmic-rocky:
   inherits: bionic-queens
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

@@ -1,0 +1,290 @@
+# vim: set ts=2 et:
+openstack-services:
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=1G
+      options:
+        dataset-size: 50%
+    rabbitmq-server:
+      charm: rabbitmq-server
+      constraints: mem=1G
+    ceph-mon:
+      charm: ceph-mon
+      num_units: 3
+      options:
+        expected-osd-count: 3
+    ceph-osd:
+      charm: ceph-osd
+      constraints: mem=1G
+      num_units: 3
+      storage:
+        osd-devices:  cinder,10G
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    openstack-dashboard:
+      charm: openstack-dashboard
+      constraints: mem=1G
+    nova-compute:
+      charm: nova-compute
+      num_units: 3
+      constraints: mem=4G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+        migration-auth-type: ssh
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=1G
+      options:
+        network-manager: Neutron
+    neutron-gateway:
+      charm: neutron-gateway
+      constraints: mem=4G
+      options:
+        instance-mtu: 1300
+        bridge-mappings: physnet1:br-ex
+    cinder:
+      charm: cinder
+      options:
+        block-device: "None"
+        glance-api-version: 2
+      constraints": mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
+    glance:
+      charm: glance
+      constraints: mem=1G
+    swift-proxy:
+      charm: swift-proxy
+      constraints: mem=1G
+      options:
+        zone-assignment: manual
+        replicas: 3
+        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+    swift-storage-z1:
+      charm: swift-storage-z1
+      constraints: mem=1G
+      options:
+        zone: 1
+        block-device: vdb
+        overwrite: "true"
+        ephemeral-unmount: "/mnt"
+    swift-storage-z2:
+      charm: swift-storage-z2
+      constraints: mem=1G
+      options:
+        zone: 2
+        block-device: vdb
+        overwrite: "true"
+        ephemeral-unmount: "/mnt"
+    swift-storage-z3:
+      charm: swift-storage-z3
+      constraints: mem=1G
+      options:
+        zone: 3
+        block-device: vdb
+        overwrite: "true"
+        ephemeral-unmount: "/mnt"
+    vault:
+      charm: vault
+      constraints: mem=1G
+      options:
+        ssl-ca: include-base64://{{local_dir}}/cacert.pem
+        ssl-cert: include-base64://{{local_dir}}/cert.pem
+        ssl-key: include-base64://{{local_dir}}/cert.key
+  relations:
+    - - keystone:shared-db
+      - mysql:shared-db
+    - - nova-cloud-controller:shared-db
+      - mysql:shared-db
+    - - nova-cloud-controller:amqp
+      - rabbitmq-server:amqp
+    - - nova-cloud-controller:image-service
+      - glance:image-service
+    - - nova-cloud-controller:identity-service
+      - keystone:identity-service
+    - - nova-compute:cloud-compute
+      - nova-cloud-controller:cloud-compute
+    - - nova-compute:amqp
+      - rabbitmq-server:amqp
+    - - nova-compute:image-service
+      - glance:image-service
+    - - nova-compute:ceph
+      - ceph-mon:client
+    - - glance:shared-db
+      - mysql:shared-db
+    - - glance:identity-service
+      - keystone:identity-service
+    - - glance:ceph
+      - ceph-mon:client
+    - - ceph-mon:osd
+      - ceph-osd:mon
+    - - glance:image-service
+      - cinder:image-service
+    - - cinder:shared-db
+      - mysql:shared-db
+    - - cinder:amqp
+      - rabbitmq-server:amqp
+    - - cinder:cinder-volume-service
+      - nova-cloud-controller:cinder-volume-service
+    - - cinder:identity-service
+      - keystone:identity-service
+    - - cinder:storage-backend
+      - cinder-ceph:storage-backend
+    - - cinder-ceph:ceph
+      - ceph-mon:client
+    - - neutron-gateway:quantum-network-service
+      - nova-cloud-controller:quantum-network-service
+    - - openstack-dashboard:identity-service
+      - keystone:identity-service
+    - - swift-proxy:identity-service
+      - keystone:identity-service
+    - - swift-proxy:swift-storage
+      - swift-storage-z1:swift-storage
+    - - swift-proxy:swift-storage
+      - swift-storage-z2:swift-storage
+    - - swift-proxy:swift-storage
+      - swift-storage-z3:swift-storage
+    - - vault:shared-db
+      - mysql:shared-db
+    - - keystone:certificates
+      - vault:certificates
+    - - neutron-api:certificates
+      - vault:certificates
+    - - nova-cloud-controller:certificates
+      - vault:certificates
+    - - swift-proxy:certificates
+      - vault:certificates
+    - - cinder:certificates
+      - vault:certificates
+    - - glance:certificates
+      - vault:certificates
+    - - rabbitmq-server:certificates
+      - vault:certificates
+ceilometer-mongodb:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    mongodb:
+      charm: mongodb
+      constraints: mem=1G
+  relations:
+    - - ceilometer:identity-service
+      - keystone:identity-service
+    - - ceilometer:amqp
+      - rabbitmq-server:amqp
+    - - ceilometer:shared-db
+      - mongodb:database
+    - - ceilometer-agent:nova-ceilometer
+      - nova-compute:nova-ceilometer
+    - - ceilometer-agent:ceilometer-service
+      - ceilometer:ceilometer-service
+charm-ceilometer-gnocchi:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    gnocchi:
+      charm: gnocchi
+    memcached:
+      charm: memcached
+  relations:
+    - - ceilometer:identity-notifications
+      - keystone:identity-notifications
+    - - ceilometer:amqp
+      - rabbitmq-server:amqp
+    - - ceilometer-agent:nova-ceilometer
+      - nova-compute:nova-ceilometer
+    - - ceilometer-agent:ceilometer-service
+      - ceilometer:ceilometer-service
+    - - ceph-mon:client
+      - gnocchi:storage-ceph
+    - - gnocchi:coordinator-memcached
+      - memcached:cache
+    - - gnocchi:metric-service
+      - ceilometer:metric-service
+    - - gnocchi:identity-service
+      - keystone:identity-service
+    - - gnocchi:shared-db
+      - mysql:shared-db
+ceilometer-gnocchi:
+  inherits: [ charm-ceilometer-gnocchi]
+  relations:
+    - - ceilometer:identity-credentials
+      - keystone:identity-credentials
+openstack-singlerabbit:
+  inherits: openstack-services
+  relations:
+    - - neutron-gateway:amqp
+      - rabbitmq-server:amqp
+openstack-icehouse:
+  inherits: openstack-singlerabbit
+  services:
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        neutron-security-groups: True
+        flat-network-providers: physnet1
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+  relations:
+  - - neutron-api:shared-db
+    - mysql:shared-db
+  - - neutron-api:amqp
+    - rabbitmq-server:amqp
+  - - neutron-api:neutron-api
+    - nova-cloud-controller:neutron-api
+  - - neutron-api:neutron-plugin-api
+    - neutron-openvswitch:neutron-plugin-api
+  - - neutron-api:identity-service
+    - keystone:identity-service
+  - - neutron-api:neutron-plugin-api
+    - neutron-gateway:neutron-plugin-api
+  - - neutron-openvswitch:neutron-plugin
+    - nova-compute:neutron-plugin
+  - - neutron-openvswitch:amqp
+    - rabbitmq-server:amqp
+# pike
+xenial-pike:
+  inherits: [ openstack-icehouse, ceilometer-mongodb, charm-ceilometer-gnocchi ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+  relations:
+    - - cinder-ceph:ceph-access
+      - nova-compute:ceph-access
+xenial-queens:
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
+  relations:
+    - - cinder-ceph:ceph-access
+      - nova-compute:ceph-access
+bionic-queens:
+  inherits: xenial-queens
+  series: bionic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed
+bionic-rocky:
+  inherits: bionic-queens
+  overrides:
+    openstack-origin: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky/proposed
+cosmic-rocky:
+  inherits: bionic-queens
+  series: cosmic

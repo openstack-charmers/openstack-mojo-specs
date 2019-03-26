@@ -410,8 +410,8 @@ xenial-queens:
   inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-queens/proposed
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
   relations:
     - [ cinder-ceph, nova-compute ]
 bionic-queens:
@@ -429,3 +429,6 @@ bionic-rocky:
 cosmic-rocky:
   inherits: bionic-queens
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed

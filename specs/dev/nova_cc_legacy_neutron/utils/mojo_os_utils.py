@@ -506,7 +506,7 @@ def ssh_test(username, ip, vm_name, password=None, privkey=None):
 
 
 def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
-                  active_wait=180, cloudinit_wait=180, ping_wait=180):
+                  active_wait=600, cloudinit_wait=600, ping_wait=600):
     image_config = mojo_utils.get_mojo_config('images.yaml')
     for counter in range(number):
         instance = boot_instance(nova_client,
@@ -533,7 +533,7 @@ def boot_and_test(nova_client, image_name, flavor_name, number, privkey,
             raise Exception('SSH failed' % (ip))
 
 
-def check_guest_connectivity(nova_client, ping_wait=180):
+def check_guest_connectivity(nova_client, ping_wait=600):
     for guest in nova_client.servers.list():
         fip = nova_client.floating_ips.find(instance_id=guest.id).ip
         if not wait_for_ping(fip, ping_wait):

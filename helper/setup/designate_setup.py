@@ -55,7 +55,7 @@ def main(argv):
         verify=cacert)
     neutronc = openstack_utils.get_neutron_session_client(keystone_session)
 
-    if os_version >= 'queens':
+    if os_version >= 'mitaka':
         designatec = mojo_os_utils.get_designate_session_client(
             keystone_session,
             client_version='2')

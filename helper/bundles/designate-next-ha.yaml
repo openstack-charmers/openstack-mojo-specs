@@ -261,18 +261,8 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
     - [ keystone, tempest ]
-openstack-services-xenial-mitaka:
-  inherits: openstack-services-trusty-mitaka
-  services:
-    barbican:
-      charm: barbican
-      constraints: mem=1G
-  relations:
-    - [ barbican, rabbitmq-server ]
-    - [ barbican, mysql ]
-    - [ barbican, keystone ]
 openstack-services-xenial-ocata:
-  inherits: openstack-services-xenial-mitaka
+  inherits: openstack-services-trusty-mitaka
   services:
     gnocchi:
       charm: gnocchi
@@ -296,9 +286,19 @@ openstack-services-xenial-queens:
   relations:
     - - ceilometer
       - keystone:identity-credentials
+openstack-services-bionic-rocky:
+  inherits: openstack-services-xenial-queens
+  services:
+    barbican:
+      charm: barbican
+      constraints: mem=1G
+  relations:
+    - [ barbican, rabbitmq-server ]
+    - [ barbican, mysql ]
+    - [ barbican, keystone ]
 # mitaka
 trusty-mitaka:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka
@@ -314,7 +314,7 @@ trusty-mitaka-staging:
     openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
     source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
   series: xenial
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
@@ -323,7 +323,7 @@ xenial-mitaka-proposed:
     openstack-origin: distro-proposed
 # newton
 xenial-newton:
-  inherits: [ openstack-icehouse, ceilometer-mongodb ]
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
@@ -417,20 +417,21 @@ xenial-queens:
   inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
   series: xenial
   overrides:
-    openstack-origin: cloud:xenial-queens/proposed
-    source: cloud:xenial-queens/proposed
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
 bionic-queens:
   inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
   series: bionic
-  overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
 # rocky
 bionic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
+  series: bionic
   overrides:
     openstack-origin: cloud:bionic-rocky/proposed
     source: cloud:bionic-rocky/proposed
 cosmic-rocky:
-  inherits: bionic-queens
+  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed
