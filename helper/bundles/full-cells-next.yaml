@@ -71,25 +71,22 @@ openstack-services:
       constraints: mem=1G
       options:
         zone: 1
-        block-device: vdb
-        overwrite: "true"
-        ephemeral-unmount: "/mnt"
+      storage:
+        block-devices:  cinder,10G
     swift-storage-z2:
       charm: swift-storage-z2
       constraints: mem=1G
       options:
         zone: 2
-        block-device: vdb
-        overwrite: "true"
-        ephemeral-unmount: "/mnt"
+      storage:
+        block-devices:  cinder,10G
     swift-storage-z3:
       charm: swift-storage-z3
       constraints: mem=1G
       options:
         zone: 3
-        block-device: vdb
-        overwrite: "true"
-        ephemeral-unmount: "/mnt"
+      storage:
+        block-devices:  cinder,10G
     ceilometer:
       charm: ceilometer
       constraints: mem=1G
