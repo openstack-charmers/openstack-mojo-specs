@@ -24,4 +24,4 @@ swift-storage-z1       git://github.com/openstack/charm-swift-storage
 swift-storage-z2       git://github.com/openstack/charm-swift-storage
 swift-storage-z3       git://github.com/openstack/charm-swift-storage
 gnocchi                git://github.com/openstack/charm-gnocchi
-memcached              cs:memcached
+memcached              cs:~openstack-charmers/memcached
