@@ -165,6 +165,7 @@ openstack-services:
     - [ "nova-cloud-controller:amqp", rabbitmq-server ]
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
+    - [ nova-cloud-controller, memcached ]
     - [ nova-compute, nova-cloud-controller ]
     - - nova-compute
       - rabbitmq-server:amqp
