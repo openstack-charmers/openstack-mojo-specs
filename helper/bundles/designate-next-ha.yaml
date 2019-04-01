@@ -264,7 +264,7 @@ openstack-services-xenial-ocata:
     gnocchi:
       charm: gnocchi
     memcached:
-      charm: cs:memcached
+      charm: memcached
   relations:
     - [ gnocchi, ceph-mon ]
     - [ gnocchi, mysql ]
