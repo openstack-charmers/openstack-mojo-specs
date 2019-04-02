@@ -55,6 +55,8 @@ openstack-services:
       options:
         corosync_transport: unicast
         cluster_count: 3
+    memcached:
+      charm: memcached
     nova-compute:
       charm: nova-compute
       num_units: 3
@@ -254,8 +256,6 @@ charm-ceilometer-gnocchi:
       charm: ceilometer-agent
     gnocchi:
       charm: gnocchi
-    memcached:
-      charm: memcached
   relations:
     - - ceilometer
       - keystone:identity-notifications
