@@ -410,6 +410,8 @@ def upgrade_all_services(juju_status=None, switch=None):
                 juju_status['applications'][svc]['charm'])
             upgrade_service(svc, charm_name=charm_name, switch=switch)
             time.sleep(30)
+    cmd = ['juju', 'add-relation', 'ceilometer-agent:amqp', 'rabbitmq-server']
+    subprocess.call(cmd)
 
 
 # Begin upgrade code
