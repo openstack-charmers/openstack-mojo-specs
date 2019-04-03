@@ -377,8 +377,8 @@ bionic-queens-ha:
 bionic-rocky-ha:
   inherits: bionic-queens
   overrides:
-    openstack-origin: cloud:bionic-rocky/proposed
-    source: cloud:bionic-rocky/proposed
+    openstack-origin: cloud:bionic-rocky
+    source: cloud:bionic-rocky
 cosmic-rocky-ha:
   inherits: bionic-queens
   series: cosmic

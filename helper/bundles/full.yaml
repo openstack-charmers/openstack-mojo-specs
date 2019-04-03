@@ -377,3 +377,9 @@ xenial-queens:
 bionic-queens:
   inherits: [ artful-pike ]
   series: bionic
+#rocky
+bionic-rocky:
+  inherits: [ bionic-queens ]
+  overrides:
+    openstack-origin: cloud:bionic-rocky
+    source: cloud:bionic-rocky
