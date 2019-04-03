@@ -185,7 +185,7 @@ openstack-services:
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, nova-compute-cell2 ]
     - [ ceilometer-agent, ceilometer ]
-    - [ "ceilometer-agent:amqp", rabbitmq-server ]
+    - [ "ceilometer-agent:amqp", rabbitmq-server-general ]
     - - ceph-mon
       - gnocchi
     - - gnocchi
