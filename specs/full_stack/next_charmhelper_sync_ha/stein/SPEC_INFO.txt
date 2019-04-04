@@ -1,0 +1,4 @@
+This spec collects the charms and then upgrades charmhelpers in each charm
+before running a ha deployment one shot (not phased) then runs tests to
+validate the deployment. The assumption is that the version of juju has
+leadership enabled.
