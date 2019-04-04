@@ -4,6 +4,9 @@ collect config=collect-next-${MOJO_SERIES}
 # Use juju deployer with full.yaml bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-cells-next.yaml delay=0 wait=False target=${MOJO_SERIES}-rocky
 
+# Setup ceilometer
+script config=ceilometer_setup.py
+
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py
 
