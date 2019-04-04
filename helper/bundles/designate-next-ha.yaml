@@ -424,11 +424,24 @@ bionic-rocky:
   inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
   series: bionic
   overrides:
-    openstack-origin: cloud:bionic-rocky/proposed
-    source: cloud:bionic-rocky/proposed
+    openstack-origin: cloud:bionic-rocky
+    source: cloud:bionic-rocky
 cosmic-rocky:
   inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
   series: cosmic
+  overrides:
+    openstack-origin: distro-proposed
+    source: distro-proposed
+# stein
+bionic-stein:
+  inherits: [ bionic-rocky ]
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-stein/proposed
+    source: cloud:bionic-stein/proposed
+disco-stein:
+  inherits: [ bionic-rocky ]
+  series: disco
   overrides:
     openstack-origin: distro-proposed
     source: distro-proposed
