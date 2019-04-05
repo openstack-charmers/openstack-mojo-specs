@@ -259,11 +259,11 @@ bionic-stein:
   inherits: openstack-services
   series: bionic
   overrides:
-    openstack-origin: cloud:bionic-stein/proposed
-    source: cloud:bionic-stein/proposed
+    openstack-origin: cloud:bionic-stein
+    source: cloud:bionic-stein
 disco-stein:
   inherits: openstack-services
   series: disco
   overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
+    openstack-origin: distro
+    source: distro
