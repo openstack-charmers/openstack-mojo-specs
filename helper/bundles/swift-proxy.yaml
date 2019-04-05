@@ -122,17 +122,28 @@ bionic-queens:
   inherits: xenial-pike
   series: bionic
   overrides:
-    openstack-origin: distro-proposed
+    openstack-origin: distro
     source: distro-proposed
 # rocky
 bionic-rocky:
   inherits: bionic-queens
   overrides:
-    openstack-origin: cloud:bionic-rocky/proposed
-    source: cloud:bionic-rocky/proposed
+    openstack-origin: cloud:bionic-rocky
+    source: cloud:bionic-rocky
 cosmic-rocky:
   inherits: bionic-queens
   series: cosmic
   overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
+    openstack-origin: distro
+    source: distro
+# stein
+bionic-stein:
+  inherits: bionic-rocky
+  series: bionic
+  overrides:
+    source: cloud:bionic-stein
+disco-stein:
+  inherits: bionic-rocky
+  series: disco
+  overrides:
+    source: distro

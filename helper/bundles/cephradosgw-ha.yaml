@@ -102,7 +102,7 @@ xenial-queens:
   inherits: openstack-services
   series: xenial
   overrides:
-    source: cloud:xenial-queens/proposed
+    source: cloud:xenial-queens
 bionic-queens:
   inherits: openstack-services
   series: bionic
@@ -111,7 +111,18 @@ bionic-rocky:
   inherits: openstack-services
   series: bionic
   overrides:
-    source: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky
 cosmic-rocky:
-  inherits: base
+  inherits: openstack-services
   series: cosmic
+# stein
+bionic-stein:
+  inherits: openstack-services
+  series: bionic
+  overrides:
+    source: cloud:bionic-stein
+disco-stein:
+  inherits: openstack-services
+  series: disco
+  overrides:
+    source: distro
