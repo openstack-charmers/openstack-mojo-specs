@@ -1,0 +1,19 @@
+# Collect the charm branches from Launchpad
+collect config=collect-next-cephradosgw
+
+# Use juju deployer with cephradosgw-ha.yaml bundle
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=cephradosgw.yaml delay=0 wait=False target=${MOJO_SERIES}-stein
+
+# Check juju statuses are green and that hooks have finished
+verify config=check_juju.py
+
+# Setup images
+script config=image_setup.py
+
+# Setup keystone users
+script config=keystone_setup.py
+
+# Test obj store by sending and recieving files
+verify config=test_obj_store.py
+
+# Success
