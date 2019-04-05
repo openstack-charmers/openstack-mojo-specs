@@ -107,9 +107,20 @@ bionic-rocky:
   inherits: openstack-services
   series: bionic
   overrides:
-    source: cloud:bionic-rocky/proposed
+    source: cloud:bionic-rocky
 cosmic-rocky:
   inherits: openstack-services
   series: cosmic
   overrides:
-    source: distro-proposed
+    source: distro
+# stein
+bionic-stein:
+  inherits: openstack-services
+  series: bionic
+  overrides:
+    source: cloud:bionic-stein
+disco-stein:
+  inherits: openstack-services
+  series: disco
+  overrides:
+    source: distro

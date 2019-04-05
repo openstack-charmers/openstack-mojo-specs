@@ -319,11 +319,11 @@ cosmic-rocky:
 bionic-stein:
   inherits: bionic-queens
   overrides:
-    openstack-origin: cloud:bionic-stein/proposed
-    source: cloud:bionic-stein/proposed
+    openstack-origin: cloud:bionic-stein
+    source: cloud:bionic-stein
 disco-stein:
   inherits: bionic-queens
   series: disco
   overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
+    openstack-origin: distro
+    source: distro
