@@ -72,11 +72,19 @@ def get_juju_units(application):
     return [unit.entity_id for unit in units]
 
 
-def get_juju_unit_ip(unit):
-    application_name = unit.split('/')[0]
-    unit_obj = model.get_units(application_name)[0]
-    unit_ip = unit_obj.public_address
-    return unit_ip
+def get_juju_unit_ip(unit_name):
+    """Return the public IP address of the supplied unit.
+
+    :param unit_name: Name of unit
+    :type unit_name: str
+    :returns: Public IP address of unit_name or None if no match was
+              found
+    :rtype: str
+    """
+    application_name = unit_name.split('/')[0]
+    for unit in model.get_units(application_name):
+        if unit_name == unit.entity_id:
+            return unit.public_address
 
 
 def get_principle_applications():
