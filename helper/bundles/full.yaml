@@ -369,7 +369,7 @@ artful-pike:
     - [ cinder-ceph, nova-compute ]
 # queens
 xenial-queens:
-  inherits: [ openstack-services, ceilometer-gnocchi ]
+  inherits: [ openstack-icehouse, ceilometer-gnocchi ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-queens
