@@ -405,7 +405,7 @@ cosmic-rocky:
   series: cosmic
 # stein
 bionic-stein:
-  inherits: openstack-services
+  inherits: bionic-rocky
   series: bionic
   overrides:
     openstack-origin: cloud:bionic-stein
