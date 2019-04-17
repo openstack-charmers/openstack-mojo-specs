@@ -375,13 +375,13 @@ bionic-queens-ha:
     source: distro
 # rocky
 bionic-rocky-ha:
-  inherits: bionic-queens
+  inherits: bionic-queens-ha
   overrides:
     openstack-origin: cloud:bionic-rocky
     source: cloud:bionic-rocky
 cosmic-rocky-ha:
-  inherits: bionic-queens
+  inherits: bionic-queens-ha
   series: cosmic
   overrides:
-    openstack-origin: distro-proposed
-    source: distro-proposed
+    openstack-origin: distro
+    source: distro
