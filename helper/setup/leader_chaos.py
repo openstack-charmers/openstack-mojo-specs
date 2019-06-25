@@ -7,7 +7,7 @@ import xml.dom.minidom
 import re
 import ast
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     juju as juju_utils,
 )

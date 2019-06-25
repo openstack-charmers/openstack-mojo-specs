@@ -4,13 +4,13 @@ import sys
 
 import zaza.model
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
 )
 
 
 def main(argv):
-    zaza.utilities.cli.setup_logging()
+    zaza.openstack.utilities.cli.setup_logging()
     logging.info('Setting up ceilometer schema')
     action = zaza.model.run_action_on_leader(
         'ceilometer',

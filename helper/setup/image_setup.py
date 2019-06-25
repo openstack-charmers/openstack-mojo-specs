@@ -5,7 +5,7 @@ import utils.mojo_os_utils as mojo_os_utils
 import logging
 import os
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     generic as generic_utils,
     openstack as openstack_utils,

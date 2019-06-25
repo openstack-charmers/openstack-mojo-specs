@@ -16,7 +16,7 @@
 import ipaddress
 import itertools
 import os
-import zaza.utilities.cert
+import zaza.openstack.utilities.cert
 
 
 ISSUER_NAME = 'OSCI'
@@ -52,9 +52,9 @@ for addr in itertools.islice(
 
     alt_names.append(str(addr))
 
-(cakey, cacert) = zaza.utilities.cert.generate_cert(ISSUER_NAME,
+(cakey, cacert) = zaza.openstack.utilities.cert.generate_cert(ISSUER_NAME,
                                                     generate_ca=True)
-(key, cert) = zaza.utilities.cert.generate_cert('*.serverstack',
+(key, cert) = zaza.openstack.utilities.cert.generate_cert('*.serverstack',
                                                 alternative_names=alt_names,
                                                 issuer_name=ISSUER_NAME,
                                                 signing_key=cakey)

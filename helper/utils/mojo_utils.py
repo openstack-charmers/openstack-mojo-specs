@@ -10,7 +10,7 @@ import juju_wait
 from collections import Counter
 import json
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     juju as juju_utils,
     openstack as openstack_utils,
 )
@@ -61,13 +61,13 @@ def get_juju_status(application=None, unit=None):
 def get_juju_units(application):
     """ Get units for an application
 
-    Move to zaza.utilities.juju_utils ASAP
+    Move to zaza.openstack.utilities.juju_utils ASAP
 
     :param application: str application name
     :return: list of application units
     """
-    logging.debug("get_juju_units: deprecated move to zaza.utilities."
-                  "juju_utils")
+    logging.debug("get_juju_units: deprecated move to"
+                  "zaza.openstack.utilities.juju_utils")
     units = model.get_units(application)
     return [unit.entity_id for unit in units]
 

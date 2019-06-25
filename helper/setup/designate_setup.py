@@ -10,7 +10,7 @@ from designateclient.v1.domains import Domain
 from designateclient.v1.records import Record
 from designateclient.v1.servers import Server
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     openstack as openstack_utils,
 )

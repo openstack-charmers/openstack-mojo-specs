@@ -4,7 +4,7 @@ import sys
 import time
 import utils.mojo_os_utils as mojo_os_utils
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     openstack as openstack_utils,
 )
