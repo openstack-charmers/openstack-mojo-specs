@@ -4,7 +4,7 @@ import utils.mojo_utils as mojo_utils
 import netaddr
 
 from zaza import model
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     juju as juju_utils,
     openstack as openstack_utils,

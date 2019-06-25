@@ -22,10 +22,10 @@ import subprocess
 import paramiko
 import dns.resolver
 
-from zaza.utilities.os_versions import (
+from zaza.openstack.utilities.os_versions import (
     OPENSTACK_CODENAMES,
 )
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     generic as generic_utils,
     juju as juju_utils,
     openstack as openstack_utils,

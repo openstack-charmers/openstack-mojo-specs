@@ -7,7 +7,7 @@ import random
 import utils.mojo_os_utils as mojo_os_utils
 import sys
 
-from zaza.utilities import openstack as openstack_utils
+from zaza.openstack.utilities import openstack as openstack_utils
 
 
 class ObjectPushPull(threading.Thread):

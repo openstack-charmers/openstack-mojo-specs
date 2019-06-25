@@ -3,7 +3,7 @@ import sys
 import utils.mojo_utils as mojo_utils
 import argparse
 
-from zaza.utilities import cli as cli_utils
+from zaza.openstack.utilities import cli as cli_utils
 
 
 def main(argv):

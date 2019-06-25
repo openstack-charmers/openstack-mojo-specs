@@ -4,7 +4,7 @@ import asyncio
 import copy
 import os
 from zaza import model
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     openstack,
 )
@@ -12,7 +12,7 @@ from zaza.charm_tests.vault import (
     setup as vault_setup,
     utils as vault_utils
 )
-import zaza.utilities.cert
+import zaza.openstack.utilities.cert
 import utils.mojo_utils as mojo_utils
 
 
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         cakey = f.read()
     with open(os.path.join(certificate_directory, 'cacert.pem'), 'rb') as f:
         cacert = f.read()
-    intermediate_cert = zaza.utilities.cert.sign_csr(
+    intermediate_cert = zaza.openstack.utilities.cert.sign_csr(
         intermediate_csr,
         cakey.decode(),
         cacert.decode(),

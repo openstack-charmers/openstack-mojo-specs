@@ -2,7 +2,7 @@
 
 import sys
 
-from zaza.utilities import juju as juju_utils
+from zaza.openstack.utilities import juju as juju_utils
 
 
 def main(argv):

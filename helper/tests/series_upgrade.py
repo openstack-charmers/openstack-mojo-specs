@@ -17,7 +17,7 @@
 import os
 import sys
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
 )
 

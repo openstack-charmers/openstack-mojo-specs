@@ -6,7 +6,7 @@ import distro_info
 import logging
 import argparse
 
-from zaza.utilities import cli as cli_utils
+from zaza.openstack.utilities import cli as cli_utils
 
 
 def main(argv):

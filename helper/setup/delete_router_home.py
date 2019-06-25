@@ -5,7 +5,7 @@ import utils.mojo_utils as mojo_utils
 import logging
 import argparse
 
-from zaza.utilities import (
+from zaza.openstack.utilities import (
     cli as cli_utils,
     openstack as openstack_utils,
 )
