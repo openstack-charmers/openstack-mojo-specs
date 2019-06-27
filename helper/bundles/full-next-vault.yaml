@@ -206,6 +206,8 @@ charm-ceilometer-gnocchi:
       - nova-compute:nova-ceilometer
     - - ceilometer-agent:ceilometer-service
       - ceilometer:ceilometer-service
+    - - ceilometer-agent:amqp
+      - rabbitmq-server:amqp
     - - ceph-mon:client
       - gnocchi:storage-ceph
     - - gnocchi:coordinator-memcached
