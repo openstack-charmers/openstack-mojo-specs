@@ -174,7 +174,7 @@ charm-ceilometer-gnocchi:
       charm: ceilometer-agent
     gnocchi:
       charm: gnocchi
-      config:
+      options:
         ssl_ca: include-base64://{{local_dir}}/cacert.pem
         ssl_cert: include-base64://{{local_dir}}/cert.pem
         ssl_key: include-base64://{{local_dir}}/cert.key
