@@ -184,6 +184,8 @@ ceilometer-mongodb:
       - nova-compute:nova-ceilometer
     - - ceilometer-agent:ceilometer-service
       - ceilometer:ceilometer-service
+    - - ceilometer-agent:amqp
+      - rabbitmq-server:amqp
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
