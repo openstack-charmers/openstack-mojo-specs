@@ -7,7 +7,7 @@ import sys
 # may be required for the duration of mojo's use
 from utils.mojo_utils import get_mojo_file
 
-from zaza.configure import network
+from zaza.openstack.configure import network
 
 if __name__ == "__main__":
     net_topology_file = get_mojo_file("network.yaml")
