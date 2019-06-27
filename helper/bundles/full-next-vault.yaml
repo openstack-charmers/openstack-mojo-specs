@@ -214,6 +214,8 @@ charm-ceilometer-gnocchi:
       - keystone:identity-service
     - - gnocchi:shared-db
       - mysql:shared-db
+    - - gnocchi:certificates
+      - vault:certificates
 ceilometer-gnocchi:
   inherits: [ charm-ceilometer-gnocchi]
   relations:
