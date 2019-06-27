@@ -1,4 +1,3 @@
 ceph                   cs:~openstack-charmers-next/ceph
 ceph-mon               cs:~openstack-charmers-next/ceph-mon
 ceph-osd               cs:~openstack-charmers-next/ceph-osd
-ntp                    cs:ntp

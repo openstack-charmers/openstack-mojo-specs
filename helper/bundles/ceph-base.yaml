@@ -3,8 +3,6 @@ base:
   relations:
   - - ceph-osd:mon
     - ceph-mon:osd
-  - - ntp:juju-info
-    - ceph-osd:juju-info
   services:
     ceph-mon:
       annotations:
@@ -22,12 +20,6 @@ base:
       num_units: 3
       storage:
         osd-devices:  cinder,40G
-    ntp:
-      annotations:
-        gui-x: '1000'
-        gui-y: '0'
-      charm: ntp
-      num_units: 0
 # icehouse
 trusty-icehouse:
   inherits: base
