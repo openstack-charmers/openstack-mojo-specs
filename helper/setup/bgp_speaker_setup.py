@@ -2,7 +2,7 @@
 
 import sys
 
-from zaza.configure import bgp_speaker
+from zaza.openstack.configure import bgp_speaker
 
 
 if __name__ == "__main__":
