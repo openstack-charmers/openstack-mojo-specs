@@ -9,7 +9,8 @@ glance                 cs:~openstack-charmers/glance
 heat                   cs:~openstack-charmers/heat
 keystone               cs:~openstack-charmers/keystone
 mongodb                cs:~thedac/mongodb
-mysql                  cs:~openstack-charmers/percona-cluster
+# 276 is the last stable revision of the percona-cluster charm that supports trusty
+mysql                  cs:percona-cluster-276
 neutron-api            cs:~openstack-charmers/neutron-api
 neutron-gateway        cs:~openstack-charmers/neutron-gateway
 neutron-openvswitch    cs:~openstack-charmers/neutron-openvswitch
