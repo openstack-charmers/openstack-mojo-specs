@@ -27,9 +27,6 @@ base-services:
       num_units: 3
       storage:
         osd-devices:  cinder,40G
-    ntp:
-      charm: ntp
-      num_units: 0
     keystone:
       charm: keystone
       constraints: mem=1G
@@ -152,7 +149,6 @@ base-services:
     - [ neutron-openvswitch, nova-compute ]
     - [ neutron-openvswitch, rabbitmq-server ]
     - [ ceph-osd, ceph-mon ]
-    - [ ntp, ceph-osd ]
 ceilometer-mongodb:
   services:
     ceilometer:
