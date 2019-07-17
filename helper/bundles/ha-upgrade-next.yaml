@@ -1,0 +1,39 @@
+# vim: set ts=2 et:
+memcached-services:
+  services:
+    memcached:
+      charm: memcached
+      constraints: mem=1G
+      num_units: 1
+trusty-memcached:
+  inherits: memcached-services
+  series: trusty
+trusty-mitaka-memcached:
+  inherits: trusty-memcached
+xenial-memcached:
+  inherits: memcached-services
+  series: xenial
+xenial-mitaka-memcached:
+  inherits: xenial-memcached
+xenial-newton-memcached:
+  inherits: xenial-memcached
+xenial-ocata-memcached:
+  inherits: xenial-memcached
+xenial-pike-memcached:
+  inherits: xenial-memcached
+xenial-queens-memcached:
+  inherits: xenial-memcached
+bionic-memcached:
+  inherits: memcached-services
+  series: bionic
+bionic-queens-memcached:
+  inherits: bionic-memcached
+bionic-rocky-memcached:
+  inherits: bionic-memcached
+# memcached charm is not released for cosmic or disco (at time of commit)
+#cosmic-memcacheed:
+#  inherits: memcached-services
+#  series: cosmic
+#disco-memcacheed:
+#  inherits: memcached-services
+#  series: disco

@@ -28,6 +28,10 @@ script config=wipe_charm_dir.py
 # Collect the next (devel) charm branches from Launchpad
 collect config=collect-next-ha
 
+# Deploy the memcached charm into existing system -- doesn't relate it to nova-cloud-controller
+# the relation is part of the upgrade-charm script
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=ha-upgrade-next.yaml delay=0 wait=False target=${MOJO_SERIES}-queens-memcached
+
 # Run upgrade-charm on all services
 script config=upgrade_all_services.py
 
