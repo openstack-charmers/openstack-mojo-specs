@@ -4,6 +4,9 @@ collect config=collect-stable-${MOJO_SERIES}
 # Deploy bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full.yaml delay=0 wait=False target=${MOJO_SERIES}-pike
 
+# Setup ceilometer
+script config=ceilometer_setup.py
+
 # Wait for hooks to settle
 verify config=check_juju.py
 

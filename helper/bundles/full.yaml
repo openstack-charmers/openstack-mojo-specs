@@ -32,6 +32,9 @@ openstack-services:
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G
+    memcached:
+      charm: memcached
+      num_units: 1
     nova-compute:
       charm: nova-compute
       num_units: 3
@@ -97,6 +100,7 @@ openstack-services:
     - [ nova-cloud-controller, glance ]
     - [ nova-cloud-controller, keystone ]
     - [ nova-compute, nova-cloud-controller ]
+    - [ nova-cloud-controller, memcached ]
     - - nova-compute
       - rabbitmq-server:amqp
     - [ nova-compute, glance ]
@@ -137,6 +141,7 @@ ceilometer-mongodb:
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+    - [ ceilometer-agent:amqp, rabbitmq-server:amqp]
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -146,8 +151,6 @@ charm-ceilometer-gnocchi:
       charm: ceilometer-agent
     gnocchi:
       charm: gnocchi
-    memcached:
-      charm: memcached
   relations:
     - - ceilometer
       - keystone:identity-notifications
@@ -155,6 +158,7 @@ charm-ceilometer-gnocchi:
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
+    - [ ceilometer-agent:amqp, rabbitmq-server:amqp]
     - - ceph-mon
       - gnocchi
     - - gnocchi
@@ -377,6 +381,9 @@ xenial-queens:
 bionic-queens:
   inherits:  [ xenial-queens ]
   series: bionic
+  overrides:
+    openstack-origin: distro
+    source: distro
 #rocky
 bionic-rocky:
   inherits: [ bionic-queens ]
