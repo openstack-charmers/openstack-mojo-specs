@@ -1,5 +1,5 @@
 # Collect the charm branches from Launchpad
-collect config=collect-next-ha
+collect config=collect-next-ha-${MOJO_SERIES}
 
 # Use juju deployer with full.yaml bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=full-vrrpha.yaml delay=0 target=${MOJO_SERIES}-mitaka
