@@ -279,7 +279,7 @@ def wait_for_active(nova_client, vm_name, wait_time):
                 # element reduced by servers.findall
                 instance = nova_client.servers.findall(name=vm_name)[0]
                 break
-            except novaclient_exceptions.BadRequest:
+            except (novaclient_exceptions.BadRequest, IndexError):
                 count += 1
                 time.sleep(1)
         else:
