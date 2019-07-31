@@ -2,7 +2,7 @@
 script config=preflight.py
 
 # Collect the charms
-collect config=collect-next-ha
+collect config=collect-next-ha-trusty
 
 # Use juju deployer to create the units for the deployment
 deploy config=ha-next.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka-ha timeout=${MOJO_DEPLOY_TIMEOUT:-5400}
