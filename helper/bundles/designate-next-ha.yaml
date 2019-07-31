@@ -315,8 +315,7 @@ charm-ceilometer-gnocchi:
       charm: gnocchi
       num_units: 3
       options:
-        vip:
-          vip: "{{ MOJO_OS_VIP012 }}"
+        vip: "{{ MOJO_OS_VIP12 }}"
     gnocchi-hacluster:
       charm: hacluster
       options:
@@ -363,7 +362,6 @@ openstack-services-trusty-mitaka:
       num_units: 3
       options:
         vip: "{{ MOJO_OS_VIP13 }}"
-
     aodh-hacluster:
       charm: hacluster
       options:
@@ -379,7 +377,7 @@ openstack-services-trusty-mitaka:
         nova-domain-email: 'bob@mojo.serverstack.com'
         neutron-domain-email: 'bob@mojo.serverstack.com'
         nameservers: "ns1.mojo.serverstack.com."
-        vip: "{{ MOJO_OS_VIP12 }}"
+        vip: "{{ MOJO_OS_VIP14 }}"
     designate-hacluster:
       charm: hacluster
       options:
