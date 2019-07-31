@@ -8,7 +8,7 @@ from zaza.openstack.utilities import (
     cli as cli_utils,
     openstack,
 )
-from zaza.charm_tests.vault import (
+from zaza.openstack.charm_tests.vault import (
     setup as vault_setup,
     utils as vault_utils
 )

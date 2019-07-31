@@ -21,7 +21,7 @@ from zaza.openstack.utilities import (
     cli as cli_utils,
 )
 
-from zaza.charm_tests.series_upgrade.tests import (
+from zaza.openstack.charm_tests.series_upgrade.tests import (
     TrustyXenialSeriesUpgrade,
     XenialBionicSeriesUpgrade,
 )

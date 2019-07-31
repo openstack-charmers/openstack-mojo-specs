@@ -2,7 +2,7 @@
 
 import sys
 
-from zaza.charm_tests.dragent import test
+from zaza.openstack.charm_tests.dragent import test
 
 
 if __name__ == "__main__":
