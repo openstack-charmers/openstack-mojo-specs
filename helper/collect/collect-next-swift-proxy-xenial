@@ -1,0 +1,6 @@
+glance                 cs:~openstack-charmers-next/glance
+hacluster              cs:~openstack-charmers-next/hacluster
+keystone               cs:~openstack-charmers-next/keystone
+mysql                  cs:~openstack-charmers-next/percona-cluster
+swift-proxy            cs:~openstack-charmers-next/swift-proxy
+swift-storage          cs:~openstack-charmers-next/swift-storage
