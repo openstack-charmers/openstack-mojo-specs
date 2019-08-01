@@ -83,8 +83,9 @@ def main(argv):
 
     priv_key = mojo_os_utils.create_keypair(novac, 'mojo')
     openstack_utils.add_neutron_secgroup_rules(neutronc, project_id)
-    for server in novac.servers.list():
-        novac.servers.delete(server.id)
+    for server in novac.servers.list(search_opts={'all_tenants': 1}):
+        if server.name.startswith('mojo'):
+            novac.servers.delete(server.id)
     for instanceset in machines:
         image_name, flavor_name, count = instanceset.split(":")
         # when instance count allows boot instances off both regular instance

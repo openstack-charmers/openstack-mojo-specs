@@ -234,6 +234,7 @@ def boot_instance(nova_client, neutron_client, image_name,
     nics = [{'net-id': net.get('id')}]
     # Obviously time may not produce a unique name
     vm_name = time.strftime("%Y%m%d%H%M%S")
+    vm_name = "mojo" + vm_name
     if boot_from_volume:
         bdmv2 = [{
                 'boot_index': '0',
