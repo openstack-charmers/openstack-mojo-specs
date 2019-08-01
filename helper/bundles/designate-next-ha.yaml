@@ -341,6 +341,10 @@ charm-ceilometer-gnocchi:
       - mysql
     - [ ceilometer, ceilometer-hacluster ]
     - [ gnocchi, gnocchi-hacluster ]
+    - - ceilometer:certificates
+      - vault:certificates
+    - - gnocchi:certificates
+      - vault:certificates
 ceilometer-gnocchi:
   inherits: [ charm-ceilometer-gnocchi]
   relations:
@@ -403,6 +407,10 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
     - [ keystone, tempest ]
+    - - designate:certificates
+      - vault:certificates
+    - - aodh:certificates
+      - vault:certificates
 openstack-services-xenial-ocata:
   inherits: openstack-services-trusty-mitaka
   services:
