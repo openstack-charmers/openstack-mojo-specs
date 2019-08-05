@@ -389,3 +389,11 @@ cosmic-rocky-ha:
   overrides:
     openstack-origin: distro
     source: distro
+# stein
+bionic-stein-ha:
+  inherits: bionic-queens-ha
+  overrides:
+    openstack-origin: cloud:bionic-stein
+    source: cloud:bionic-stein
+  relations:
+    - [ nova-cloud-controller, memcached]
