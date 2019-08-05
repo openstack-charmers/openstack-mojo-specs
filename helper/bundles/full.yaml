@@ -390,3 +390,9 @@ bionic-rocky:
   overrides:
     openstack-origin: cloud:bionic-rocky
     source: cloud:bionic-rocky
+#rocky
+bionic-stein:
+  inherits: [ bionic-queens ]
+  overrides:
+    openstack-origin: cloud:bionic-stein
+    source: cloud:bionic-stein
