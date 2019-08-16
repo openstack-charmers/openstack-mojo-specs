@@ -14,13 +14,19 @@ from zaza.openstack.charm_tests.vault import (
 )
 import zaza.openstack.utilities.cert
 import utils.mojo_utils as mojo_utils
+import logging
 
 
 if __name__ == "__main__":
     cli_utils.setup_logging()
     target_model = model.get_juju_model()
+    wl_statuses = copy.deepcopy(openstack.WORKLOAD_STATUS_EXCEPTIONS)
+    logging.info("Waiting for statuses with exceptions ...")
+    model.wait_for_application_states(
+        states=wl_statuses)
     certificate_directory = mojo_utils.get_local_certificate_directory()
     certfile = mojo_utils.get_overcloud_cacert_file()
+    logging.info("Valut setup basic ...")
     vault_setup.basic_setup(cacert=certfile)
     clients = vault_utils.get_clients(cacert=certfile)
     vault_creds = vault_utils.get_credentails()
@@ -42,7 +48,6 @@ if __name__ == "__main__":
         pem=intermediate_cert,
         root_ca=cacert,
         allowed_domains='openstack.local')
-    wl_statuses = copy.deepcopy(openstack.WORKLOAD_STATUS_EXCEPTIONS)
     del wl_statuses['vault']
     model.block_until_file_has_contents(
         'keystone',

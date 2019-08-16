@@ -29,3 +29,4 @@ designate              cs:~openstack-charmers-next/designate
 memcached              cs:~openstack-charmers/memcached
 quagga                 cs:~openstack-charmers-next/quagga
 neutron-dynamic-routing  cs:~openstack-charmers-next/neutron-dynamic-routing
+vault                  cs:~openstack-charmers-next/vault

@@ -4,8 +4,14 @@ script config=preflight.py
 # Collect the charm branches from Launchpad
 collect config=collect-next-reactive-${MOJO_SERIES}
 
+# Prepare artefacts required by the bundle
+build config=generate_certs.py
+
 # Use juju deployer with designate-next-ha.yaml bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-queens
+
+# Setup vault
+script config=vault_setup.py
 
 # Setup ceilometer
 script config=ceilometer_setup.py
