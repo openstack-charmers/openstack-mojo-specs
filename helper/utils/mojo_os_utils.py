@@ -415,6 +415,7 @@ def boot_and_test(nova_client, neutron_client, image_name, flavor_name,
     image_file = mojo_utils.get_mojo_file('images.yaml')
     image_config = generic_utils.get_yaml_config(image_file)
     for counter in range(int(number)):
+        logging.info("Launching instance")
         instance = boot_instance(nova_client,
                                  neutron_client,
                                  image_name=image_name,
