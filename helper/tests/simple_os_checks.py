@@ -35,6 +35,7 @@ FLAVORS = {
 
 
 def init_flavors(nova_client):
+    logging.info("Initializing flavors if necessary")
     names = [flavor.name for flavor in nova_client.flavors.list()]
     for flavor in FLAVORS.keys():
         if flavor not in names:
@@ -63,8 +64,12 @@ def main(argv):
     try:
         cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
         os.stat(cacert)
+        logging.info("Using cacert file: {}".format(cacert))
     except FileNotFoundError:
+        logging.info("Not using a cacert pem file")
         cacert = None
+
+    logging.info("Initializing client sessions")
     keystone_session = openstack_utils.get_overcloud_keystone_session(
         verify=cacert)
     keystonec = openstack_utils.get_keystone_session_client(
@@ -85,6 +90,7 @@ def main(argv):
     openstack_utils.add_neutron_secgroup_rules(neutronc, project_id)
     for server in novac.servers.list(search_opts={'all_tenants': 1}):
         if server.name.startswith('mojo'):
+            logging.info("Deleting nova instance {}".format(server.id))
             novac.servers.delete(server.id)
     for instanceset in machines:
         image_name, flavor_name, count = instanceset.split(":")
