@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+import logging
 import os
 import sys
 import utils.mojo_os_utils as mojo_os_utils
