@@ -24,4 +24,4 @@ swift-storage-z1       cs:~openstack-charmers/swift-storage
 swift-storage-z2       cs:~openstack-charmers/swift-storage
 swift-storage-z3       cs:~openstack-charmers/swift-storage
 gnocchi                cs:~openstack-charmers/gnocchi
-memcached              cs:~openstack-charmers/memcached
+memcached              cs:~memcached-team/memcached
