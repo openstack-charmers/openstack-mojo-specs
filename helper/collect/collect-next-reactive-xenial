@@ -26,7 +26,7 @@ gnocchi                cs:~openstack-charmers-next/gnocchi
 barbican               cs:~openstack-charmers-next/barbican
 designate-bind         cs:~openstack-charmers-next/designate-bind
 designate              cs:~openstack-charmers-next/designate
-memcached              cs:~openstack-charmers/memcached
+memcached              cs:~memcached-team/memcached
 quagga                 cs:~openstack-charmers-next/quagga
 neutron-dynamic-routing  cs:~openstack-charmers-next/neutron-dynamic-routing
 vault                  cs:~openstack-charmers-next/vault
