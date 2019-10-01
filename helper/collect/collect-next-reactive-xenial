@@ -1,4 +1,4 @@
-aodh                   cs:~openstack-charmers-next/aodh
+aodh                   cs:~gnuoy/aodh-24;channel=unpublished
 ceilometer-agent       cs:~openstack-charmers-next/ceilometer-agent
 ceilometer             cs:~openstack-charmers-next/ceilometer
 ceph-mon               cs:~openstack-charmers-next/ceph-mon
@@ -22,10 +22,10 @@ rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
 swift-storage          cs:~openstack-charmers-next/swift-storage
 tempest                cs:~openstack-charmers-next/tempest
-gnocchi                cs:~openstack-charmers-next/gnocchi
+gnocchi                cs:~gnuoy/gnocchi-2;channel=unpublished
 barbican               cs:~openstack-charmers-next/barbican
 designate-bind         cs:~openstack-charmers-next/designate-bind
-designate              cs:~openstack-charmers-next/designate
+designate              cs:~gnuoy/designate-28;channel=unpublished
 memcached              cs:~memcached-team/memcached
 quagga                 cs:~openstack-charmers-next/quagga
 neutron-dynamic-routing  cs:~openstack-charmers-next/neutron-dynamic-routing
