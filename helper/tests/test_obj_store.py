@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+import os
 import threading
 import hashlib
 import string
@@ -49,8 +50,16 @@ class ObjectPushPull(threading.Thread):
                 self.failures += 1
 
     def get_swiftclient(self):
-        keystone_session = openstack_utils.get_overcloud_keystone_session()
-        swift_client = mojo_os_utils.get_swift_session_client(keystone_session)
+        try:
+            cacert = os.path.join(
+                os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+            os.stat(cacert)
+        except FileNotFoundError:
+            cacert = None
+        print(cacert)
+        keystone_session = openstack_utils.get_overcloud_keystone_session(
+            verify=cacert)
+        swift_client = mojo_os_utils.get_swift_session_client(keystone_session, cacert=cacert)
         return swift_client
 
     def get_checkstring(self, fname):

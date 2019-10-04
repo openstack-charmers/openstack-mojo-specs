@@ -1,5 +1,5 @@
 # Collect the stable charms
-collect config=collect-stable-ha-${MOJO_SERIES}
+collect config=collect-stable-ha
 
 # Deploy bundle
 deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=ha.yaml delay=0 wait=False target=${MOJO_SERIES}-mitaka-ha

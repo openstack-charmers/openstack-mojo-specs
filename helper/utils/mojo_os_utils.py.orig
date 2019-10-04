@@ -64,8 +64,8 @@ def get_swift_client(novarc_creds):
     return swiftclient.client.Connection(**swift_creds)
 
 
-def get_swift_session_client(session, cacert=None):
-    return swiftclient.client.Connection(session=session, cacert=cacert)
+def get_swift_session_client(session):
+    return swiftclient.client.Connection(session=session)
 
 
 def get_designate_session_client(session, all_tenants=True,
