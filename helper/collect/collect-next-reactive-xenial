@@ -22,7 +22,7 @@ rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
 swift-storage          cs:~openstack-charmers-next/swift-storage
 tempest                cs:~openstack-charmers-next/tempest
-gnocchi                cs:~gnuoy/gnocchi-2;channel=unpublished
+gnocchi                cs:~gnuoy/gnocchi-3;channel=unpublished
 barbican               cs:~openstack-charmers-next/barbican
 designate-bind         cs:~openstack-charmers-next/designate-bind
 designate              cs:~gnuoy/designate-28;channel=unpublished
