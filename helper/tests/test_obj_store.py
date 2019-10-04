@@ -56,10 +56,11 @@ class ObjectPushPull(threading.Thread):
             os.stat(cacert)
         except FileNotFoundError:
             cacert = None
-        print(cacert)
         keystone_session = openstack_utils.get_overcloud_keystone_session(
             verify=cacert)
-        swift_client = mojo_os_utils.get_swift_session_client(keystone_session, cacert=cacert)
+        swift_client = mojo_os_utils.get_swift_session_client(
+            keystone_session,
+            cacert=cacert)
         return swift_client
 
     def get_checkstring(self, fname):
