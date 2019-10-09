@@ -103,3 +103,14 @@ disco-stein:
   series: disco
   overrides:
     source: distro
+# train
+bionic-train:
+  inherits: base
+  series: bionic
+  overrides:
+    source: cloud:bionic-train
+eoan-train:
+  inherits: base
+  series: eoan
+  overrides:
+    source: distro

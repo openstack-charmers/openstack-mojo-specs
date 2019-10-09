@@ -33,6 +33,7 @@ OPENSTACK_RELEASES = {
     'queens': ['xenial', 'bionic'],
     'rocky': ['bionic', 'cosmic'],
     'stein': ['bionic', 'disco'],
+    'train': ['bionic', 'eoan'],
 }
 
 
