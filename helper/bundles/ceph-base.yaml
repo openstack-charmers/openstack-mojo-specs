@@ -108,9 +108,9 @@ bionic-train:
   inherits: base
   series: bionic
   overrides:
-    source: cloud:bionic-train
+    source: cloud:bionic-train/proposed
 eoan-train:
   inherits: base
   series: eoan
   overrides:
-    source: distro
+    source: distro-proposed
