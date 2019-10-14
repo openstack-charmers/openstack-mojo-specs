@@ -19,6 +19,9 @@ script config=keystone_setup.py
 # Launch instances on the overcloud
 verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"
 
+# Switch keystone from uuid to fernet
+script config=juju_set.py SERVICE='keystone' KV='token-provider=fernet' WAIT='True'
+
 # Upgrade Openstack
 script config=upgrade_openstack.py
 
