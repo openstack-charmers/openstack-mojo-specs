@@ -41,9 +41,10 @@ NEW_CHARMS = {
             'origin_config': 'openstack-origin',
             'config': {},
             'relations': [
-                ('placement:shared-db','mysql:shared-db'),
+                ('placement:shared-db', 'mysql:shared-db'),
                 ('placement:identity-service', 'keystone:identity-service'),
                 ('placement:placement', 'nova-cloud-controller:placement')]}}}
+
 
 def update_relations(application, target_release):
     if application not in RELATION_CHANGES.keys():
@@ -91,12 +92,10 @@ def add_new_charms(target_release):
                         charm_data['lts_premier'],
                         target_release))]
         deploy_cmd = deploy_cmd + [charm_data['charm_source'], charm]
-        print(deploy_cmd)
         subprocess.check_call(deploy_cmd)
 
         if charm_data['config']:
             model.set_application_config(charm, charm_data['config'])
-
 
         rel_cmd = ['juju', 'add-relation']
         for relation in charm_data['relations']:
