@@ -17,6 +17,7 @@ nova-compute           cs:~openstack-charmers-next/nova-compute
 ntp                    cs:ntp
 openstack-dashboard    cs:~openstack-charmers-next/openstack-dashboard
 percona-cluster        cs:~openstack-charmers-next/percona-cluster
+placement              cs:~openstack-charmers-next/placement
 rabbitmq-server        cs:~openstack-charmers-next/rabbitmq-server
 swift-proxy            cs:~openstack-charmers-next/swift-proxy
 swift-storage-z1       cs:~openstack-charmers-next/swift-storage
