@@ -599,10 +599,14 @@ disco-stein:
 # train
 bionic-train:
   inherits: [ bionic-rocky ]
+  series: bionic
   services:
     placement:
       charm: placement
       constraints: mem=1G
+  overrides:
+    openstack-origin: cloud:bionic-train
+    source: cloud:bionic-train
   relations:
     - [ placement, nova-cloud-controller ]
     - [ placement, mysql ]
