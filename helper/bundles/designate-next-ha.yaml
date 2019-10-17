@@ -596,3 +596,14 @@ disco-stein:
   overrides:
     openstack-origin: distro
     source: distro
+# train
+bionic-train:
+  inherits: [ bionic-rocky ]
+  services:
+    placement:
+      charm: placement
+      constraints: mem=1G
+  relations:
+    - [ placement, nova-cloud-controller ]
+    - [ placement, mysql ]
+    - [ placement, keystone ]
