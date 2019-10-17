@@ -32,6 +32,19 @@ RELATION_CHANGES = {
          },
 }
 
+NEW_CHARMS = {
+    'train': {
+        'placement': {
+            'lts_premier': 'bionic',
+            'charm_source': 'cs:~openstack-charmers-next/placement',
+            'num_units': 1,
+            'origin_config': 'openstack-origin',
+            'config': {},
+            'relations': [
+                ('placement:shared-db', 'mysql:shared-db'),
+                ('placement:identity-service', 'keystone:identity-service'),
+                ('placement:placement', 'nova-cloud-controller:placement')]}}}
+
 
 def update_relations(application, target_release):
     if application not in RELATION_CHANGES.keys():
@@ -66,6 +79,32 @@ def get_upgrade_targets(target_release, current_versions):
     return upgrade_list
 
 
+def add_new_charms(target_release):
+    for charm, charm_data in NEW_CHARMS.get(target_release, {}).items():
+        logging.info("Adding charm {}".format(charm))
+        deploy_cmd = ['juju', 'deploy', '-n', str(charm_data['num_units'])]
+        if charm_data['origin_config']:
+            deploy_cmd = deploy_cmd + [
+                '--config',
+                '{}={}'.format(
+                    charm_data['origin_config'],
+                    "cloud:{}-{}/proposed" .format(
+                        charm_data['lts_premier'],
+                        target_release))]
+        deploy_cmd = deploy_cmd + [charm_data['charm_source'], charm]
+        subprocess.check_call(deploy_cmd)
+
+        if charm_data['config']:
+            model.set_application_config(charm, charm_data['config'])
+
+        rel_cmd = ['juju', 'add-relation']
+        for relation in charm_data['relations']:
+            logging.info("Adding charm relation {} {}".format(
+                relation[0],
+                relation[1]))
+            subprocess.check_call(rel_cmd + [relation[0], relation[1]])
+
+
 def main(argv):
     cli_utils.setup_logging()
     parser = argparse.ArgumentParser()
@@ -87,6 +126,8 @@ def main(argv):
         target_release = mojo_os_utils.next_release(lowest_release)[1]
     # Get a list of services that need upgrading
     needs_upgrade = get_upgrade_targets(target_release, current_versions)
+    add_new_charms(target_release)
+    mojo_utils.juju_wait_finished()
     for application in openstack_utils.UPGRADE_SERVICES:
         if application['name'] not in principle_services:
             continue
@@ -106,7 +147,6 @@ def main(argv):
                   .format(ubuntu_version, target_release)}
         model.set_application_config(application['name'], config)
         mojo_utils.juju_wait_finished()
-
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
