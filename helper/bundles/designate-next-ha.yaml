@@ -611,3 +611,4 @@ bionic-train:
     - [ placement, nova-cloud-controller ]
     - [ placement, mysql ]
     - [ placement, keystone ]
+    - [ placement, vault ]
