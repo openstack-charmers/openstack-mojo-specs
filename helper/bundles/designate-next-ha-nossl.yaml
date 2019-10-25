@@ -1,0 +1,440 @@
+# Currently this is a "Designate HA" bundle, but it is the beginning of the Kitchen Sink.
+#
+# TODO:
+#         - Add SSL everywhere
+#         - Add HA everywhere
+#         - Add KSV3 everywhere
+#
+# Targeted only for the more modern sets of charms, thus the corresponding release
+# combos are limited to Trusty-Mitaka and later.  Releases earlier than Trusty-Mitaka
+# will be tested via legacy bundles as separate scenarios.
+base-services:
+  services:
+    mysql:
+      charm: mysql
+      constraints: mem=4G
+    rabbitmq-server:
+      charm: rabbitmq-server
+      constraints: mem=1G
+    ceph-mon:
+      charm: ceph-mon
+      num_units: 3
+      options:
+        expected-osd-count: 3
+    ceph-osd:
+      charm: ceph-osd
+      constraints: mem=1G
+      num_units: 3
+      storage:
+        osd-devices:  cinder,40G
+    keystone:
+      charm: keystone
+      constraints: mem=1G
+      options:
+        admin-password: openstack
+        admin-token: ubuntutesting
+    openstack-dashboard:
+      charm: openstack-dashboard
+      constraints: mem=1G
+    memcached:
+      charm: memcached
+      num_units: 1
+    nova-compute:
+      charm: nova-compute
+      num_units: 3
+      constraints: mem=4G
+      options:
+        enable-live-migration: True
+        enable-resize: True
+        migration-auth-type: ssh
+    nova-cloud-controller:
+      charm: nova-cloud-controller
+      constraints: mem=2G
+      options:
+        network-manager: Neutron
+    neutron-gateway:
+      charm: neutron-gateway
+      constraints: mem=4G
+      options:
+        instance-mtu: 1300
+        bridge-mappings: physnet1:br-ex
+    neutron-api:
+      charm: neutron-api
+      constraints: mem=1G
+      options:
+        neutron-security-groups: True
+        flat-network-providers: physnet1
+        enable-ml2-dns: True
+        dns-domain: mojo.serverstack.
+        reverse-dns-lookup: True
+        ipv4-ptr-zone-prefix-size: 24
+    neutron-openvswitch:
+      charm: neutron-openvswitch
+    cinder:
+      charm: cinder
+      options:
+        block-device: "None"
+        glance-api-version: 2
+      constraints: mem=1G
+    cinder-ceph:
+      charm: cinder-ceph
+    glance:
+      charm: glance
+      constraints: mem=1G
+    swift-proxy:
+      charm: swift-proxy
+      constraints: mem=1G
+      options:
+        zone-assignment: manual
+        replicas: 3
+        swift-hash: fdfef9d4-8b06-11e2-8ac0-531c923c8fae
+    swift-storage-z1:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 1
+      storage:
+        block-devices:  cinder,10G
+    swift-storage-z2:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 2
+      storage:
+        block-devices:  cinder,10G
+    swift-storage-z3:
+      charm: swift-storage
+      constraints: mem=1G
+      options:
+        zone: 3
+      storage:
+        block-devices:  cinder,10G
+    heat:
+      charm: heat
+  relations:
+    - [ keystone, mysql ]
+    - [ "nova-cloud-controller:shared-db", mysql ]
+    - [ "nova-cloud-controller:amqp", rabbitmq-server ]
+    - [ nova-cloud-controller, glance ]
+    - [ nova-cloud-controller, keystone ]
+    - [ nova-compute, nova-cloud-controller ]
+    - [ nova-cloud-controller, memcached ]
+    - - nova-compute
+      - rabbitmq-server:amqp
+    - [ nova-compute, glance ]
+    - [ nova-compute, ceph-mon ]
+    - [ glance, mysql ]
+    - [ glance, keystone ]
+    - [ glance, ceph-mon ]
+    - [ glance, "cinder:image-service" ]
+    - [ glance, rabbitmq-server ]
+    - [ cinder, mysql ]
+    - [ cinder, rabbitmq-server ]
+    - [ cinder, nova-cloud-controller ]
+    - [ cinder, keystone ]
+    - [ cinder, cinder-ceph ]
+    - [ cinder-ceph, ceph-mon ]
+    - [ neutron-gateway, nova-cloud-controller ]
+    - [ "openstack-dashboard:identity-service", keystone ]
+    - [ swift-proxy, keystone ]
+    - [ swift-proxy, swift-storage-z1 ]
+    - [ swift-proxy, swift-storage-z2 ]
+    - [ swift-proxy, swift-storage-z3 ]
+    - [ heat, mysql ]
+    - [ heat, keystone ]
+    - [ heat, rabbitmq-server ]
+    - [ "neutron-gateway:amqp", rabbitmq-server ]
+    - [ neutron-api, mysql ]
+    - [ neutron-api, rabbitmq-server ]
+    - [ neutron-api, nova-cloud-controller ]
+    - [ neutron-api, neutron-openvswitch ]
+    - [ neutron-api, keystone ]
+    - [ neutron-api, neutron-gateway ]
+    - [ neutron-openvswitch, nova-compute ]
+    - [ neutron-openvswitch, rabbitmq-server ]
+    - [ ceph-osd, ceph-mon ]
+ceilometer-mongodb:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    mongodb:
+      charm: mongodb
+      constraints: mem=1G
+  relations:
+    - - ceilometer
+      - keystone:identity-service
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ "ceilometer:amqp", rabbitmq-server ]
+    - [ ceilometer, mongodb ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - [ "ceilometer-agent:amqp", rabbitmq-server ]
+charm-ceilometer-gnocchi:
+  services:
+    ceilometer:
+      charm: ceilometer
+      constraints: mem=1G
+    ceilometer-agent:
+      charm: ceilometer-agent
+    gnocchi:
+      charm: gnocchi
+  relations:
+    - - ceilometer
+      - keystone:identity-notifications
+    - [ "ceilometer:amqp", rabbitmq-server ]
+    - [ ceilometer, gnocchi ]
+    - [ ceilometer-agent, nova-compute ]
+    - [ ceilometer-agent, ceilometer ]
+    - [ "ceilometer-agent:amqp", rabbitmq-server ]
+    - - ceph-mon
+      - gnocchi
+    - - gnocchi
+      - memcached
+    - - gnocchi
+      - ceilometer
+    - - gnocchi
+      - keystone
+    - - gnocchi
+      - mysql
+ceilometer-gnocchi:
+  inherits: [ charm-ceilometer-gnocchi]
+  relations:
+dynamic-routing-services:
+  services:
+    neutron-dynamic-routing:
+      charm: neutron-dynamic-routing
+    quagga:
+      charm: quagga
+  relations:
+    - [ neutron-dynamic-routing, rabbitmq-server ]
+    - [ neutron-dynamic-routing, quagga ]
+openstack-services-trusty-mitaka:
+  inherits: base-services
+  services:
+    aodh:
+      charm: aodh
+      constraints: mem=1G
+    designate:
+      charm: designate
+      num_units: 3
+      constraints: mem=1G
+      options:
+        nova-domain: 'mojo.serverstack.com.'
+        neutron-domain: 'mojo.serverstack.com.'
+        nova-domain-email: 'bob@mojo.serverstack.com'
+        neutron-domain-email: 'bob@mojo.serverstack.com'
+        nameservers: "ns1.mojo.serverstack.com."
+        vip: "{{ MOJO_OS_VIP10 }}"
+    designate-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+    designate-bind:
+      num_units: 3
+      charm: designate-bind
+    tempest:
+      charm: tempest
+      constraints: mem=1G
+  relations:
+    - [ aodh, rabbitmq-server ]
+    - [ aodh, mysql ]
+    - [ aodh, keystone ]
+    - [ designate, keystone ]
+    - [ designate, mysql ]
+    - [ designate, rabbitmq-server ]
+    - [ designate, designate-bind ]
+    - [ designate, memcached ]
+    - [ designate, neutron-api ]
+    - [ designate, designate-hacluster ]
+    # designate <-> nova-compute needed for legacy notifications
+    - [ keystone, tempest ]
+openstack-services-xenial-ocata:
+  inherits: openstack-services-trusty-mitaka
+  services:
+    gnocchi:
+      charm: gnocchi
+  relations:
+    - [ gnocchi, ceph-mon ]
+    - [ gnocchi, mysql ]
+    - [ gnocchi, rabbitmq-server ]
+    - [ gnocchi, memcached ]
+    - [ gnocchi, ceilometer ]
+    - [ gnocchi, keystone ]
+    - [ cinder-ceph, nova-compute ]
+openstack-services-xenial-queens:
+  inherits: openstack-services-xenial-ocata
+  overrides:
+    nova-domain: ''
+    neutron-domain: ''
+    nova-domain-email: ''
+    neutron-domain-email: ''
+  relations:
+    - - ceilometer
+      - keystone:identity-credentials
+openstack-services-bionic-rocky:
+  inherits: openstack-services-xenial-queens
+  services:
+    barbican:
+      charm: barbican
+      constraints: mem=1G
+  relations:
+    - [ barbican, rabbitmq-server ]
+    - [ barbican, mysql ]
+    - [ barbican, keystone ]
+# mitaka
+trusty-mitaka:
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
+  series: trusty
+  overrides:
+    openstack-origin: cloud:trusty-mitaka
+    source: cloud:trusty-mitaka
+trusty-mitaka-proposed:
+  inherits: trusty-mitaka
+  overrides:
+    openstack-origin: cloud:trusty-mitaka/proposed
+    source: cloud:trusty-mitaka/proposed
+trusty-mitaka-staging:
+  inherits: trusty-mitaka
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
+    source: ppa:ubuntu-cloud-archive/mitaka-staging
+xenial-mitaka:
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
+  series: xenial
+xenial-mitaka-proposed:
+  inherits: xenial-mitaka
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+# newton
+xenial-newton:
+  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
+xenial-newton-proposed:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: cloud:xenial-newton/proposed
+    source: cloud:xenial-newton/proposed
+xenial-newton-staging:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/newton-staging
+    source: ppa:ubuntu-cloud-archive/newton-staging
+xenial-newton-branch:
+  inherits: xenial-newton
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/newton
+    source: ppa:openstack-ubuntu-testing/newton
+# ocata
+xenial-ocata:
+  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-ocata
+    source: cloud:xenial-ocata
+xenial-ocata-proposed:
+  inherits: xenial-ocata
+  overrides:
+    openstack-origin: cloud:xenial-ocata/proposed
+    source: cloud:xenial-ocata/proposed
+xenial-ocata-staging:
+  inherits: xenial-ocata
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
+    source: ppa:ubuntu-cloud-archive/ocata-staging
+xenial-ocata-branch:
+  inherits: xenial-ocata
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/ocata
+    source: ppa:openstack-ubuntu-testing/ocata
+zesty-ocata:
+  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb ]
+  series: zesty
+zesty-ocata-proposed:
+  inherits: zesty-ocata
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+zesty-ocata-branch:
+  inherits: zesty-ocata
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/ocata
+    source: ppa:openstack-ubuntu-testing/ocata
+# pike
+xenial-pike:
+  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb, charm-ceilometer-gnocchi ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-pike
+    source: cloud:xenial-pike
+xenial-pike-proposed:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: cloud:xenial-pike/proposed
+    source: cloud:xenial-pike/proposed
+xenial-pike-staging:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
+    source: ppa:ubuntu-cloud-archive/pike-staging
+xenial-pike-branch:
+  inherits: xenial-pike
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/pike
+    source: ppa:openstack-ubuntu-testing/pike
+artful-pike:
+  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb, charm-ceilometer-gnocchi ]
+  series: artful
+artful-pike-proposed:
+  inherits: artful-pike
+  overrides:
+    source: proposed
+    openstack-origin: distro-proposed
+artful-pike-branch:
+  inherits: artful-pike
+  overrides:
+    openstack-origin: ppa:openstack-ubuntu-testing/pike
+    source: ppa:openstack-ubuntu-testing/pike
+xenial-queens:
+  inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
+  series: xenial
+  overrides:
+    openstack-origin: cloud:xenial-queens
+    source: cloud:xenial-queens
+bionic-queens:
+  inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
+  series: bionic
+# rocky
+bionic-rocky:
+  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-rocky
+    source: cloud:bionic-rocky
+cosmic-rocky:
+  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
+  series: cosmic
+  overrides:
+    openstack-origin: distro
+    source: distro
+# stein
+bionic-stein:
+  inherits: [ bionic-rocky ]
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-stein
+    source: cloud:bionic-stein
+disco-stein:
+  inherits: [ bionic-rocky ]
+  series: disco
+  overrides:
+    openstack-origin: distro
+    source: distro
