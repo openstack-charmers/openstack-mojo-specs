@@ -31,3 +31,5 @@ quagga                 cs:~openstack-charmers-next/quagga
 neutron-dynamic-routing  cs:~openstack-charmers-next/neutron-dynamic-routing
 vault                  cs:~openstack-charmers-next/vault
 placement              cs:~openstack-charmers-next/placement
+easyrsa                cs:~containers/easyrsa
+etcd                   cs:etcd

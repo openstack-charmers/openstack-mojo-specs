@@ -13,6 +13,9 @@ deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha.yaml delay=
 # Setup vault
 script config=vault_setup.py
 
+# Restart nova-compute (Bug #1826382)
+script config=restart_nova_compute.py
+
 # Setup ceilometer
 script config=ceilometer_setup.py
 
