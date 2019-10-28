@@ -1,1 +1,0 @@
-../../../../helper/setup/vault_setup.py
