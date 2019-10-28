@@ -197,6 +197,14 @@ base-services:
       options:
         corosync_transport: unicast
         cluster_count: 3
+    easyrsa:
+      charm: cs:~containers/easyrsa
+      num_units: 1
+    etcd:
+      charm: etcd
+      num_units: 3
+      options:
+        channel: 3.1/stable
   relations:
     - [ keystone, mysql ]
     - [ "nova-cloud-controller:shared-db", mysql ]
@@ -267,6 +275,10 @@ base-services:
     - [ neutron-api, neutron-hacluster ]
     - [ heat, heat-hacluster ]
     - [ vault, vault-hacluster ]
+    - - etcd:certificates
+      - easyrsa:client
+    - - etcd:db
+      - vault:etcd
 ceilometer-mongodb:
   services:
     ceilometer:
@@ -296,6 +308,8 @@ ceilometer-mongodb:
     - [ ceilometer-agent, ceilometer ]
     - [ "ceilometer-agent:amqp", rabbitmq-server ]
     - [ ceilometer, ceilometer-hacluster ]
+    - - ceilometer:certificates
+      - vault:certificates
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -407,9 +421,9 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
     - [ keystone, tempest ]
-    - - designate:certificates
-      - vault:certificates
     - - aodh:certificates
+      - vault:certificates
+    - - designate:certificates
       - vault:certificates
 openstack-services-xenial-ocata:
   inherits: openstack-services-trusty-mitaka
@@ -604,6 +618,14 @@ bionic-train:
     placement:
       charm: placement
       constraints: mem=1G
+      num_units: 3
+      options:
+        vip: "{{ MOJO_OS_VIP15 }}"
+    placement-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
   overrides:
     openstack-origin: cloud:bionic-train
     source: cloud:bionic-train
@@ -612,3 +634,4 @@ bionic-train:
     - [ placement, mysql ]
     - [ placement, keystone ]
     - [ placement, vault ]
+    - [ placement, placement-hacluster ]
