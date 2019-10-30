@@ -1,1 +1,0 @@
-../../../../helper/tests/validate_aodh.py
