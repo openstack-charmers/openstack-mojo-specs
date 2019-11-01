@@ -199,7 +199,7 @@ base-services:
         cluster_count: 3
     easyrsa:
       # Cannot be deployed locally from collect as resource is lost
-      charm: cs:~gnuoy/easyrsa
+      charm: cs:~gnuoy/easyrsa-0
       num_units: 1
     etcd:
       charm: etcd
