@@ -198,7 +198,8 @@ base-services:
         corosync_transport: unicast
         cluster_count: 3
     easyrsa:
-      charm: easyrsa
+      # Cannot be deployed locally from collect as resource is lost
+      charm: cs:~gnuoy/easyrsa
       num_units: 1
     etcd:
       charm: etcd
