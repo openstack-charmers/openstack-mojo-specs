@@ -609,7 +609,7 @@ disco-stein:
   inherits: [ bionic-rocky ]
   series: disco
   overrides:
-    openstack-origin: distro
+    openstack-origin: distro-proposed
     source: distro
 # train
 bionic-train:
