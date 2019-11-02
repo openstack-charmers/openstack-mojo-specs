@@ -609,6 +609,7 @@ disco-stein:
   inherits: [ bionic-rocky ]
   series: disco
   overrides:
+    # Use distro-proposed until bug #1834565 is fixed in disco.
     openstack-origin: distro-proposed
     source: distro
 # train
