@@ -31,5 +31,6 @@ quagga                 cs:~openstack-charmers-next/quagga
 neutron-dynamic-routing  cs:~openstack-charmers-next/neutron-dynamic-routing
 vault                  cs:~openstack-charmers-next/vault
 placement              cs:~openstack-charmers-next/placement
+# Use forked charms with disco support until bug #1850907 is fixed.
 easyrsa                cs:~gnuoy/easyrsa-0;channel=unpublished
 etcd                   cs:~gnuoy/etcd-21;channel=unpublished
