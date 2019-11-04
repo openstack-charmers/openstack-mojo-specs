@@ -198,7 +198,8 @@ base-services:
         corosync_transport: unicast
         cluster_count: 3
     easyrsa:
-      charm: cs:~containers/easyrsa
+      # Cannot be deployed locally from collect as resource is lost
+      charm: cs:~gnuoy/easyrsa-0
       num_units: 1
     etcd:
       charm: etcd
@@ -608,7 +609,8 @@ disco-stein:
   inherits: [ bionic-rocky ]
   series: disco
   overrides:
-    openstack-origin: distro
+    # Use distro-proposed until bug #1834565 is fixed in disco.
+    openstack-origin: distro-proposed
     source: distro
 # train
 bionic-train:
