@@ -21,6 +21,19 @@ if __name__ == "__main__":
     cli_utils.setup_logging()
     target_model = model.get_juju_model()
     wl_statuses = copy.deepcopy(openstack.WORKLOAD_STATUS_EXCEPTIONS)
+    os_version = openstack.get_current_os_versions(
+        'designate').get('designate')
+    if os_version == 'pike':
+        # Remove the memcached relation to disable designate. This is a
+        # workaround for Bug #1848307
+        logging.info("Removing designate memcached relation")
+        model.remove_relation(
+            'designate',
+            'coordinator-memcached',
+            'memcached:cache')
+        wl_statuses['designate'] = {
+            'workload-status-message': """'coordinator-memcached' missing""",
+            'workload-status': 'blocked'}
     logging.info("Waiting for statuses with exceptions ...")
     model.wait_for_application_states(
         states=wl_statuses)
@@ -55,3 +68,12 @@ if __name__ == "__main__":
         cacert.decode().strip())
     model.wait_for_application_states(
         states=wl_statuses)
+    if os_version == 'pike':
+        logging.info("Restoring designate memcached relation")
+        model.add_relation(
+            'designate',
+            'coordinator-memcached',
+            'memcached:cache')
+        del wl_statuses['designate']
+        model.wait_for_application_states(
+            states=wl_statuses)
