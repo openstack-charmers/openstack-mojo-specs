@@ -24,14 +24,16 @@ if __name__ == "__main__":
     os_version = openstack.get_current_os_versions(
         'designate').get('designate')
     if os_version == 'pike':
-        logging.info("Removing designate keystone relation")
+        # Remove the memcached relation to disable designate. This is a
+        # workaround for Bug #1848307
+        logging.info("Removing designate memcached relation")
         model.remove_relation(
             'designate',
-            'identity-service',
-            'keystone:identity-service')
+            'coordinator-memcached',
+            'memcached:cache')
         wl_statuses['designate'] = {
-            'workload-status-message': """'identity-service' incomplete""",
-            'workload-status': 'waiting'},
+            'workload-status-message': """'coordinator-memcached' missing""",
+            'workload-status': 'blocked'}
     logging.info("Waiting for statuses with exceptions ...")
     model.wait_for_application_states(
         states=wl_statuses)
@@ -67,11 +69,11 @@ if __name__ == "__main__":
     model.wait_for_application_states(
         states=wl_statuses)
     if os_version == 'pike':
-        logging.info("Restoring designate keystone relation")
+        logging.info("Restoring designate memcached relation")
         model.add_relation(
             'designate',
-            'identity-service',
-            'keystone:identity-service')
+            'coordinator-memcached',
+            'memcached:cache')
         del wl_statuses['designate']
         model.wait_for_application_states(
             states=wl_statuses)
