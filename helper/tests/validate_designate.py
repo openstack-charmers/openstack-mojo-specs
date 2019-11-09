@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import os
 import sys
 import utils.mojo_os_utils as mojo_os_utils
 
@@ -11,6 +12,11 @@ from zaza.openstack.utilities import (
 
 def main(argv):
     cli_utils.setup_logging()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', '--domain_name', help='DNS Domain Name. '
                                                     'Must end in a .',
@@ -24,7 +30,8 @@ def main(argv):
         designate_api = '2'
     else:
         designate_api = '1'
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
 
     nova_client = openstack_utils.get_nova_session_client(keystone_session)
     des_client = mojo_os_utils.get_designate_session_client(

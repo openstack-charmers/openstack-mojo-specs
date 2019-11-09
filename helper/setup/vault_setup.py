@@ -23,7 +23,7 @@ if __name__ == "__main__":
     wl_statuses = copy.deepcopy(openstack.WORKLOAD_STATUS_EXCEPTIONS)
     os_version = openstack.get_current_os_versions(
         'designate').get('designate')
-    if os_version == 'pike':
+    if os_version <= 'pike':
         # Remove the memcached relation to disable designate. This is a
         # workaround for Bug #1848307
         logging.info("Removing designate memcached relation")
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         cacert.decode().strip())
     model.wait_for_application_states(
         states=wl_statuses)
-    if os_version == 'pike':
+    if os_version <= 'pike':
         logging.info("Restoring designate memcached relation")
         model.add_relation(
             'designate',

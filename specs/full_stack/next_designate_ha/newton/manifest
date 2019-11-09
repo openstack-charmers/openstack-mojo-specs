@@ -5,7 +5,13 @@ script config=preflight.py
 collect config=collect-next-reactive-${MOJO_SERIES}
 
 # Use juju deployer with designate-next-ha.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha-nossl.yaml delay=0 wait=False target=${MOJO_SERIES}-newton
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=next-ha-nossl.yaml delay=0 wait=False target=${MOJO_SERIES}-newton
+
+# Apply certs
+script config=add-certs.py
+
+# Restart nova-compute (Bug #1826382)
+script config=restart_nova_compute.py
 
 # Check juju statuses are green and that hooks have finished
 verify config=check_juju.py

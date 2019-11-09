@@ -4,8 +4,17 @@ script config=preflight.py
 # Collect the charm branches from Launchpad
 collect config=collect-next-reactive-${MOJO_SERIES}
 
+# Prepare artefacts required by the bundle
+build config=generate_certs.py
+
 # Use juju deployer with designate-next-ha.yaml bundle
-deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha-nossl.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
+deploy timeout=${MOJO_DEPLOY_TIMEOUT:-5400} config=designate-next-ha.yaml delay=0 wait=False target=${MOJO_SERIES}-ocata
+
+# Setup vault
+script config=vault_setup.py
+
+# Restart nova-compute (Bug #1826382)
+script config=restart_nova_compute.py
 
 # Setup ceilometer
 script config=ceilometer_setup.py
@@ -24,6 +33,9 @@ script config=keystone_setup.py
 
 # Setup Designate
 script config=designate_setup.py
+
+# Setup ceilometer
+script config=ceilometer_setup.py
 
 # Launch instances on the overcloud
 verify config=simple_os_checks.py MACHINES='trusty:m1.small:2' CLOUDINIT_WAIT="600"

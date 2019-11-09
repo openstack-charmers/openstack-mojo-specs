@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import logging
+import os
 import sys
 import time
 import utils.mojo_os_utils as mojo_os_utils
@@ -12,7 +13,13 @@ from zaza.openstack.utilities import (
 
 def main(argv):
     cli_utils.setup_logging()
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
     aodhc = mojo_os_utils.get_aodh_session_client(keystone_session)
     nova_client = openstack_utils.get_nova_session_client(keystone_session)
 
