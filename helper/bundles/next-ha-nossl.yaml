@@ -1,13 +1,6 @@
-# Currently this is a "Designate HA" bundle, but it is the beginning of the Kitchen Sink.
-#
-# TODO:
-#         - Add SSL everywhere
-#         - Add HA everywhere
-#         - Add KSV3 everywhere
-#
-# Targeted only for the more modern sets of charms, thus the corresponding release
-# combos are limited to Trusty-Mitaka and later.  Releases earlier than Trusty-Mitaka
-# will be tested via legacy bundles as separate scenarios.
+# Targeted only for Mitaka and Newton. For later releases use a bundle
+# with SSL support from vault.
+
 base-services:
   services:
     mysql:
@@ -183,29 +176,6 @@ base-services:
       options:
         corosync_transport: unicast
         cluster_count: 3
-    vault:
-      charm: vault
-      constraints: mem=1G
-      num_units: 3
-      options:
-        vip: "{{ MOJO_OS_VIP10 }}"
-        ssl-ca: include-base64://{{local_dir}}/cacert.pem
-        ssl-cert: include-base64://{{local_dir}}/cert.pem
-        ssl-key: include-base64://{{local_dir}}/cert.key
-    vault-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-    easyrsa:
-      # Cannot be deployed locally from collect as resource is lost
-      charm: cs:~gnuoy/easyrsa-0
-      num_units: 1
-    etcd:
-      charm: etcd
-      num_units: 3
-      options:
-        channel: 3.1/stable
   relations:
     - [ keystone, mysql ]
     - [ "nova-cloud-controller:shared-db", mysql ]
@@ -248,24 +218,6 @@ base-services:
     - [ neutron-openvswitch, nova-compute ]
     - [ neutron-openvswitch, rabbitmq-server ]
     - [ ceph-osd, ceph-mon ]
-    - - vault:shared-db
-      - mysql:shared-db
-    - - keystone:certificates
-      - vault:certificates
-    - - neutron-api:certificates
-      - vault:certificates
-    - - nova-cloud-controller:certificates
-      - vault:certificates
-    - - swift-proxy:certificates
-      - vault:certificates
-    - - cinder:certificates
-      - vault:certificates
-    - - glance:certificates
-      - vault:certificates
-    - - rabbitmq-server:certificates
-      - vault:certificates
-    - - heat:certificates
-      - vault:certificates
     - [ mysql, mysql-hacluster ]
     - [ keystone, keystone-hacluster ]
     - [ nova-cloud-controller, nova-cc-hacluster ]
@@ -275,11 +227,6 @@ base-services:
     - [ swift-proxy, swift-hacluster ]
     - [ neutron-api, neutron-hacluster ]
     - [ heat, heat-hacluster ]
-    - [ vault, vault-hacluster ]
-    - - etcd:certificates
-      - easyrsa:client
-    - - etcd:db
-      - vault:etcd
 ceilometer-mongodb:
   services:
     ceilometer:
@@ -309,8 +256,6 @@ ceilometer-mongodb:
     - [ ceilometer-agent, ceilometer ]
     - [ "ceilometer-agent:amqp", rabbitmq-server ]
     - [ ceilometer, ceilometer-hacluster ]
-    - - ceilometer:certificates
-      - vault:certificates
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -356,22 +301,9 @@ charm-ceilometer-gnocchi:
       - mysql
     - [ ceilometer, ceilometer-hacluster ]
     - [ gnocchi, gnocchi-hacluster ]
-    - - ceilometer:certificates
-      - vault:certificates
-    - - gnocchi:certificates
-      - vault:certificates
 ceilometer-gnocchi:
   inherits: [ charm-ceilometer-gnocchi]
   relations:
-dynamic-routing-services:
-  services:
-    neutron-dynamic-routing:
-      charm: neutron-dynamic-routing
-    quagga:
-      charm: quagga
-  relations:
-    - [ neutron-dynamic-routing, rabbitmq-server ]
-    - [ neutron-dynamic-routing, quagga ]
 openstack-services-trusty-mitaka:
   inherits: base-services
   services:
@@ -405,9 +337,6 @@ openstack-services-trusty-mitaka:
     designate-bind:
       num_units: 3
       charm: designate-bind
-    tempest:
-      charm: tempest
-      constraints: mem=1G
   relations:
     - [ aodh, rabbitmq-server ]
     - [ aodh, mysql ]
@@ -421,46 +350,14 @@ openstack-services-trusty-mitaka:
     - [ designate, neutron-api ]
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
-    - [ keystone, tempest ]
-    - - aodh:certificates
-      - vault:certificates
-    - - designate:certificates
-      - vault:certificates
-openstack-services-xenial-ocata:
+openstack-services-xenial-mitaka:
   inherits: openstack-services-trusty-mitaka
   services:
-    gnocchi:
-      charm: gnocchi
-  relations:
-    - [ gnocchi, ceph-mon ]
-    - [ gnocchi, mysql ]
-    - [ gnocchi, rabbitmq-server ]
-    - [ gnocchi, memcached ]
-    - [ gnocchi, ceilometer ]
-    - [ gnocchi, keystone ]
-    - [ cinder-ceph, nova-compute ]
-    - - gnocchi:certificates
-      - vault:certificates
-openstack-services-xenial-queens:
-  inherits: openstack-services-xenial-ocata
-  overrides:
-    nova-domain: ''
-    neutron-domain: ''
-    nova-domain-email: ''
-    neutron-domain-email: ''
-  relations:
-    - - ceilometer
-      - keystone:identity-credentials
-openstack-services-bionic-rocky:
-  inherits: openstack-services-xenial-queens
-  services:
-    barbican:
-      charm: barbican
+    tempest:
+      charm: tempest
       constraints: mem=1G
   relations:
-    - [ barbican, rabbitmq-server ]
-    - [ barbican, mysql ]
-    - [ barbican, keystone ]
+    - [ keystone, tempest ]
 # mitaka
 trusty-mitaka:
   inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
@@ -468,174 +365,13 @@ trusty-mitaka:
   overrides:
     openstack-origin: cloud:trusty-mitaka
     source: cloud:trusty-mitaka
-trusty-mitaka-proposed:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: cloud:trusty-mitaka/proposed
-    source: cloud:trusty-mitaka/proposed
-trusty-mitaka-staging:
-  inherits: trusty-mitaka
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/mitaka-staging
-    source: ppa:ubuntu-cloud-archive/mitaka-staging
 xenial-mitaka:
-  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
+  inherits: [ openstack-services-xenial-mitaka, ceilometer-mongodb ]
   series: xenial
-xenial-mitaka-proposed:
-  inherits: xenial-mitaka
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
 # newton
 xenial-newton:
-  inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]
+  inherits: [ openstack-services-xenial-mitaka, ceilometer-mongodb ]
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
-xenial-newton-proposed:
-  inherits: xenial-newton
-  overrides:
-    openstack-origin: cloud:xenial-newton/proposed
-    source: cloud:xenial-newton/proposed
-xenial-newton-staging:
-  inherits: xenial-newton
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/newton-staging
-    source: ppa:ubuntu-cloud-archive/newton-staging
-xenial-newton-branch:
-  inherits: xenial-newton
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/newton
-    source: ppa:openstack-ubuntu-testing/newton
-# ocata
-xenial-ocata:
-  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb ]
-  series: xenial
-  overrides:
-    openstack-origin: cloud:xenial-ocata
-    source: cloud:xenial-ocata
-xenial-ocata-proposed:
-  inherits: xenial-ocata
-  overrides:
-    openstack-origin: cloud:xenial-ocata/proposed
-    source: cloud:xenial-ocata/proposed
-xenial-ocata-staging:
-  inherits: xenial-ocata
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/ocata-staging
-    source: ppa:ubuntu-cloud-archive/ocata-staging
-xenial-ocata-branch:
-  inherits: xenial-ocata
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/ocata
-    source: ppa:openstack-ubuntu-testing/ocata
-zesty-ocata:
-  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb ]
-  series: zesty
-zesty-ocata-proposed:
-  inherits: zesty-ocata
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-zesty-ocata-branch:
-  inherits: zesty-ocata
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/ocata
-    source: ppa:openstack-ubuntu-testing/ocata
-# pike
-xenial-pike:
-  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb, charm-ceilometer-gnocchi ]
-  series: xenial
-  overrides:
-    openstack-origin: cloud:xenial-pike
-    source: cloud:xenial-pike
-xenial-pike-proposed:
-  inherits: xenial-pike
-  overrides:
-    openstack-origin: cloud:xenial-pike/proposed
-    source: cloud:xenial-pike/proposed
-xenial-pike-staging:
-  inherits: xenial-pike
-  overrides:
-    openstack-origin: ppa:ubuntu-cloud-archive/pike-staging
-    source: ppa:ubuntu-cloud-archive/pike-staging
-xenial-pike-branch:
-  inherits: xenial-pike
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/pike
-    source: ppa:openstack-ubuntu-testing/pike
-artful-pike:
-  inherits: [ openstack-services-xenial-ocata, ceilometer-mongodb, charm-ceilometer-gnocchi ]
-  series: artful
-artful-pike-proposed:
-  inherits: artful-pike
-  overrides:
-    source: proposed
-    openstack-origin: distro-proposed
-artful-pike-branch:
-  inherits: artful-pike
-  overrides:
-    openstack-origin: ppa:openstack-ubuntu-testing/pike
-    source: ppa:openstack-ubuntu-testing/pike
-xenial-queens:
-  inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
-  series: xenial
-  overrides:
-    openstack-origin: cloud:xenial-queens
-    source: cloud:xenial-queens
-bionic-queens:
-  inherits: [ openstack-services-xenial-queens, charm-ceilometer-gnocchi ]
-  series: bionic
-# rocky
-bionic-rocky:
-  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
-  series: bionic
-  overrides:
-    openstack-origin: cloud:bionic-rocky
-    source: cloud:bionic-rocky
-cosmic-rocky:
-  inherits: [ openstack-services-bionic-rocky, charm-ceilometer-gnocchi ]
-  series: cosmic
-  overrides:
-    openstack-origin: distro
-    source: distro
-# stein
-bionic-stein:
-  inherits: [ bionic-rocky ]
-  series: bionic
-  overrides:
-    openstack-origin: cloud:bionic-stein
-    source: cloud:bionic-stein
-disco-stein:
-  inherits: [ bionic-rocky ]
-  series: disco
-  overrides:
-    # Use distro-proposed until bug #1834565 is fixed in disco.
-    openstack-origin: distro-proposed
-    source: distro
-# train
-bionic-train:
-  inherits: [ bionic-rocky ]
-  series: bionic
-  services:
-    placement:
-      charm: placement
-      constraints: mem=1G
-      num_units: 3
-      options:
-        vip: "{{ MOJO_OS_VIP15 }}"
-    placement-hacluster:
-      charm: hacluster
-      options:
-        corosync_transport: unicast
-        cluster_count: 3
-  overrides:
-    openstack-origin: cloud:bionic-train
-    source: cloud:bionic-train
-  relations:
-    - [ placement, nova-cloud-controller ]
-    - [ placement, mysql ]
-    - [ placement, keystone ]
-    - [ placement, vault ]
-    - [ placement, placement-hacluster ]

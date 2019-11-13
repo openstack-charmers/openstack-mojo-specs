@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import utils.mojo_utils as mojo_utils
 import utils.mojo_os_utils as mojo_os_utils
@@ -18,7 +19,13 @@ TEST_RECORD = {TEST_WWW_RECORD: '10.0.0.23'}
 def main(argv):
     cli_utils.setup_logging()
     # Setup client
-    keystone_session = openstack_utils.get_overcloud_keystone_session()
+    try:
+        cacert = os.path.join(os.environ.get('MOJO_LOCAL_DIR'), 'cacert.pem')
+        os.stat(cacert)
+    except FileNotFoundError:
+        cacert = None
+    keystone_session = openstack_utils.get_overcloud_keystone_session(
+        verify=cacert)
     os_version = openstack_utils.get_current_os_versions(
         'keystone')['keystone']
 
