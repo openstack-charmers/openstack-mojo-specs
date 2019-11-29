@@ -397,3 +397,26 @@ bionic-stein-ha:
     source: cloud:bionic-stein
   relations:
     - [ nova-cloud-controller, memcached]
+bionic-train-ha:
+  inherits: bionic-stein-ha
+  series: bionic
+  services:
+    placement:
+      charm: placement
+      constraints: mem=1G
+      num_units: 3
+      options:
+        vip: "{{ MOJO_OS_VIP15 }}"
+    placement-hacluster:
+      charm: hacluster
+      options:
+        corosync_transport: unicast
+        cluster_count: 3
+  overrides:
+    openstack-origin: cloud:bionic-train
+    source: cloud:bionic-train
+  relations:
+    - [ placement, nova-cloud-controller ]
+    - [ placement, mysql ]
+    - [ placement, keystone ]
+    - [ placement, placement-hacluster ]
