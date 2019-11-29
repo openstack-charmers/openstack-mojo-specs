@@ -26,7 +26,7 @@ verify config=test_obj_store.py
 script config=wipe_charm_dir.py
 
 # Collect the next (devel) charm branches from Launchpad
-collect config=collect-next-ha
+collect config=collect-next-ha-${MOJO_SERIES}
 
 # Deploy the memcached charm into existing system -- doesn't relate it to nova-cloud-controller
 # the relation is part of the upgrade-charm script
