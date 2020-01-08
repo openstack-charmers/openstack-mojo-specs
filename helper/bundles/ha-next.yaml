@@ -301,7 +301,7 @@ trusty-mitaka-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
-    openstack-origin: cloud:trusty-mitaka/proposed
+    openstack-origin: cloud:trusty-mitaka
     source: cloud:trusty-mitaka
 trusty-mitaka-proposed:
   inherits: [ openstack-services, ceilometer-mongodb ]
