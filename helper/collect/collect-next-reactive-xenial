@@ -32,4 +32,5 @@ neutron-dynamic-routing  cs:~openstack-charmers-next/neutron-dynamic-routing
 vault                  cs:~openstack-charmers-next/vault
 placement              cs:~openstack-charmers-next/placement
 easyrsa                cs:~containers/easyrsa
-etcd                   cs:etcd
+# Pin etcd until https://bugs.launchpad.net/charm-etcd/+bug/1861483 is fixed
+etcd                   cs:~containers/etcd-474;channel=edge
