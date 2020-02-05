@@ -398,22 +398,37 @@ def upgrade_service(svc, charm_name=None, switch=None):
     subprocess.check_call(cmd)
 
 
-def upgrade_all_services(juju_status=None, switch=None):
+BASE_CHARMS = ['mysql', 'percona-cluster', 'rabbitmq-server',
+               'keystone']
+
+
+def upgrade_base_services(juju_status=None, switch=None):
     if not juju_status:
         juju_status = get_juju_status()
     # Upgrade base charms first
-    base_charms = ['mysql', 'percona-cluster', 'rabbitmq-server',
-                   'keystone']
-    for svc in base_charms:
+    for svc in BASE_CHARMS:
         if svc in juju_status['applications']:
             charm_name = charm_to_charm_name(
                 juju_status['applications'][svc]['charm'])
             upgrade_service(svc, charm_name=charm_name, switch=switch)
-            time.sleep(30)
-    time.sleep(60)
+
+
+def upgrade_all_services(juju_status=None, switch=None):
+    upgrade_base_services(
+        juju_status=juju_status,
+        switch=switch)
+    time.sleep(120)
+    upgrade_non_base_services(
+        juju_status=juju_status,
+        switch=switch)
+
+
+def upgrade_non_base_services(juju_status=None, switch=None):
+    if not juju_status:
+        juju_status = get_juju_status()
     # Upgrade the rest
     for svc in juju_status['applications']:
-        if svc not in base_charms:
+        if svc not in BASE_CHARMS:
             charm_name = charm_to_charm_name(
                 juju_status['applications'][svc]['charm'])
             upgrade_service(svc, charm_name=charm_name, switch=switch)
