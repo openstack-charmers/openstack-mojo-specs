@@ -15,7 +15,7 @@ base-services:
       constraints: mem=4G
     rabbitmq-server:
       charm: rabbitmq-server
-      constraints: mem=1G
+      constraints: mem=2G
     ceph-mon:
       charm: ceph-mon
       num_units: 3
