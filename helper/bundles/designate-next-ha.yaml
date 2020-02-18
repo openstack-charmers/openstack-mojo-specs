@@ -27,7 +27,7 @@ base-services:
         cluster_count: 3
     rabbitmq-server:
       charm: rabbitmq-server
-      constraints: mem=1G
+      constraints: mem=2G
     ceph-mon:
       charm: ceph-mon
       num_units: 3
