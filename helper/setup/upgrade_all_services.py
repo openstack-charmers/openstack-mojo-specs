@@ -29,7 +29,6 @@ def main(argv):
     logging.info(
         "Waiting for units to begin executing upgrade of remaining services")
     mojo_utils.upgrade_non_base_services(switch=switch_map)
-    zaza.model.wait_for_agent_status(status='executing')
     logging.info("Waiting for units to be idle")
     zaza.model.block_until_all_units_idle()
 

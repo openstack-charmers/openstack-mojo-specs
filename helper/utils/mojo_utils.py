@@ -432,11 +432,23 @@ def upgrade_non_base_services(juju_status=None, switch=None):
             charm_name = charm_to_charm_name(
                 juju_status['applications'][svc]['charm'])
             upgrade_service(svc, charm_name=charm_name, switch=switch)
-            time.sleep(30)
-    cmd = ['juju', 'add-relation', 'ceilometer-agent:amqp', 'rabbitmq-server']
-    subprocess.call(cmd)
-    cmd = ['juju', 'add-relation', 'nova-cloud-controller', 'memcached']
-    subprocess.call(cmd)
+    model.wait_for_agent_status(status='executing')
+    if not model.get_relation_id('rabbitmq-server',
+                                 'ceilometer-agent',
+                                 remote_interface_name='amqp'):
+        logging.info("Adding rabbitmq-server ceilometer-agent relation")
+        model.add_relation('ceilometer-agent', 'amqp', 'rabbitmq-server:amqp')
+        zaza.model.wait_for_agent_status(status='executing')
+    if not model.get_relation_id('memcached',
+                                 'nova-cloud-controller',
+                                 remote_interface_name='memcache'):
+        logging.info("Adding nova-cloud-controller memcached relation")
+        model.add_relation('memcached',
+                           'nova-cloud-controller',
+                           'nova-cloud-controller:memcache')
+        zaza.model.wait_for_agent_status(status='executing')
+    logging.info("Waiting for units to be idle")
+    model.block_until_all_units_idle()
 
 
 # Begin upgrade code
