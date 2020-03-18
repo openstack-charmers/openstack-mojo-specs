@@ -1,0 +1,1 @@
+../../../../helper/tests/parallel_series_upgrade.py
