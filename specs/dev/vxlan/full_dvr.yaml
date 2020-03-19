@@ -23,9 +23,6 @@ openstack-services:
     keystone:
       charm: keystone
       constraints: mem=1G
-      options:
-        admin-password: openstack
-        admin-token: ubuntutesting
     openstack-dashboard:
       charm: openstack-dashboard
       constraints: mem=1G

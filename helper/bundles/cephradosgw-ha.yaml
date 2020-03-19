@@ -19,9 +19,6 @@ openstack-services:
     keystone:
       charm: keystone
       constraints: mem=1G
-      options:
-        admin-password: openstack
-        admin-token: ubuntutesting
     ceph-radosgw:
       charm: ceph-radosgw
       num_units: 4

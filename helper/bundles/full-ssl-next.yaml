@@ -26,8 +26,6 @@ openstack-services:
       charm: keystone
       constraints: mem=1G
       options:
-        admin-password: openstack
-        admin-token: ubuntutesting
         ssl_ca: include-base64://{{local_dir}}/cacert.pem
         ssl_cert: include-base64://{{local_dir}}/cert.pem
         ssl_key: include-base64://{{local_dir}}/cert.key

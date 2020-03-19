@@ -40,8 +40,6 @@ openstack-services:
       charm: keystone
       constraints: mem=1G
       options:
-        admin-password: openstack
-        admin-token: ubuntutesting
         vip: 10.5.102.1
     keystone-hacluster:
       charm: hacluster

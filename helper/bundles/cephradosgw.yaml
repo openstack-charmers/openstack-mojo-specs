@@ -20,9 +20,6 @@ openstack-services:
     keystone:
       charm: keystone
       constraints: mem=1G
-      options:
-        admin-password: openstack
-        admin-token: ubuntutesting
     glance:
       charm: glance
       constraints: mem=1G
