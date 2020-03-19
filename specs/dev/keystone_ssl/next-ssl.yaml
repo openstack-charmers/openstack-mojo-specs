@@ -53,8 +53,6 @@ openstack-services:
       options:
         debug: 'true'
         verbose: 'true'
-        admin-password: openstack
-        admin-token: ubuntutesting
         enable-pki: 'true'
         https-service-endpoints: 'True'
         use-https: 'yes'

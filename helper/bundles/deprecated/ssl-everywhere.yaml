@@ -30,8 +30,6 @@ openstack-services:
       branch: lp:~openstack-charmers/charms/precise/keystone/ssl-everywhere
       constraints: mem=1G
       options:
-        admin-password: openstack
-        admin-token: ubuntutesting
         https-service-endpoints: "True"
         use-https: True
     openstack-dashboard:

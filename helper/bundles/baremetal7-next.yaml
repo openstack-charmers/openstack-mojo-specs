@@ -77,9 +77,6 @@ openstack-services:
         ephemeral-unmount: "/mnt"
     keystone:
       charm: keystone
-      options:
-        admin-password: openstack
-        admin-token: ubuntutesting
       to:
         - "lxc:swift-storage-z1=0"
     openstack-dashboard:

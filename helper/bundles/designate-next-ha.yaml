@@ -44,8 +44,6 @@ base-services:
       constraints: mem=1G
       num_units: 3
       options:
-        admin-password: openstack
-        admin-token: ubuntutesting
         vip: "{{ MOJO_OS_VIP02 }}"
     keystone-hacluster:
       charm: hacluster

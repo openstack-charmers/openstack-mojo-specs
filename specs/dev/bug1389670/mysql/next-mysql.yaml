@@ -18,9 +18,6 @@ openstack-services:
     keystone:
       charm: keystone
       constraints: mem=1G
-      options:
-        admin-password: openstack
-        admin-token: ubuntutesting
 # see NOTE [0]
 #    ceph:
 #      charm: ceph
