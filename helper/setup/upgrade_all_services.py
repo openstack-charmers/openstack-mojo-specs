@@ -23,14 +23,14 @@ def main(argv):
         "Waiting for units to begin executing upgrade of base services")
     zaza.model.wait_for_agent_status(status='executing')
     logging.info("Waiting for units to be idle")
-    zaza.model.block_until_all_units_idle()
+    zaza.model.block_until_all_units_idle(timeout=5400)
 
     logging.info("Upgrading remaining services")
     logging.info(
         "Waiting for units to begin executing upgrade of remaining services")
     mojo_utils.upgrade_non_base_services(switch=switch_map)
     logging.info("Waiting for units to be idle")
-    zaza.model.block_until_all_units_idle()
+    zaza.model.block_until_all_units_idle(timeout=5400)
 
 
 if __name__ == "__main__":
