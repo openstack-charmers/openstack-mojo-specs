@@ -21,9 +21,10 @@ from zaza.openstack.utilities import (
     cli as cli_utils,
 )
 
-from zaza.openstack.charm_tests.series_upgrade.tests import (
-    ParallelTrustyXenialSeriesUpgrade,
-    ParallelXenialBionicSeriesUpgrade,
+from zaza.openstack.charm_tests.series_upgrade.parallel_tests import (
+    TrustyXenialSeriesUpgrade,
+    XenialBionicSeriesUpgrade,
+    BionicFocalSeriesUpgrade,
 )
 
 
@@ -32,11 +33,13 @@ if __name__ == "__main__":
     from_series = os.environ.get("MOJO_SERIES")
     if from_series == "trusty":
         to_series = "xenial"
-        series_upgrade_test = ParallelTrustyXenialSeriesUpgrade()
+        series_upgrade_test = TrustyXenialSeriesUpgrade()
     elif from_series == "xenial":
         to_series = "bionic"
-        series_upgrade_test = ParallelXenialBionicSeriesUpgrade()
-
+        series_upgrade_test = XenialBionicSeriesUpgrade()
+    elif from_series == "bionic":
+        to_series = "focal"
+        series_upgrade_test = BionicFocalSeriesUpgrade()
     else:
         raise Exception("MOJO_SERIES is not set to a vailid LTS series")
     series_upgrade_test.setUpClass()
