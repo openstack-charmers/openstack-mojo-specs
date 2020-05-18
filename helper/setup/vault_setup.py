@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import asyncio
+# import asyncio  # Unused import
 import copy
 import os
 from zaza import model

@@ -438,7 +438,7 @@ def upgrade_non_base_services(juju_status=None, switch=None):
                                  remote_interface_name='amqp'):
         logging.info("Adding rabbitmq-server ceilometer-agent relation")
         model.add_relation('ceilometer-agent', 'amqp', 'rabbitmq-server:amqp')
-        zaza.model.wait_for_agent_status(status='executing')
+        model.wait_for_agent_status(status='executing')
     if not model.get_relation_id('memcached',
                                  'nova-cloud-controller',
                                  remote_interface_name='memcache'):
@@ -446,7 +446,7 @@ def upgrade_non_base_services(juju_status=None, switch=None):
         model.add_relation('memcached',
                            'nova-cloud-controller',
                            'nova-cloud-controller:memcache')
-        zaza.model.wait_for_agent_status(status='executing')
+        model.wait_for_agent_status(status='executing')
     logging.info("Waiting for units to be idle")
     model.block_until_all_units_idle()
 
@@ -679,7 +679,6 @@ def units_upstart_to_systemd_commands(machine_number):
                     'sudo', 'ln', '-s', systemd_file_path,
                     ('/etc/systemd/system/multi-user.target.wants/'
                      '{file_name}').format(
-                         machine_id=machine_number,
                          file_name=systemd_file_name)
                 ]
             ]

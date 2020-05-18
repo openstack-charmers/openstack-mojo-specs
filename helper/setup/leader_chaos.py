@@ -74,8 +74,8 @@ def check_crm_status(application):
         mach_nums = get_machine_numbers(application)
         crm_online = unit_crm_online(unit)
         if mach_nums == crm_online:
-            logging.info('Service %s status on %s look good'
-                         .format((application, unit)))
+            logging.info('Service {} status on {} look'
+                         'good'.format(application, unit))
         else:
             logging.info('%s != %s' % (str(mach_nums), str(crm_online)))
             msg = ('Mismatch on crm status for application {} '

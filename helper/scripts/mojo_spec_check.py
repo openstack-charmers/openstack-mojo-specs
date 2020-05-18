@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import logging
 import os
 import string
@@ -41,7 +41,7 @@ OPENSTACK_RELEASES = {
 def invert_dict_of_lists(d):
     """Inverts a dictionary of lists."""
     _inverted = {}
-    for k, v in d.iteritems():
+    for k, v in d.items():
         for item in v:
             if item in _inverted.keys():
                 _inverted[item].append(k)
@@ -256,6 +256,7 @@ def check_for_ambiguous_relations(dir_list):
         for b in found_ambiguous_relation_ep:
             logging.error('    ' + b)
     return found_ambiguous_relation_ep
+
 
 def check_dirname(openstack_release):
     """Check tip dirname matches Openstack release referenced in manifest"""

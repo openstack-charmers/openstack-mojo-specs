@@ -3,7 +3,7 @@ import sys
 import os
 import utils.mojo_os_utils as mojo_os_utils
 import distro_info
-import logging
+#  import logging  # Unused import
 import argparse
 
 from zaza.openstack.utilities import cli as cli_utils

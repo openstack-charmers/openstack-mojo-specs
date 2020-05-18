@@ -4,9 +4,10 @@ import sys
 
 import zaza.model
 
-from zaza.openstack.utilities import (
-    cli as cli_utils,
-)
+# Unused import
+# from zaza.openstack.utilities import (
+#     cli as cli_utils,
+# )
 
 
 def main(argv):
@@ -20,6 +21,7 @@ def main(argv):
         raise Exception(
             "ceilometer-upgrade action returned {} status".format(
                 action.status))
+
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
