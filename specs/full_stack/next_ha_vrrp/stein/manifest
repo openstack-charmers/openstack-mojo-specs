@@ -10,6 +10,9 @@ verify config=check_juju.py
 # Create sdn on overcloud
 script config=network_setup.py NET_TOPOLOGY="vrrpha"
 
+# Configure second interface for data-port on neutron-gateway units
+script config=plumb_interfaces.sh
+
 # Setup glance images
 script config=image_setup.py
 
