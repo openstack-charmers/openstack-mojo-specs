@@ -3,11 +3,7 @@ import logging
 import sys
 
 import zaza.model
-
-# Unused import
-# from zaza.openstack.utilities import (
-#     cli as cli_utils,
-# )
+import zaza.openstack.utilities.cli
 
 
 def main(argv):
