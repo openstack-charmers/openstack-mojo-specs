@@ -5,11 +5,6 @@ import sys
 import zaza.model
 import zaza.openstack.utilities.cli
 
-# Unused import
-# from zaza.openstack.utilities import (
-#     cli as cli_utils,
-# )
-
 
 def main(argv):
     zaza.openstack.utilities.cli.setup_logging()
