@@ -27,3 +27,4 @@ tempest                cs:~openstack-charmers-next/tempest
 gnocchi                cs:~openstack-charmers-next/gnocchi
 memcached              cs:~memcached-team/memcached
 vault                  cs:~openstack-charmers-next/vault
+placement              cs:~openstack-charmers-next/placement
