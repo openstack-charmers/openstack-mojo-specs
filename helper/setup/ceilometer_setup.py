@@ -3,6 +3,7 @@ import logging
 import sys
 
 import zaza.model
+import zaza.openstack.utilities.cli
 
 # Unused import
 # from zaza.openstack.utilities import (
