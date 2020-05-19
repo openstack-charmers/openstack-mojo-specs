@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import utils.mojo_utils as mojo_utils
-import logging
+#  import logging  # Unused import
 import argparse
 
 from zaza.openstack.utilities import cli as cli_utils

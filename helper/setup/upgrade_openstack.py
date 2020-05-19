@@ -148,5 +148,6 @@ def main(argv):
         model.set_application_config(application['name'], config)
         mojo_utils.juju_wait_finished()
 
+
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
