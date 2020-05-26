@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
 import os
 import sys
 
@@ -35,8 +36,11 @@ if __name__ == "__main__":
     elif from_series == "xenial":
         to_series = "bionic"
         series_upgrade_test = XenialBionicSeriesUpgrade()
-
     else:
         raise Exception("MOJO_SERIES is not set to a vailid LTS series")
+    logging.info("Preparing series upgrade test from {} to {}".format(
+        from_series, to_series))
+    logging.info("Setting up...")
     series_upgrade_test.setUpClass()
+    logging.info("Running series upgrade test...")
     sys.exit(series_upgrade_test.test_200_run_series_upgrade())
