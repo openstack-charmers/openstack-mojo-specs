@@ -232,6 +232,8 @@ trusty-mitaka:
   overrides:
     openstack-origin: cloud:trusty-mitaka
     source: cloud:trusty-mitaka
+  relations:
+    - [ cinder-ceph, nova-compute ]
 trusty-mitaka-proposed:
   inherits: trusty-mitaka
   overrides:
@@ -245,6 +247,8 @@ trusty-mitaka-staging:
 xenial-mitaka:
   inherits: openstack-icehouse
   series: xenial
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
@@ -255,6 +259,8 @@ xenial-newton:
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
+  relations:
+    - [ cinder-ceph, nova-compute ]
     source: cloud:xenial-newton
 # ocata
 xenial-ocata:
