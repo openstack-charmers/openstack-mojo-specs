@@ -259,9 +259,9 @@ xenial-newton:
   series: xenial
   overrides:
     openstack-origin: cloud:xenial-newton
+    source: cloud:xenial-newton
   relations:
     - [ cinder-ceph, nova-compute ]
-    source: cloud:xenial-newton
 # ocata
 xenial-ocata:
   inherits: openstack-icehouse

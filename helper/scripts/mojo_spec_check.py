@@ -234,9 +234,9 @@ def check_yaml_syntax(dir_list):
             stream = open(f, 'r')
             try:
                 yaml.safe_load(stream)
-            except yaml.scanner.ScannerError:
-                logging.error('%s contains yaml errors, '
-                              'mojo spec will fail.' % f)
+            except yaml.scanner.ScannerError as e:
+                logging.error('{} contains yaml errors, mojo spec will fail,'
+                              ' due to "{}"'.format(f, str(e)))
 
 
 def check_for_ambiguous_relations(dir_list):

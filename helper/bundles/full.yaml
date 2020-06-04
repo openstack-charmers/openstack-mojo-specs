@@ -131,14 +131,14 @@ ceilometer-mongodb:
       constraints: mem=1G
   relations:
     - - ceilometer
-      - keystone:identity-service
+      - "keystone:identity-service"
     - - ceilometer
-      - keystone:identity-notifications
+      - "keystone:identity-notifications"
     - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-    - [ ceilometer-agent:amqp, rabbitmq-server:amqp]
+    - [ "ceilometer-agent:amqp", "rabbitmq-server:amqp"]
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -150,12 +150,12 @@ charm-ceilometer-gnocchi:
       charm: gnocchi
   relations:
     - - ceilometer
-      - keystone:identity-notifications
+      - "keystone:identity-notifications"
     - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-    - [ ceilometer-agent:amqp, rabbitmq-server:amqp]
+    - [ "ceilometer-agent:amqp", "rabbitmq-server:amqp"]
     - - ceph-mon
       - gnocchi
     - - gnocchi
@@ -170,7 +170,7 @@ ceilometer-gnocchi:
   inherits: [ charm-ceilometer-gnocchi]
   relations:
     - - ceilometer
-      - keystone:identity-credentials
+      - "keystone:identity-credentials"
 openstack-singlerabbit:
   inherits: openstack-services
   relations:
