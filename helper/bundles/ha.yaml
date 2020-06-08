@@ -231,15 +231,15 @@ ceilometer-mongodb:
       constraints: mem=1G
   relations:
     - - ceilometer
-      - keystone:identity-service
+      - "keystone:identity-service"
     - - ceilometer
-      - keystone:identity-notifications
+      - "keystone:identity-notifications"
     - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, mongodb ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
     - [ ceilometer, ceilometer-hacluster ]
-    - [ ceilometer-agent:amqp, rabbitmq-server:amqp]
+    - [ "ceilometer-agent:amqp", "rabbitmq-server:amqp"]
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -259,12 +259,12 @@ charm-ceilometer-gnocchi:
       charm: gnocchi
   relations:
     - - ceilometer
-      - keystone:identity-notifications
+      - "keystone:identity-notifications"
     - [ "ceilometer:amqp", rabbitmq-server ]
     - [ ceilometer, gnocchi ]
     - [ ceilometer-agent, nova-compute ]
     - [ ceilometer-agent, ceilometer ]
-    - [ ceilometer-agent:amqp, rabbitmq-server:amqp]
+    - [ "ceilometer-agent:amqp", "rabbitmq-server:amqp"]
     - - ceph-mon
       - gnocchi
     - - gnocchi
@@ -304,23 +304,31 @@ trusty-mitaka-ha:
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka
+  relations:
+    - [ cinder-ceph, nova-compute ]
 trusty-mitaka-proposed:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: trusty
   overrides:
     openstack-origin: cloud:trusty-mitaka/proposed
     source: cloud:trusty-mitaka/proposed
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-mitaka-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
   overrides:
     ha-bindiface: ens2
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-mitaka-proposed:
   inherits: xenial-mitaka
   overrides:
     source: proposed
     openstack-origin: distro-proposed
     ha-bindiface: ens2
+  relations:
+    - [ cinder-ceph, nova-compute ]
 xenial-newton-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]
   series: xenial
@@ -328,6 +336,8 @@ xenial-newton-ha:
     ha-bindiface: ens2
     openstack-origin: cloud:xenial-newton
     source: cloud:xenial-newton
+  relations:
+    - [ cinder-ceph, nova-compute ]
 # ocata
 xenial-ocata-ha:
   inherits: [ openstack-services, ceilometer-mongodb ]

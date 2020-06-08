@@ -197,6 +197,7 @@ base-services:
     - [ cinder, keystone ]
     - [ cinder, cinder-ceph ]
     - [ cinder-ceph, ceph-mon ]
+    - [ cinder-ceph, nova-compute ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ "openstack-dashboard:identity-service", keystone ]
     - [ swift-proxy, keystone ]
