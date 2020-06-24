@@ -403,9 +403,6 @@ openstack-services-trusty-mitaka:
     designate-bind:
       num_units: 3
       charm: designate-bind
-    tempest:
-      charm: tempest
-      constraints: mem=1G
   relations:
     - [ aodh, rabbitmq-server ]
     - [ aodh, mysql ]
@@ -419,7 +416,6 @@ openstack-services-trusty-mitaka:
     - [ designate, neutron-api ]
     - [ designate, designate-hacluster ]
     # designate <-> nova-compute needed for legacy notifications
-    - [ keystone, tempest ]
     - - aodh:certificates
       - vault:certificates
     - - designate:certificates
