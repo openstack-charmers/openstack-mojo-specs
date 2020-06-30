@@ -59,9 +59,6 @@ openstack-services:
     glance:
       charm: glance
       constraints: mem=1G
-    tempest:
-      charm: tempest
-      constraints: mem=1G
   relations:
     - [ keystone, mysql ]
     - [ "nova-cloud-controller:shared-db", "mysql:shared-db" ]
@@ -86,7 +83,6 @@ openstack-services:
     - [ cinder, ceph-mon ]
     - [ neutron-gateway, nova-cloud-controller ]
     - [ "openstack-dashboard:identity-service", keystone ]
-    - [ keystone, tempest ]
 ceilometer-mongodb:
   services:
     ceilometer:

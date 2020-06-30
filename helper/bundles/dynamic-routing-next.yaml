@@ -222,9 +222,6 @@ openstack-services-trusty-mitaka:
     designate-bind:
       num_units: 1
       charm: designate-bind
-    tempest:
-      charm: tempest
-      constraints: mem=1G
     memcached:
       num_units: 1
       charm: memcached
@@ -238,7 +235,6 @@ openstack-services-trusty-mitaka:
     - [ designate, designate-bind ]
     - [ designate, memcached ]
     - [ designate, neutron-api ]
-    - [ keystone, tempest ]
 openstack-services-xenial-ocata:
   inherits: openstack-services-trusty-mitaka
   services:

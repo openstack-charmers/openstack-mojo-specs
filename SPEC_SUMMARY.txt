@@ -274,10 +274,6 @@ charms to the devel versions and then runs tests to validate the deployment
 This spec performs a non-ha deploy using the stable charms, then upgrades the
 charms to the devel versions and then runs tests to validate the deployment
 
-./specs/full_stack/stable_deploy_tempest/newton/
-This spec performs a non-ha deploy using the stable charms and then runs tests
-to validate the deployment
-
 ./specs/full_stack/next_ha_vrrp/ocata/
 This spec deploys and tests a deployment with neutron VRRP enabled, it then
 takes down the gateways in turn and checks a guest remains accessible

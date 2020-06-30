@@ -351,12 +351,6 @@ openstack-services-trusty-mitaka:
     # designate <-> nova-compute needed for legacy notifications
 openstack-services-xenial-mitaka:
   inherits: openstack-services-trusty-mitaka
-  services:
-    tempest:
-      charm: tempest
-      constraints: mem=1G
-  relations:
-    - [ keystone, tempest ]
 # mitaka
 trusty-mitaka:
   inherits: [ openstack-services-trusty-mitaka, ceilometer-mongodb ]

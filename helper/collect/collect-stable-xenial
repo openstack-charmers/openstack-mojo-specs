@@ -24,5 +24,3 @@ swift-storage-z2       cs:~openstack-charmers/swift-storage
 swift-storage-z3       cs:~openstack-charmers/swift-storage
 gnocchi                cs:~openstack-charmers/gnocchi
 memcached              cs:~memcached-team/memcached
-# Tempest charm is basically never stable
-tempest                cs:~openstack-charmers-next/tempest
