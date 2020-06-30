@@ -117,7 +117,6 @@ bugs or features. However, the main tests used to verify the cloud are:
 			   the guest got a network and metadata on boot.
 * *test\_obj\_store.py*: This script fires two streams of objects and the
                          object store and retireves them
-* *tempest.py*: This doesn't actually exist in any real sense but will do rsn!
 
 Phase 5: Manipulate the cloud
 -----------------------------

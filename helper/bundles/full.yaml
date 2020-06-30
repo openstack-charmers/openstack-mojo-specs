@@ -314,12 +314,7 @@ trusty-mitaka-staging:
 xenial-mitaka:
   inherits: [ openstack-icehouse, ceilometer-mongodb ]
   series: xenial
-  services:
-    tempest:
-      charm: tempest
-      constraints: mem=1G
   relations:
-    - [ keystone, tempest ]
     - [ cinder-ceph, nova-compute ]
 xenial-mitaka-proposed:
   inherits: xenial-mitaka

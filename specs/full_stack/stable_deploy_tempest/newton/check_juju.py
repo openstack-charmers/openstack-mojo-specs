@@ -1,1 +1,0 @@
-../../../../helper/tests/check_juju.py
