@@ -39,7 +39,7 @@ if __name__ == "__main__":
         states=wl_statuses)
     certificate_directory = mojo_utils.get_local_certificate_directory()
     certfile = mojo_utils.get_overcloud_cacert_file()
-    logging.info("Valut setup basic ...")
+    logging.info("Vault setup basic ...")
     vault_setup.basic_setup(cacert=certfile)
     clients = vault_utils.get_clients(cacert=certfile)
     vault_creds = vault_utils.get_credentails()
