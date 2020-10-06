@@ -159,3 +159,8 @@ sudo chmod 755 /var/lib/lxc/mojo-openstack-specs.trusty && sudo chmod 755 /var/l
 
 mojo workspace-new --project mojo-openstack-specs --series trusty --stage full_stack/next_deploy lp:~ost-maintainers/openstack-mojo-specs/mojo-openstack-specs run1
 mojo run --project mojo-openstack-specs --series trusty --stage full_stack/next_deploy lp:~ost-maintainers/openstack-mojo-specs/mojo-openstack-specs run1
+
+Bugs
+====
+
+Please report bugs at https://bugs.launchpad.net/openstack-mojo-specs
