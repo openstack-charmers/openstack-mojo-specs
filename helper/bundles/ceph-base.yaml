@@ -108,9 +108,27 @@ bionic-train:
   inherits: base
   series: bionic
   overrides:
-    source: cloud:bionic-train/proposed
+    source: cloud:bionic-train
 eoan-train:
   inherits: base
   series: eoan
   overrides:
-    source: distro-proposed
+    source: distro
+# ussuri
+bionic-ussuri:
+  inherits: base
+  series: bionic
+  overrides:
+    source: cloud:bionic-ussuri
+focal-ussuri:
+  inherits: base
+  series: focal
+# victoria
+focal-victoria:
+  inherits: base
+  series: focal
+  overrides:
+    source: cloud:focal-victoria
+groovy-victoria:
+  inherits: base
+  series: groovy

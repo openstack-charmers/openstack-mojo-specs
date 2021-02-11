@@ -421,6 +421,7 @@ disco-stein:
   overrides:
     openstack-origin: distro
     source: distro
+# train
 bionic-train:
   inherits: bionic-rocky
   series: bionic
@@ -437,3 +438,26 @@ bionic-train:
       - nova-cloud-controller
     - - placement
       - mysql
+# ussuri
+bionic-ussuri:
+  inherits: bionic-train
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-ussuri
+    source: cloud:bionic-ussuri
+focal-ussuri:
+  inherits: bionic-train
+  series: focal
+  overrides:
+    openstack-origin: distro
+    source: distro
+# victoria
+focal-victoria:
+  inherits: focal-ussuri
+  series: focal
+  overrides:
+    openstack-origin: cloud:focal-victoria
+    source: cloud:focal-victoria
+groovy-victoria:
+  inherits: focal-ussuri
+  series: groovy

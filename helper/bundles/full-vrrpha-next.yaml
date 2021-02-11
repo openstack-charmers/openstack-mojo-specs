@@ -265,6 +265,13 @@ bionic-stein:
   overrides:
     openstack-origin: cloud:bionic-stein
     source: cloud:bionic-stein
+disco-stein:
+  inherits: bionic-queens
+  series: disco
+  overrides:
+    openstack-origin: distro
+    source: distro
+# train
 bionic-train:
   inherits: bionic-stein
   overrides:
@@ -277,9 +284,26 @@ bionic-train:
     - [ placement, mysql ]
     - [ placement, keystone ]
     - [ placement, nova-cloud-controller ]
-disco-stein:
-  inherits: bionic-queens
-  series: disco
+# ussuri
+bionic-ussuri:
+  inherits: bionic-train
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-ussuri
+    source: cloud:bionic-ussuri
+focal-ussuri:
+  inherits: bionic-train
+  series: focal
   overrides:
     openstack-origin: distro
     source: distro
+# victoria
+focal-victoria:
+  inherits: focal-ussuri
+  series: focal
+  overrides:
+    openstack-origin: cloud:focal-victoria
+    source: cloud:focal-victoria
+groovy-victoria:
+  inherits: focal-ussuri
+  series: groovy

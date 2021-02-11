@@ -407,6 +407,7 @@ bionic-stein-ha:
     source: cloud:bionic-stein
   relations:
     - [ nova-cloud-controller, memcached]
+# train
 bionic-train-ha:
   inherits: bionic-stein-ha
   series: bionic
@@ -430,3 +431,26 @@ bionic-train-ha:
     - [ placement, mysql ]
     - [ placement, keystone ]
     - [ placement, placement-hacluster ]
+# ussuri
+bionic-ussuri-ha:
+  inherits: bionic-train-ha
+  series: bionic
+  overrides:
+    openstack-origin: cloud:bionic-ussuri
+    source: cloud:bionic-ussuri
+focal-ussuri-ha:
+  inherits: bionic-train-ha
+  series: focal
+  overrides:
+    openstack-origin: distro
+    source: distro
+# victoria
+focal-victoria-ha:
+  inherits: focal-ussuri-ha
+  series: focal
+  overrides:
+    openstack-origin: cloud:focal-victoria
+    source: cloud:focal-victoria
+groovy-victoria-ha:
+  inherits: focal-ussuri-ha
+  series: groovy
