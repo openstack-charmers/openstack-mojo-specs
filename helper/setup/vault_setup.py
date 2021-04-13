@@ -3,6 +3,7 @@
 # import asyncio  # Unused import
 import copy
 import os
+import juju
 from zaza import model
 from zaza.openstack.utilities import (
     cli as cli_utils,
@@ -18,6 +19,10 @@ import logging
 
 
 if __name__ == "__main__":
+    # NOTE(ajkavanagh): Set the jujulib Connection frame size to 4GB to
+    # cope with all the outputs from large models that have had lots of status
+    # changes.
+    juju.client.connection.Connection.MAX_FRAME_SIZE = 2**32
     cli_utils.setup_logging()
     target_model = model.get_juju_model()
     wl_statuses = copy.deepcopy(openstack.WORKLOAD_STATUS_EXCEPTIONS)
