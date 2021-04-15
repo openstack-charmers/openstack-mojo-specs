@@ -69,7 +69,7 @@ if __name__ == "__main__":
     del wl_statuses['vault']
     model.block_until_file_has_contents(
         'keystone',
-        '/usr/local/share/ca-certificates/keystone_juju_ca_cert.crt',
+        '/usr/local/share/ca-certificates/vault_juju_ca_cert.crt',
         cacert.decode().strip())
     model.wait_for_application_states(
         states=wl_statuses)
