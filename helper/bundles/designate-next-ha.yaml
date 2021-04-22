@@ -633,3 +633,9 @@ bionic-train:
     - [ placement, keystone ]
     - [ placement, vault ]
     - [ placement, placement-hacluster ]
+# ussuri
+bionic-ussuri:
+  inherits: [ bionic-train ]
+  overrides:
+    openstack-origin: cloud:bionic-ussuri
+    source: cloud:bionic-ussuri
