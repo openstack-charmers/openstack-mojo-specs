@@ -108,9 +108,15 @@ bionic-train:
   inherits: base
   series: bionic
   overrides:
-    source: cloud:bionic-train/proposed
+    source: cloud:bionic-train
 eoan-train:
   inherits: base
   series: eoan
   overrides:
     source: distro-proposed
+# ussuri
+bionic-ussuri:
+  inherits: base
+  series: bionic
+  overrides:
+    source: cloud:bionic-ussuri

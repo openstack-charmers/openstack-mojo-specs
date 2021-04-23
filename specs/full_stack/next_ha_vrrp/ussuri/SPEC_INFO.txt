@@ -1,0 +1,2 @@
+This spec deploys and tests a deployment with neutron VRRP enabled, it then
+takes down the gateways in turn and checks a guest remains accessible

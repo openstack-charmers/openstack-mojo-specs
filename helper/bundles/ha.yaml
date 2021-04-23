@@ -430,3 +430,8 @@ bionic-train-ha:
     - [ placement, mysql ]
     - [ placement, keystone ]
     - [ placement, placement-hacluster ]
+bionic-ussuri-ha:
+  inherits: bionic-train-ha
+  overrides:
+    openstack-origin: cloud:bionic-ussuri
+    source: cloud:bionic-ussuri

@@ -283,3 +283,8 @@ disco-stein:
   overrides:
     openstack-origin: distro
     source: distro
+bionic-ussuri:
+  inherits: bionic-train
+  overrides:
+    openstack-origin: cloud:bionic-ussuri
+    source: cloud:bionic-ussuri
