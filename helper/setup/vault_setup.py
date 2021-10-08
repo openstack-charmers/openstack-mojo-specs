@@ -47,7 +47,7 @@ if __name__ == "__main__":
     logging.info("Vault setup basic ...")
     vault_setup.basic_setup(cacert=certfile)
     clients = vault_utils.get_clients(cacert=certfile)
-    vault_creds = vault_utils.get_credentails()
+    vault_creds = vault_utils.get_credentials()
     vault_utils.unseal_all(clients, vault_creds['keys'][0])
     action = vault_utils.run_charm_authorize(
         vault_creds['root_token'])
