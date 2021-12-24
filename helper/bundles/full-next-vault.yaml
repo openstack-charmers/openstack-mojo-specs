@@ -181,6 +181,8 @@ ceilometer-mongodb:
       - nova-compute:nova-ceilometer
     - - ceilometer-agent:ceilometer-service
       - ceilometer:ceilometer-service
+    - - ceilometer-agent:amqp
+      - rabbitmq-server:amqp
 charm-ceilometer-gnocchi:
   services:
     ceilometer:
@@ -201,6 +203,8 @@ charm-ceilometer-gnocchi:
       - nova-compute:nova-ceilometer
     - - ceilometer-agent:ceilometer-service
       - ceilometer:ceilometer-service
+    - - ceilometer-agent:amqp
+      - rabbitmq-server:amqp
     - - ceph-mon:client
       - gnocchi:storage-ceph
     - - gnocchi:coordinator-memcached
@@ -211,6 +215,8 @@ charm-ceilometer-gnocchi:
       - keystone:identity-service
     - - gnocchi:shared-db
       - mysql:shared-db
+    - - gnocchi:certificates
+      - vault:certificates
 ceilometer-gnocchi:
   inherits: [ charm-ceilometer-gnocchi]
   relations:
